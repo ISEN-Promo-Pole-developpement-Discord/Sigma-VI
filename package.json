@@ -1,0 +1,22 @@
+{
+  "name": "sigma-vi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ISEN-Promo-Pole-developpement-Discord/Sigma-VI.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ISEN-Promo-Pole-developpement-Discord/Sigma-VI/issues"
+  },
+  "homepage": "https://github.com/ISEN-Promo-Pole-developpement-Discord/Sigma-VI#readme",
+  "dependencies": {
+    "discord.js": "^13.8.1"
+  }
+}
