@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./icon.jpg" type="image/x-icon">
+    <title>SIGMA • call</title>
+</head>
+<body>
+    <div class="container">
+        <img src="./background.jpg">
+        <p id='number'></p>
+    </div>
+    <script>
+		if(window.location.protocol != 'https:') window.location.protocol = 'https:';
+        function OnLoad(){
+            var num = new URLSearchParams(window.location.search).get('n');
+            var telstring = `+33${num.slice(1,10)}`;
+            document.getElementById('number').innerHTML = `+33(0)${num.slice(1,10)}-${num.slice(2,4)}-${num.slice(4,6)}-${num.slice(6,8)}-${num.slice(8,10)}`;
+            window.open(`tel:${telstring}`,"_self");
+        }
+        window.addEventListener("load", OnLoad);
+    </script>
+    <style>
+        body{background-color: #1D1C1A;}
+        p{
+            font: small-caps bold 24px/1 sans-serif;
+            color: white;
+            margin: 0;
+            font-size: 5vw;
+            margin-top: 40px;
+            text-align: center;
+        }
+        img{
+            width: 30vh;
+        }
+        @media screen and (min-width: 1400px) {
+            p{
+                font-size: 70px;
+            }
+        }
+        .container{
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+    </style>
+</body>
+</html>

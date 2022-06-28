@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./icon.jpg" type="image/x-icon">
+    <title>SIGMA</title>
+</head>
+<body>
+    <div class="container">
+        <img src="./background.jpg">
+        <p id='default'></p>
+    </div>
+    <script>
+        if(window.location.protocol != 'https:') window.location.protocol = 'https:';
+        window.addEventListener("load", OnLoad);
+    </script>
+    <style>
+        body{background-color: #1D1C1A;}
+        p{
+            font: small-caps bold 24px/1 sans-serif;
+            color: white;
+            margin: 0;
+            font-size: 5vw;
+            margin-top: 40px;
+        }
+        img{
+            width: 30vh;
+        }
+        @media screen and (min-width: 1400px) {
+            p{
+                font-size: 70px;
+            }
+        }
+        .container{
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+    </style>
+</body>
+</html>
