@@ -3,9 +3,12 @@ module.exports = {
     once: false,
     execute(message) {
         /**
-         * Event qui se trigger lorsqu'un message est envoyé sur un serveur Discord (pas par DM visiblement)
+         * Emitted whenever a message is created.
+         * @param {Message} message The message that got created
+         * @event messageCreate
+         * @returns {Promise<void>}
          */
-        console.log(`Nouveau message par ${message.author.tag}: ${message.content}`);
+        console.log(`Nouveau message par ${message.author.tag}: ${message.content} et en plus l'icon ${message.author.avatarURL()}`);
         
     }
 }
