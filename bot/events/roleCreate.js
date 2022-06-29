@@ -11,6 +11,9 @@ module.exports = {
          * @returns {Promise<void>}
             */
 
+        // FIXME - Update of a role provoke a role creation logs spam (in every case except one)
+        // FIXME - Update of a role is considered as a role creation (in logs)
+
         logAdminCreate(
             role.guild,
             `Role "${role.name}" created`,
