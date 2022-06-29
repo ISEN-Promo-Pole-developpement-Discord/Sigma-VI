@@ -1,3 +1,5 @@
+const {logAdminUpdate} = require('../modtools/log/log-admin.js');
+
 module.exports = {
     name: "emojiUpdate",
     once: false,
@@ -9,5 +11,15 @@ module.exports = {
          * @event emojiUpdate
          * @returns {Promise<void>}
          */
+        logAdminUpdate(
+            oldEmoji.guild, 
+            `Emoji "${oldEmoji.name}" updated`, 
+            null, 
+            null, 
+            [{name:"ID", value:oldEmoji.id, inline:true}, {name:"Creation", value:new Date(newEmoji.createdTimestamp).toLocaleString(), inline:true}], 
+            oldEmoji.name, 
+            newEmoji.name, 
+            oldEmoji.url
+        );
     }
 }
