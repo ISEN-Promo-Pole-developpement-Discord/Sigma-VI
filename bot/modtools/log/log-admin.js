@@ -84,6 +84,28 @@ function logAdminUpdate(guild, title, userAuthor, userTarget, data, oldValue, ne
     embedShematic.timestamp = new Date();
     embedShematic.fields = embedShematic.fields.concat(data);
     embedShematic.color = "#642eda";
+    try{
+        logChannel.send({ embeds: [embed]});
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+function logAdminDelete(guild, title, userAuthor, userTarget, name, id, timestamp, image) {
+    let logChannel = getGuildLogChannel(guild, "admin");
+    if (!logChannel) return;
+    let embedShematic = new Object();
+    embedShematic.title = title;
+    if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
+    if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
+    if(image) embedShematic.image = {url: image};
+    embedShematic.fields = [
+        {name: "Name", value: name, inline: false},
+        {name: "ID", value: id, inline: false},
+        {name: "Created", value: `<t:${Math.floor(timestamp/1000)}:f>`, inline: false},
+    ];
+    embedShematic.timestamp = new Date();
+    embedShematic.color = "#642eda";
     embed = newEmbed(embedShematic);
     try{
         logChannel.send({ embeds: [embed]});
@@ -94,5 +116,6 @@ function logAdminUpdate(guild, title, userAuthor, userTarget, data, oldValue, ne
 
 module.exports = {
     logAdminCreate,
-    logAdminUpdate
+    logAdminUpdate,
+    logAdminDelete
 }
