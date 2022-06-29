@@ -1,5 +1,5 @@
 {
-    "logAdminChannelName": "log-admin-channel",
-    "logIoChannelName": "log-io-channel",
-    "logUserChannelName": "log-user-channel"
+    "logAdminChannelName": "log-admin",
+    "logIoChannelName": "log-io",
+    "logUserChannelName": "log-user"
 }
