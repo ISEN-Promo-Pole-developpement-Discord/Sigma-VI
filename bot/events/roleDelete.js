@@ -1,3 +1,5 @@
+const {logAdminDelete} = require('../modtools/log/log-admin.js');
+
 module.exports = {
     name: "roleDelete",
     once: false,
@@ -8,5 +10,16 @@ module.exports = {
          * @event roleDelete
          * @returns {Promise<void>}
             */
+
+         logAdminDelete(
+            role.guild,
+            `Role "${role.name}" deleted`,
+            null,
+            null,
+            role.name,
+            role.id,
+            role.createdTimestamp,
+            null
+        )
     }
 }
