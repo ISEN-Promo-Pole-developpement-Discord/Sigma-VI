@@ -16,7 +16,7 @@ module.exports = {
             `Emoji "${oldEmoji.name}" updated`, 
             null, 
             null, 
-            [{name:"ID", value:oldEmoji.id, inline:true}, {name:"Creation", value:new Date(newEmoji.createdTimestamp).toLocaleString(), inline:true}], 
+            [{name:"ID", value:oldEmoji.id, inline:true}, {name:"Creation", value:`<t:${Math.floor(newEmoji.createdTimestamp/1000)}:f>`, inline:true}], 
             oldEmoji.name, 
             newEmoji.name, 
             oldEmoji.url
