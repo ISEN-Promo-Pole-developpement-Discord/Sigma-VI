@@ -5,9 +5,9 @@ const {logAdminChannelName, logIoChannelName, logUserChannelName} = require("../
 
 function getGuildLogChannel(guild, type) {
     if (!guildLogMap.has(guild.id)) {
-        let adminLogChannel = guild.channels.find(channel => channel.name === logAdminChannelName);
-        let ioLogChannel = guild.channels.find(channel => channel.name === logIoChannelName);
-        let userLogChannel = guild.channels.find(channel => channel.name === logUserChannelName);
+        let adminLogChannel = guild.channels.cache.find(channel => channel.name === logAdminChannelName);
+        let ioLogChannel = guild.channels.cache.find(channel => channel.name === logIoChannelName);
+        let userLogChannel = guild.channels.cache.find(channel => channel.name === logUserChannelName);
         guildLogMap.set(guild.id, {admin: adminLogChannel, io: ioLogChannel, user: userLogChannel});
     }
     return guildLogMap.get(guild.id)[type];
