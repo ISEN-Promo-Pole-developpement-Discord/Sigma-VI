@@ -150,7 +150,16 @@ function objectUpdateGetChangesFields(oldObject, newObject) {
     */
 
     
-
+    for(let i = 0; i < fields.length; i++) {
+        if(fields[i].value === "") {
+            fields.splice(i, 1);
+            i--;
+        }
+        else if(fields[i].value.length > 1000) {
+            fields[i].value = fields[i].value.substring(0, 1000);
+            fields[i].value += "...";
+        }
+    }
 
     return fields;
 }
