@@ -63,7 +63,6 @@ function logAdminCreate(guild, title, userAuthor, userTarget, name, id, timestam
     if (!image) embedShematic.fields = embedShematic.fields.concat([{name: "Preview", value: preview, inline: false}]);
     embedShematic.timestamp = new Date();
     embedShematic.color = "#642eda";
-    console.log(embedShematic);
     const embed = newEmbed(embedShematic);
     try{
         logChannel.send({ embeds: [embed]});
@@ -95,7 +94,6 @@ function logAdminUpdate(guild, type, userAuthor, userTarget, oldObject, newObjec
     embedShematic.timestamp = new Date();
     embedShematic.fields = objectUpdateGetChangesFields(oldObject, newObject);
     embedShematic.fields = embedShematic.fields.concat(objectClassDataToFields(newObject));
-    console.log(embedShematic.fields);
     embedShematic.color = "#642eda";
     const embed = newEmbed(embedShematic);
     try{
