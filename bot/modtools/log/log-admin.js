@@ -64,7 +64,7 @@ function logAdminCreate(guild, title, userAuthor, userTarget, name, id, timestam
     embedShematic.timestamp = new Date();
     embedShematic.color = "#642eda";
     console.log(embedShematic);
-    embed = newEmbed(embedShematic);
+    const embed = newEmbed(embedShematic);
     try{
         logChannel.send({ embeds: [embed]});
     } catch(e) {
@@ -84,6 +84,7 @@ function logAdminUpdate(guild, title, userAuthor, userTarget, data, oldValue, ne
     embedShematic.timestamp = new Date();
     embedShematic.fields = embedShematic.fields.concat(data);
     embedShematic.color = "#642eda";
+    const embed = newEmbed(embedShematic);
     try{
         logChannel.send({ embeds: [embed]});
     } catch(e) {
@@ -106,7 +107,7 @@ function logAdminDelete(guild, title, userAuthor, userTarget, name, id, timestam
     ];
     embedShematic.timestamp = new Date();
     embedShematic.color = "#642eda";
-    embed = newEmbed(embedShematic);
+    const embed = newEmbed(embedShematic);
     try{
         logChannel.send({ embeds: [embed]});
     } catch(e) {
