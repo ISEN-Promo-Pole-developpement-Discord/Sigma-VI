@@ -17,7 +17,7 @@ module.exports = {
             `Role "${oldRole.name}" updated`,
             null,
             null,
-            [{name:"ID", value:oldRole.id, inline:true}, {name:"Creation", value:new Date(newRole.createdTimestamp).toLocaleString(), inline:true}],
+            [{name:"ID", value:oldRole.id, inline:true}, {name:"Creation", value:`<t:${Math.floor(newEmoji.createdTimestamp/1000)}:f>`, inline:true}],
             oldRole.name,
             newRole.name,
         );
