@@ -24,7 +24,7 @@ function objectClassDataToFields(object) {
     if(object.nickname) fields.push({name: "Nickname", value: object.nickname, inline: true});
     if(object.id) fields.push({name: "ID", value: object.id, inline: true});
     if(object.url) fields.push({name: "URL", value: `[Object URL](${object.url})`, inline: true});
-    if(object.avatarURL) fields.push({name: "Avatar", value: object.avatarURL, inline: true});
+    if(object.avatarURL) fields.push({name: "Avatar", value: object.displayAvatarURL(), inline: true});
     if(object.position) fields.push({name: "Position", value: object.position.toString(), inline: true});
     if(object.type){
         if(typeof object.type === "string") fields.push({name: "Type", value: object.type, inline: true});
