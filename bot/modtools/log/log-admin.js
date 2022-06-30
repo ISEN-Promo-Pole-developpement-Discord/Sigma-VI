@@ -82,9 +82,12 @@ function logAdminUpdate(guild, type, userAuthor, userTarget, oldObject, newObjec
     if(newObject.url) embedShematic.url = newObject.url;
 
     if(userAuthor){
-        embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
-        if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
-    } else if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
+        if(userTarget){
+            embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
+            embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
+        } 
+        else embedShematic.author = {name: userAuthor.username, icon_url: userAuthor.avatarURL};
+    }
 
     if(newObject.iconURL) embedShematic.image = {url: newObject.iconURL()};
     else if(newObject.url) embedShematic.image = {url: newObject.url};
