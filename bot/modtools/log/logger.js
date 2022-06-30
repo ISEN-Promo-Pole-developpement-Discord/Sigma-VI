@@ -127,6 +127,27 @@ function objectUpdateGetChangesFields(oldObject, newObject) {
         }
     }
 
+    //c'est Maxime
+    /*
+    if(oldObject.permissionOverwrites){
+        if (!oldObject.permissionOverwrites.cache.equals(newObject.permissionOverwrites.cache)){
+            let permissionChanged = new Array();
+            
+            newObject.permissionOverwrites.cache.forEach((newPerms, snowflake) => {
+                const oldPerms = oldObject.permissionOverwrites.cache.get(snowflake);
+                if(!oldPerms.allow.equals(newPerms.allow) || !oldPerms.deny.equals(newPerms.deny)){
+                    permissionChanged = permissionChanged.concat([{value: newPerms, added: false}]);
+                }
+            });
+            console.log(permissionChanged);
+        }
+        
+    }
+    */
+
+    
+
+
     return fields;
 }
 
