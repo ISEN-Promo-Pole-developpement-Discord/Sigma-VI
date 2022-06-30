@@ -44,7 +44,7 @@
  * 
  */
 
-const { getGuildLogChannel } = require("./logger.js");
+const { getGuildLogChannel, objectClassDataToFields} = require("./logger.js");
 const { newEmbed } = require("../../utils/createEmbed.js");
 
 function logAdminCreate(guild, title, userAuthor, userTarget, name, id, timestamp, preview, image) {
@@ -83,6 +83,7 @@ function logAdminUpdate(guild, title, userAuthor, userTarget, data, oldValue, ne
     embedShematic.fields = [{name: "Old value", value: oldValue, inline: false}, {name: "New value", value: newValue, inline: false}];
     embedShematic.timestamp = new Date();
     embedShematic.fields = embedShematic.fields.concat(data);
+    embedShematic.fields = embedShematic.fields.concat(objectClassDataToFields(newValue));
     embedShematic.color = "#642eda";
     const embed = newEmbed(embedShematic);
     try{
