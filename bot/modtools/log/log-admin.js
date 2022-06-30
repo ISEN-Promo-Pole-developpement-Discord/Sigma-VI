@@ -44,7 +44,7 @@
  * 
  */
 
-const { getGuildLogChannel, objectClassDataToFields} = require("./logger.js");
+const { getGuildLogChannel, objectClassDataToFields, objectUpdateGetChangesFields} = require("./logger.js");
 const { newEmbed } = require("../../utils/createEmbed.js");
 
 function logAdminCreate(guild, title, userAuthor, userTarget, name, id, timestamp, preview, image) {
@@ -72,18 +72,27 @@ function logAdminCreate(guild, title, userAuthor, userTarget, name, id, timestam
     }
 }
 
-function logAdminUpdate(guild, title, userAuthor, userTarget, data, oldValue, newValue, image) {
+function logAdminUpdate(guild, type, userAuthor, userTarget, oldObject, newObject) {
     let logChannel = getGuildLogChannel(guild, "admin");
     if (!logChannel) return;
     let embedShematic = new Object();
-    embedShematic.title = title;
-    if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
-    if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
-    if(image) embedShematic.image = {url: image};
-    embedShematic.fields = [{name: "Old value", value: oldValue, inline: false}, {name: "New value", value: newValue, inline: false}];
+    oldObject.name ? 
+        embedShematic.title = `${type} "${oldObject.name}" updated`:
+        embedShematic.title = `${type} updated`;
+    if(newObject.url) embedShematic.url = newObject.url;
+
+    if(userAuthor){
+        embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
+        if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
+    } else if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
+
+    if(newObject.iconURL) embedShematic.image = {url: newObject.iconURL()};
+    else if(newObject.url) embedShematic.image = {url: newObject.url};
+
     embedShematic.timestamp = new Date();
-    embedShematic.fields = embedShematic.fields.concat(data);
-    embedShematic.fields = embedShematic.fields.concat(objectClassDataToFields(newValue));
+    embedShematic.fields = objectUpdateGetChangesFields(oldObject, newObject);
+    embedShematic.fields = embedShematic.fields.concat(objectClassDataToFields(newObject));
+    console.log(embedShematic.fields);
     embedShematic.color = "#642eda";
     const embed = newEmbed(embedShematic);
     try{

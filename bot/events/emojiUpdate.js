@@ -12,14 +12,12 @@ module.exports = {
          * @returns {Promise<void>}
          */
         logAdminUpdate(
-            oldEmoji.guild, 
-            `Emoji "${oldEmoji.name}" updated`, 
-            null, 
-            null, 
-            [{name:"ID", value:oldEmoji.id, inline:true}, {name:"Creation", value:`<t:${Math.floor(newEmoji.createdTimestamp/1000)}:f>`, inline:true}], 
-            oldEmoji.name, 
-            newEmoji.name, 
-            oldEmoji.url
+            oldEmoji.guild,
+            "Emoji",
+            null,
+            null,
+            oldEmoji,
+            newEmoji
         );
     }
 }
