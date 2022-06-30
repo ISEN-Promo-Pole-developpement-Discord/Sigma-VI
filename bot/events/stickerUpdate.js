@@ -1,3 +1,5 @@
+const {logAdminUpdate} = require('../modtools/log/log-admin.js');
+
 module.exports = {
     name: "stickerUpdate",
     once: false,
@@ -9,5 +11,13 @@ module.exports = {
          * @event stickerUpdate
          * @returns {Promise<void>}
             */
+         logAdminUpdate(
+            oldSticker.guild,
+            "Sticker",
+            null,
+            null,
+            oldSticker,
+            newSticker
+        );
     }
 }
