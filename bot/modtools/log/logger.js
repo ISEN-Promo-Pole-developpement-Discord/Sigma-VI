@@ -23,7 +23,7 @@ function objectClassDataToFields(object) {
     if(object.name) fields.push({name: "Name", value: object.name, inline: true});
     if(object.nickname) fields.push({name: "Nickname", value: object.nickname, inline: true});
     if(object.id) fields.push({name: "ID", value: object.id, inline: true});
-    if(object.url) fields.push({name: "URL", value: object.url, inline: true});
+    if(object.url) fields.push({name: "URL", value: `[Object URL](${object.url})`, inline: true});
     if(object.avatarURL) fields.push({name: "Avatar", value: object.avatarURL, inline: true});
     if(object.position) fields.push({name: "Position", value: object.position.toString(), inline: true});
     if(object.type){
@@ -72,7 +72,7 @@ function objectClassDataToFields(object) {
     if(object.packId) fields.push({name: "Pack ID", value: object.packId, inline: true});
     if(object.unicodeEmoji) fields.push({name: "Unicode Emoji", value: unicodeEmoji, inline: true});
     if(object.channel) fields.push({name: "Channel", value: `<#${object.channel.id}>`, inline: true});
-    if(object.toString) fields.push({name: "Preview", value: object.toString(), inline: true});
+    if(object.toString && !object.content) fields.push({name: "Preview", value: object.toString(), inline: true});
 
     //removed empty strings
     for(let i = 0; i < fields.length; i++) {
@@ -89,10 +89,17 @@ function objectUpdateGetChangesFields(oldObject, newObject) {
     let fields = [];
     
     for(let key of Object.keys(oldObject)) {
-        if(!(oldObject[key] === newObject[key])) {
+        if(oldObject[key] !== newObject[key]) {
             const keyMajor = key.charAt(0).toUpperCase() + key.slice(1);
-            if(typeof oldObject[key] == "string" || typeof oldObject[key] == "number" || typeof oldObject[key] == "boolean")
-                fields.push({name: `${keyMajor} updated`, value: `${oldObject[key]} -> ${newObject[key]}`, inline: false});
+            if(typeof oldObject[key] == "string" || typeof oldObject[key] == "number" || typeof oldObject[key] == "boolean"){
+                if(key.toLowerCase().includes("edited") || key.toLowerCase().includes("identifier")) break;
+                if(key.toLowerCase().includes("timestamp")) fields.push({name: `${keyMajor} updated`, value: `<t:${Math.floor(oldObject[key])}:f> -> <t:${Math.floor(newObject[key])}:f>`, inline: false});
+                else if(key.toLowerCase().includes("color")) fields.push({name: `${keyMajor} updated`, value: `${oldObject.hexColor} -> ${newObject.hexColor}`, inline: false});
+                else if(key.toLowerCase().includes("content")){
+                    fields.push({name: `Content before`, value: oldObject[key], inline: false});
+                    fields.push({name: `Content after`, value: newObject[key], inline: false});
+                } else fields.push({name: `${keyMajor} updated`, value: `${oldObject[key]} -> ${newObject[key]}`, inline: false});
+            }
         }
     }
 
