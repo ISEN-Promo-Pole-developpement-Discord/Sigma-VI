@@ -74,11 +74,15 @@ function objectClassDataToFields(object) {
     if(object.channel) fields.push({name: "Channel", value: `<#${object.channel.id}>`, inline: true});
     if(object.toString && !object.content) fields.push({name: "Preview", value: object.toString(), inline: true});
 
-    //removed empty strings
+    //removed empty strings and reduce field lentgh to 1000
     for(let i = 0; i < fields.length; i++) {
         if(fields[i].value === "") {
             fields.splice(i, 1);
             i--;
+        }
+        else if(fields[i].value.length > 1000) {
+            fields[i].value = fields[i].value.substring(0, 1000);
+            fields[i].value += "...";
         }
     }
 
