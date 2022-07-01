@@ -1,3 +1,4 @@
+const {logAdminUpdate} = require('../modtools/log/log-admin.js');
 module.exports = {
     name: "guildUpdate",
     once: false,
@@ -9,5 +10,13 @@ module.exports = {
          * @event guildUpdate
          * @returns {Promise<void>}
          */
+         logAdminUpdate(
+            oldGuild,
+            "GuildUpdate",
+            null,
+            null,
+            oldGuild,
+            newGuild
+        );  
     }
 }
