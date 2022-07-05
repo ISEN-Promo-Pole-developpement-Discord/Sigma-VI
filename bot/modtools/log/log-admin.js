@@ -126,6 +126,35 @@ function logAdminDelete(guild, title, userAuthor, userTarget, name, id, timestam
     }
 }
 
+/*
+Bastient
+function logAdminCreate(guild, type, userAuthor,newObject) {
+    let logChannel = getGuildLogChannel(guild, "admin");
+    if (!logChannel) return;
+    let embedShematic = new Object();
+    newObject.name ? 
+        embedShematic.title = `${type} "${newObject.name}" Created`:
+        embedShematic.title = `${type} Created`;
+
+    if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
+    if(newObject.image) embedShematic.image = {url: newObject.image};
+
+    embedShematic.fields = [
+        {name: "Name", value: newObject.name, inline: false},
+        {name: "ID", value: newObject.id, inline: false},
+        {name: "Created", value: `<t:${Math.floor(newObject.timestamp/1000)}:f>`, inline: false},
+    ];
+    embedShematic.timestamp = new Date();
+    embedShematic.color = "#642eda";
+
+    const embed = newEmbed(embedShematic);
+    try{
+        logChannel.send({ embeds: [embed]});
+    } catch(e) {
+        console.log(e);
+    }
+}
+*/
 module.exports = {
     logAdminCreate,
     logAdminUpdate,
