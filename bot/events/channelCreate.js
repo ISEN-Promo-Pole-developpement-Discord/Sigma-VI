@@ -1,3 +1,5 @@
+//const {logAdminCreate} = require('../modtools/log/log-admin.js');
+
 module.exports = {
     name: "channelCreate",
     once: false,
@@ -7,5 +9,14 @@ module.exports = {
          * @param {Channel} channel The channel that got created
          * @event channelCreate
          */
+/*
+         logAdminCreate(
+            channel.guild,
+            "Channel",
+            null,
+            channel,
+            "admin",
+        );
+*/
     }
 }
