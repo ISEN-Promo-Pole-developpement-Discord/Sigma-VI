@@ -1,5 +1,9 @@
 const {logAdminUpdate} = require('../modtools/log/log-admin.js');
 
+async function getWebhooks(channel) {
+    return await channel.fetchWebhooks();
+}
+
 module.exports = {
     name: "webhookUpdate",
     once: false,
@@ -9,7 +13,16 @@ module.exports = {
          * @param {Channel} channel The channel the webhook got updated in
          * @returns {Promise<void>}
          */
-         logAdminUpdate(
+
+        getWebhooks(channel).then(function(webhooks) {
+            console.log(webhooks);
+
+            webhooks.forEach((webhook, snowflake) => {
+                console.log(webhook.name);
+            });
+        });
+
+        logAdminUpdate(
             channel.guild,
             "Webhook",
             {
@@ -18,10 +31,7 @@ module.exports = {
             null,
             channel,
             channel,
-        );/*
-            channel.fetchWebhooks()
-            .then(hooks => console.log(`This Channel has ${hooks.size} hook with ${hooks.webhooks} name`))
-            .catch(console.error);
-*/
+        );
+
     }
 }
