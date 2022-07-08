@@ -152,7 +152,7 @@ function logAdminCreate(guild, type, userAuthor,newObject,channel_log) {
             console.log(e);
         }
 }
-
+*/
 
 
 module.exports = {
@@ -160,4 +160,3 @@ module.exports = {
     logAdminUpdate,
     logAdminDelete
 }
-*/
