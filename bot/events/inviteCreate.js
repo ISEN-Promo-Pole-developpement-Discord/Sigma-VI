@@ -1,3 +1,5 @@
+const {logCreate} = require('../modtools/log/log-admin.js');
+
 module.exports = {
     name: "inviteCreate",
     once: false,
@@ -8,5 +10,12 @@ module.exports = {
          * @event inviteCreate
          * @returns {Promise<void>}
          */
+        logCreate(
+            invite.guild,
+            "Emoji",
+            null,
+            invite,
+            "admin",
+        );
     }
 }
