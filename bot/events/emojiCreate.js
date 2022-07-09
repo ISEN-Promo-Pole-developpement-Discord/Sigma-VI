@@ -1,3 +1,5 @@
+const {logCreate} = require('../modtools/log/log-admin.js');
+
 module.exports = {
     name: "emojiCreate",
     once: false,
@@ -8,5 +10,15 @@ module.exports = {
          * @event emojiCreate
          * @returns {Promise<void>}
          */
+        
+         logCreate(
+            emoji.guild,
+            "Emoji",
+            null,
+            emoji,
+            "admin",
+        );
     }
+   
+
 }
