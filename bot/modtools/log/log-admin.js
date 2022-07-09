@@ -82,26 +82,23 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
     }
 }
 
-function logDelete(guild, type, userAuthor,userTarget,newObject,channel_log) {
+function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
     let logChannel = getGuildLogChannel(guild,"default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
         logChannel = getGuildLogChannel(guild, channel_log);
     }            
     if (!logChannel) return;
         let embedShematic = new Object();
-        newObject.name ? 
-            embedShematic.title = `${type} "${newObject.name}" Delete`:
+        oldObject.name ? 
+            embedShematic.title = `${type} "${oldObject.name}" Delete`:
             embedShematic.title = `${type} Delete`;
-        let time=newObject.timestamp;
+        let time=oldObject.timestamp;
         if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
-        if(newObject.image) embedShematic.image = {url: newObject.image};
+        if(oldObject.image) embedShematic.image = {url: oldObject.image};
         if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
-        if(!newObject.timestamp){time=newObject.createdAt}
-        embedShematic.fields = [
-            {name: "Name", value: newObject.name, inline: false},
-            {name: "ID", value: newObject.id, inline: false},
-            {name: "Created", value: `<t:${Math.floor(time/1000)}:f>`, inline: false},
-        ];
+        if(!oldObject.timestamp){time=oldObject.createdAt}
+        
+        embedShematic.fields = objectClassDataToFields(oldObject);
         embedShematic.timestamp = new Date();
         embedShematic.color = "#642eda";
 
