@@ -125,8 +125,8 @@ function logAdminDelete(guild, title, userAuthor, userTarget, name, id, timestam
         console.log(e);
     }
 }
-/*
-function logAdminCreate(guild, type, userAuthor,newObject,channel_log) {
+
+function logCreate(guild, type, userAuthor,newObject,channel_log) {
     let logChannel = getGuildLogChannel(guild,"default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
         logChannel = getGuildLogChannel(guild, channel_log);
@@ -136,10 +136,16 @@ function logAdminCreate(guild, type, userAuthor,newObject,channel_log) {
         newObject.name ? 
             embedShematic.title = `${type} "${newObject.name}" Created`:
             embedShematic.title = `${type} Created`;
-
+        let time=newObject.timestamp;
         if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
         if(newObject.image) embedShematic.image = {url: newObject.image};
-        embedShematic.fields = objectUpdateGetChangesFields(null, newObject);
+        if(!newObject.timestamp){time=newObject.createdAt}
+        embedShematic.fields = [
+            {name: "Name", value: newObject.name, inline: false},
+            {name: "ID", value: newObject.id, inline: false},
+            {name: "Created", value: `<t:${Math.floor(time/1000)}:f>`, inline: false},
+        ];
+
             
 
         embedShematic.timestamp = new Date();
@@ -152,11 +158,12 @@ function logAdminCreate(guild, type, userAuthor,newObject,channel_log) {
             console.log(e);
         }
 }
-*/
+
 
 
 module.exports = {
     logAdminCreate,
     logAdminUpdate,
-    logAdminDelete
+    logAdminDelete,
+    logCreate,
 }
