@@ -47,30 +47,6 @@
 const { getGuildLogChannel, objectClassDataToFields, objectUpdateGetChangesFields} = require("./logger.js");
 const { newEmbed } = require("../../utils/createEmbed.js");
 
-function logAdminCreate(guild, title, userAuthor, userTarget, name, id, timestamp, preview, image) {
-    let logChannel = getGuildLogChannel(guild, "admin");
-    if (!logChannel) return;
-    let embedShematic = new Object();
-    embedShematic.title = title;
-    if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
-    if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
-    if(image) embedShematic.image = {url: image};
-    embedShematic.fields = [
-        {name: "Name", value: name, inline: false},
-        {name: "ID", value: id, inline: false},
-        {name: "Created", value: `<t:${Math.floor(timestamp/1000)}:f>`, inline: false},
-    ];
-    if (!image) embedShematic.fields = embedShematic.fields.concat([{name: "Preview", value: preview, inline: false}]);
-    embedShematic.timestamp = new Date();
-    embedShematic.color = "#642eda";
-    const embed = newEmbed(embedShematic);
-    try{
-        logChannel.send({ embeds: [embed]});
-    } catch(e) {
-        console.log(e);
-    }
-}
-
 function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,channel_log) {
     let logChannel = getGuildLogChannel(guild,"default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
@@ -106,27 +82,35 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
     }
 }
 
-function logAdminDelete(guild, title, userAuthor, userTarget, name, id, timestamp, image) {
-    let logChannel = getGuildLogChannel(guild, "admin");
+function logDelete(guild, type, userAuthor,userTarget,newObject,channel_log) {
+    let logChannel = getGuildLogChannel(guild,"default");
+    if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
+        logChannel = getGuildLogChannel(guild, channel_log);
+    }            
     if (!logChannel) return;
-    let embedShematic = new Object();
-    embedShematic.title = title;
-    if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
-    if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
-    if(image) embedShematic.image = {url: image};
-    embedShematic.fields = [
-        {name: "Name", value: name, inline: false},
-        {name: "ID", value: id, inline: false},
-        {name: "Created", value: `<t:${Math.floor(timestamp/1000)}:f>`, inline: false},
-    ];
-    embedShematic.timestamp = new Date();
-    embedShematic.color = "#642eda";
-    const embed = newEmbed(embedShematic);
-    try{
-        logChannel.send({ embeds: [embed]});
-    } catch(e) {
-        console.log(e);
-    }
+        let embedShematic = new Object();
+        newObject.name ? 
+            embedShematic.title = `${type} "${newObject.name}" Delete`:
+            embedShematic.title = `${type} Delete`;
+        let time=newObject.timestamp;
+        if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
+        if(newObject.image) embedShematic.image = {url: newObject.image};
+        if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
+        if(!newObject.timestamp){time=newObject.createdAt}
+        embedShematic.fields = [
+            {name: "Name", value: newObject.name, inline: false},
+            {name: "ID", value: newObject.id, inline: false},
+            {name: "Created", value: `<t:${Math.floor(time/1000)}:f>`, inline: false},
+        ];
+        embedShematic.timestamp = new Date();
+        embedShematic.color = "#642eda";
+
+        const embed = newEmbed(embedShematic);
+        try{
+            logChannel.send({ embeds: [embed]});
+        } catch(e) {
+            console.log(e);
+        }
 }
 
 function logCreate(guild, type, userAuthor,newObject,channel_log) {
@@ -148,9 +132,6 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
             {name: "ID", value: newObject.id, inline: false},
             {name: "Created", value: `<t:${Math.floor(time/1000)}:f>`, inline: false},
         ];
-
-            
-
         embedShematic.timestamp = new Date();
         embedShematic.color = "#642eda";
 
@@ -165,8 +146,7 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
 
 
 module.exports = {
-    logAdminCreate,
     logUpdate,
-    logAdminDelete,
+    logDelete,
     logCreate,
 }
