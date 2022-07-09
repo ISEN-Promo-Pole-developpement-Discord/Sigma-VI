@@ -71,8 +71,11 @@ function logAdminCreate(guild, title, userAuthor, userTarget, name, id, timestam
     }
 }
 
-function logAdminUpdate(guild, type, userAuthor, userTarget, oldObject, newObject) {
-    let logChannel = getGuildLogChannel(guild, "admin");
+function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,channel_log) {
+    let logChannel = getGuildLogChannel(guild,"default");
+    if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
+        logChannel = getGuildLogChannel(guild, channel_log);
+    }   
     if (!logChannel) return;
     let embedShematic = new Object();
     oldObject.name ? 
@@ -163,7 +166,7 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
 
 module.exports = {
     logAdminCreate,
-    logAdminUpdate,
+    logUpdate,
     logAdminDelete,
     logCreate,
 }
