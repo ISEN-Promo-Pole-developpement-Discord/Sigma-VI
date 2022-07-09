@@ -1,3 +1,5 @@
+const {logDelete} = require('../modtools/log/log-admin.js');
+
 module.exports = {
     name: "channelDelete",
     once: false,
@@ -8,5 +10,14 @@ module.exports = {
          * @event channelDelete
          * @returns {Promise<void>}
          */
+
+         logDelete(
+            channel.guild,
+            "Sticker",
+            null,
+            null,
+            channel,
+            "admin",
+        );
     }
 }
