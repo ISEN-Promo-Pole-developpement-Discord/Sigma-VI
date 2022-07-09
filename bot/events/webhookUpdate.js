@@ -1,4 +1,4 @@
-const {logAdminUpdate} = require('../modtools/log/log-admin.js');
+const {logUpdate} = require('../modtools/log/log-admin.js');
 
 async function getWebhooks(channel) {
     return await channel.fetchWebhooks();
@@ -22,7 +22,7 @@ module.exports = {
             });
         });
 
-        logAdminUpdate(
+        logUpdate(
             channel.guild,
             "Webhook",
             {
@@ -31,6 +31,7 @@ module.exports = {
             null,
             channel,
             channel,
+            "admin"
         );
 
     }

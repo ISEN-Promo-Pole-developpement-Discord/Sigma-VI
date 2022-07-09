@@ -1,4 +1,4 @@
-const {logAdminUpdate} = require('../modtools/log/log-admin.js');
+const {logUpdate} = require('../modtools/log/log-admin.js');
 
 module.exports = {
     name: "channelUpdate",
@@ -17,13 +17,14 @@ module.exports = {
           });
           */
 
-          logAdminUpdate(
+          logUpdate(
             oldChannel.guild,
             "Channel",
             null,
             null,
             oldChannel,
-            newChannel
+            newChannel,
+            "admin",
         );
     }
 }

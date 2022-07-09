@@ -1,4 +1,4 @@
-const {logAdminUpdate} = require('../modtools/log/log-admin.js');
+const {logUpdate} = require('../modtools/log/log-admin.js');
 
 module.exports = {
     name: "messageUpdate",
@@ -11,7 +11,7 @@ module.exports = {
          * @returns {Promise<void>}
          */
         if (!oldMessage.author.bot)
-            logAdminUpdate(
+            logUpdate(
                 oldMessage.guild,
                 "Message",
                 {
@@ -21,6 +21,7 @@ module.exports = {
                 null,
                 oldMessage,
                 newMessage,
+                "admin",
             );
     }
 }
