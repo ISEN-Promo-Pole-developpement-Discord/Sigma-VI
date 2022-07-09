@@ -21,7 +21,7 @@ module.exports = {
                 null,
                 oldMessage,
                 newMessage,
-                "admin",
+                "user",
             );
     }
 }
