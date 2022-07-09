@@ -1,3 +1,6 @@
+const {logDelete} = require('../modtools/log/log-admin.js');
+
+
 module.exports = {
     name: "inviteDelete",
     once: false,
@@ -8,5 +11,14 @@ module.exports = {
          * @event inviteDelete
          * @returns {Promise<void>}
          */
+
+         logDelete(
+            invite.guild,
+            "Emoji",
+            null,
+            null,
+            invite,
+            "admin",
+        );
     }
 }
