@@ -1,3 +1,5 @@
+const {logDelete} = require('../modtools/log/log-admin.js');
+
 module.exports = {
     name: "emojiDelete",
     once: false,
@@ -8,5 +10,14 @@ module.exports = {
          * @event emojiDelete
          * @returns {Promise<void>}
          */
+        console.log("omg Emoji delete")
+         logDelete(
+            emoji.guild,
+            "Emoji",
+            null,
+            null,
+            emoji,
+            "admin",
+        );
     }
 }
