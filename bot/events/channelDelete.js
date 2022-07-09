@@ -13,7 +13,7 @@ module.exports = {
 
          logDelete(
             channel.guild,
-            "Sticker",
+            "Channel",
             null,
             null,
             channel,
