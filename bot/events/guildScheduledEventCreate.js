@@ -1,3 +1,5 @@
+const {logCreate} = require('../modtools/log/log-admin.js');
+
 module.exports = {
     name: "guildScheduledEventCreate",
     once: false,
@@ -8,5 +10,13 @@ module.exports = {
          * @event guildScheduledEventCreate
          * @returns {Promise<void>}
          */
+
+         logCreate(
+            guildScheduledEvent.guild,
+            "Emoji",
+            null,
+            guildScheduledEvent,
+            "admin",
+        );
     }
 }
