@@ -127,12 +127,9 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
         if(newObject.image) embedShematic.image = {url: newObject.image};
         if(!newObject.timestamp){time=newObject.createdAt}
-     
-        embedShematic.fields = [
-            {name: "Name", value: newObject.name, inline: false},
-            {name: "ID", value: newObject.id, inline: false},
-            {name: "Created", value: `<t:${Math.floor(time/1000)}:f>`, inline: false},
-        ];
+
+        embedShematic.fields = objectClassDataToFields(newObject);
+
         embedShematic.timestamp = new Date();
         embedShematic.color = "#642eda";
 
