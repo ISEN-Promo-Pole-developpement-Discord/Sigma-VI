@@ -13,6 +13,27 @@ function getGuildLogChannel(guild, type) {
     return guildLogMap.get(guild.id)[type];
 }
 
+/**
+ * 
+ * @param {Guild} guild - guild where the action occurred
+ * @param {Object} object - object that got involved
+ */
+async function getActionAuthor(guild, object) {
+    let author = null;
+    await guild.fetchAuditLogs()
+    .then(audit => {
+        audit.entries.forEach((entry, snowflake) => {
+            if (entry.target.id) {
+                if (entry.target.id === object.id && author === null) {
+                    author = entry.executor;
+                }
+            }
+        })
+    }).catch(console.error);
+
+    return author;
+}
+
 function objectClassDataToFields(object) {
     fields = [];
     if(object.joinedTimestamp) fields.push({name: "Created", value: `<t:${Math.floor(object.createdTimestamp)}:f>`, inline: true});
@@ -167,5 +188,6 @@ function objectUpdateGetChangesFields(oldObject, newObject) {
 module.exports = {
     getGuildLogChannel,
     objectClassDataToFields,
-    objectUpdateGetChangesFields
+    objectUpdateGetChangesFields,
+    getActionAuthor
 }
