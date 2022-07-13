@@ -1,4 +1,5 @@
 const {logDelete} = require('../modtools/log/log-admin.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
 
 module.exports = {
     name: "emojiDelete",
@@ -10,14 +11,17 @@ module.exports = {
          * @event emojiDelete
          * @returns {Promise<void>}
          */
-        console.log("omg Emoji delete")
+         getActionAuthor(emoji.guild, emoji, "emoji").then(userAuthor => {
          logDelete(
             emoji.guild,
             "Emoji",
-            null,
+            {   
+                username: userAuthor.tag,
+                avatarURL: userAuthor.displayAvatarURL(),
+            },
             null,
             emoji,
             "admin",
         );
-    }
+    })}
 }

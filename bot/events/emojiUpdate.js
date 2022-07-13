@@ -1,4 +1,5 @@
 const {logUpdate} = require('../modtools/log/log-admin.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
 
 module.exports = {
     name: "emojiUpdate",
@@ -11,14 +12,20 @@ module.exports = {
          * @event emojiUpdate
          * @returns {Promise<void>}
          */
+
+        getActionAuthor(emoji.guild, emoji, "emoji").then(userAuthor => {
         logUpdate(
             oldEmoji.guild,
             "Emoji",
-            null,
+            {   
+                username: userAuthor.tag,
+                avatarURL: userAuthor.displayAvatarURL(),
+            },
             null,
             oldEmoji,
             newEmoji,
             "admin",
         );
+        });
     }
 }
