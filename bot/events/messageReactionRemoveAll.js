@@ -1,3 +1,5 @@
+const {logDelete} = require('../modtools/log/log-admin.js');
+
 module.exports = {
     name: "messageReactionRemoveAll",
     once: false,
@@ -8,5 +10,14 @@ module.exports = {
          * @param {Array<Reaction>} reactions
          * @returns {Promise<void>}
          */
+        console.log("message Reaction remove")
+         logDelete(
+            message.guild,
+            "messageRactionRemove",
+            null,
+            null,
+            message,
+            "admin",
+         )
     }
 }
