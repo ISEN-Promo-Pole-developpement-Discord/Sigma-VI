@@ -1,4 +1,5 @@
 const {logCreate} = require('../modtools/log/log-admin.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
 
 module.exports = {
     name: "guildScheduledEventCreate",
@@ -10,13 +11,16 @@ module.exports = {
          * @event guildScheduledEventCreate
          * @returns {Promise<void>}
          */
-
+         getActionAuthor(guildScheduledEvent.guild, guildScheduledEvent, "guildScheduled Event").then(userAuthor => {
          logCreate(
             guildScheduledEvent.guild,
-            "Emoji",
-            null,
+            "GuildScheduled Event",
+            {   
+                username: userAuthor.tag,
+                avatarURL: userAuthor.displayAvatarURL(),
+            },
             guildScheduledEvent,
             "admin",
         );
-    }
+    })}
 }

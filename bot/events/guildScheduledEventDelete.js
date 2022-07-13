@@ -1,3 +1,6 @@
+const { logDelete } = require("../modtools/log/log-admin");
+const {getActionAuthor} = require('../modtools/log/logger.js');
+
 module.exports = {
     name: "guildScheduledEventDelete",
     once: false,
@@ -8,5 +11,19 @@ module.exports = {
          * @event guildScheduledEventDelete
          * @returns {Promise<void>}
          */
-    }
+
+         getActionAuthor(guildScheduledEvent.guild, guildScheduledEvent, "guildScheduled Event").then(userAuthor => {
+            logDelete(
+               guildScheduledEvent.guild,
+               "GuildScheduled Event",
+               {   
+                   username: userAuthor.tag,
+                   avatarURL: userAuthor.displayAvatarURL(),
+               },
+               null,
+               guildScheduledEvent,
+               "admin",
+           );
+       })
+   }
 }
