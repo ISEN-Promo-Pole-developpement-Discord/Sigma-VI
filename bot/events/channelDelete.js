@@ -1,4 +1,6 @@
 const {logDelete} = require('../modtools/log/log-admin.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
+
 
 module.exports = {
     name: "channelDelete",
@@ -10,14 +12,18 @@ module.exports = {
          * @event channelDelete
          * @returns {Promise<void>}
          */
-
+         getActionAuthor(channel.guild, channel, "Channel").then(userAuthor => {
          logDelete(
             channel.guild,
             "Channel",
-            null,
+            {   
+                username: userAuthor.tag,
+                avatarURL: userAuthor.displayAvatarURL(),
+            },
             null,
             channel,
             "admin",
         );
+         })
     }
 }

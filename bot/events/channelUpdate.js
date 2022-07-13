@@ -1,4 +1,6 @@
 const {logUpdate} = require('../modtools/log/log-admin.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
+
 
 module.exports = {
     name: "channelUpdate",
@@ -16,15 +18,19 @@ module.exports = {
             console.log(permOverwrites);
           });
           */
-
+          getActionAuthor(newChannel.guild, newChannel, "Channel").then(userAuthor => {
           logUpdate(
             oldChannel.guild,
             "Channel",
-            null,
+            {   
+                username: userAuthor.tag,
+                avatarURL: userAuthor.displayAvatarURL(),
+            },
             null,
             oldChannel,
             newChannel,
             "admin",
         );
+    });
     }
 }
