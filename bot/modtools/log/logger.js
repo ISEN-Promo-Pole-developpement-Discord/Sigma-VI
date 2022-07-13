@@ -64,11 +64,15 @@ function objectClassDataToFields(object) {
     if(object.reason) fields.push({name: "Reason", value: object.reason, inline: true});
     if(object.roles){
         rolesString = "";
-        for(role of object.roles.cache.values()) {
+    
+        if(object.guild){
+        for(role of object.roles.cache.values() ) {
             rolesString += `- ${role.toString()}\n`;
         }
+    }
         fields.push({name: "Roles", value: rolesString, inline: true});
     }
+//}
     if(object.communicationDisabledUntilTimestamp) fields.push({name: "Communication Disabled Until", value: `<t:${Math.floor(object.communicationDisabledUntilTimestamp)}:f>`, inline: true});
     if(object.premiumSinceTimestamp) fields.push({name: "Premium Since", value: `<t:${Math.floor(object.premiumSinceTimestamp)}:f>`, inline: true});
     if(object.userCount) fields.push({name: "User Count", value: object.userCount, inline: true});
