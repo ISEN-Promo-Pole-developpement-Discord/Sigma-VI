@@ -13,9 +13,9 @@ module.exports = {
          * @returns {Promise<void>}
          */
 
-        getActionAuthor(emoji.guild, emoji, "emoji").then(userAuthor => {
+        getActionAuthor(newEmoji.guild, newEmoji, "emoji").then(userAuthor => {
         logUpdate(
-            oldEmoji.guild,
+            newEmoji.guild,
             "Emoji",
             {   
                 username: userAuthor.tag,
