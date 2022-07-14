@@ -14,7 +14,7 @@ module.exports = {
 
          logDelete(
             invite.guild,
-            "Emoji",
+            "Invite",
             null,
             null,
             invite,
