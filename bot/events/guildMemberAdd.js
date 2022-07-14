@@ -10,16 +10,13 @@ module.exports = {
          * @event guildMemberAdd
          * @returns {Promise<void>}
          */
-
-        console.log(member);
-        console.log(`guild: ${member.guild}`);
          
             logCreate(
                member.guild,
                "member",
                null,
                member,
-               "admin"
+               "io"
                );
         }
 }
