@@ -1,3 +1,6 @@
+const {logCreate} = require('../modtools/log/log-admin.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
+
 module.exports = {
     name: "stageInstanceDelete",
     once: false,
@@ -7,5 +10,18 @@ module.exports = {
          * @param {StageInstance} stageInstance The stage instance that got deleted
          * @returns {Promise<void>}
             */
+         getActionAuthor(invite.guild, invite, "invite").then(userAuthor => {
+            logCreate(
+                invite.guild,
+                "invite",
+                {
+                    username: userAuthor.tag,
+                    avatarURL: userAuthor.displayAvatarURL(),
+                },
+                invite,
+                "admin",
+            );
+        }
+        );
     }
 }
