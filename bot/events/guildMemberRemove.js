@@ -1,3 +1,5 @@
+const {logCreate, logDelete} = require('../modtools/log/log-admin.js');
+
 module.exports = {
     name: "guildMemberRemove",
     once: false,
@@ -8,5 +10,13 @@ module.exports = {
          * @event guildMemberRemove
          * @returns {Promise<void>}
          */
+        logDelete(
+            member.guild,
+            "member",
+            null,
+            null,
+            member,
+            "io"
+        );
     }
 }
