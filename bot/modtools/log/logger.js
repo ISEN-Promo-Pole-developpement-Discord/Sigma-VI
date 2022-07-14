@@ -36,10 +36,10 @@ async function getActionAuthor(guild, object) {
 
 function objectClassDataToFields(object) {
     fields = [];
-    if(object.joinedTimestamp) fields.push({name: "Created", value: `<t:${Math.floor(object.createdTimestamp/1000)}:f>`, inline: true});
+    if(object.createdTimestamp) fields.push({name: "Created", value: `<t:${Math.floor(object.createdTimestamp/1000)}:f>`, inline: true});
     if(object.updatedTimestamp) fields.push({name: "Updated", value: `<t:${Math.floor(object.updatedTimestamp/1000)}:f>`, inline: true});
     if(object.deletedTimestamp) fields.push({name: "Deleted", value: `<t:${Math.floor(object.deletedTimestamp/1000)}:f>`, inline: true});
-    if(object.joinedTimestamp) fields.push({name: "Joined", value: `<t:${Math.floor(object.joinedTimestamp)/1000}:f>`, inline: true});
+    if(object.joinedTimestamp) fields.push({name: "Joined", value: `<t:${Math.floor(object.joinedTimestamp/1000)}:f>`, inline: true});
     if(object.displayName) fields.push({name: "Name", value: object.displayName, inline: true});
     if(object.name) fields.push({name: "Name", value: object.name, inline: true});
     if(object.nickname) fields.push({name: "Nickname", value: object.nickname, inline: true});
