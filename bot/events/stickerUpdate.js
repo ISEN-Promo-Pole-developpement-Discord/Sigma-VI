@@ -1,4 +1,5 @@
 const {logUpdate} = require('../modtools/log/log-admin.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
 
 module.exports = {
     name: "stickerUpdate",
@@ -11,14 +12,19 @@ module.exports = {
          * @event stickerUpdate
          * @returns {Promise<void>}
             */
+         getActionAuthor(oldSticker.guild, oldSticker, "oldSticker").then(userAuthor => {
          logUpdate(
             oldSticker.guild,
             "Sticker",
-            null,
+            {
+                username: userAuthor.tag,
+                avatarURL: userAuthor.displayAvatarURL(),
+            },
             null,
             oldSticker,
             newSticker,
             "admin",
         );
-    }
+    });
+}
 }

@@ -1,4 +1,5 @@
 const {logCreate} = require('../modtools/log/log-admin.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
 
 module.exports = {
     name: "stickerCreate",
@@ -9,12 +10,17 @@ module.exports = {
          * @param {Sticker} sticker The sticker that got created
          * @returns {Promise<void>}
             */
+         getActionAuthor(invite.guild, invite, "invite").then(userAuthor => {
          logCreate(
             sticker.guild,
             "Sticker",
-            null,
+            {
+                username: userAuthor.tag,
+                avatarURL: userAuthor.displayAvatarURL(),
+            },
             sticker,
             "admin",
         );
     }
+    )}
 }
