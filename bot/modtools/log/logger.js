@@ -36,6 +36,60 @@ async function getActionAuthor(guild, object) {
 
 function objectClassDataToFields(object) {
     fields = [];
+    let objectHerited = object;
+    while (objectHerited !== null) {
+        for(let key of Object.getOwnPropertyNames(objectHerited)) {
+            const keyMajor = key.charAt(0).toUpperCase() + key.slice(1);
+            if (object[key] !== null) {
+                try {
+                    if(typeof object[key] == "string" || typeof object[key] == "number" || typeof object[key] == "boolean" || object[key].toString){
+                        if(key.toLowerCase().includes("edited") || key.toLowerCase().includes("identifier")) break;
+                        if(key.toLowerCase().includes("timestamp")) fields.push({name: keyMajor, value: `<t:${Math.floor(object[key]/1000)}:f>`, inline: true});
+                        else if(key.toLowerCase().includes("color")) fields.push({name: keyMajor, value: `${object.hexColor}`, inline: true});
+                        else if(key.toLowerCase().includes("content") && typeof object[key] == "string"){
+                            fields.push({name: `Content`, value: object[key], inline: true});
+                        } else if(key.toLowerCase().includes("url")) fields.push({name: "URL", value: `[Object URL](${object.url})`, inline: true});
+                        else fields.push({name: keyMajor, value: `${object[key]}`, inline: true});
+                    }  else if (key === "avatarURL") {
+                        fields.push({name: "Avatar", value: object.displayAvatarURL(), inline: true});
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        }
+
+        objectHerited = Object.getPrototypeOf(objectHerited);
+    }
+
+    if (object.roles) {
+        let rolesString = "";
+        for(role of object.roles.cache.values()) {
+            rolesString += `- ${role.toString()}\n`;
+        }
+        fields.push({name: "Roles", value: rolesString, inline: true});
+    }
+
+    if(object.toString && !object.content) fields.push({name: "Preview", value: object.toString(), inline: true}); 
+    //removed empty strings and reduce field lentgh to 1000
+    for(let i = 0; i < fields.length; i++) {
+        if(fields[i].value === "" ||
+        fields[i].value.includes("object") || fields[i].value.includes("function") || fields[i].value.includes("return") ||
+        fields[i].name.includes("_") || fields[i].value.includes("async") || fields[i].name.includes("At")) {
+            fields.splice(i, 1);
+            i--;
+        }
+        else if(fields[i].value.length > 1000) {
+            fields[i].value = fields[i].value.substring(0, 1000);
+            fields[i].value += "...";
+        }
+    }
+
+    return fields;
+}
+
+    /*
+    fields = [];
     if(object.createdTimestamp) fields.push({name: "Created", value: `<t:${Math.floor(object.createdTimestamp/1000)}:f>`, inline: true});
     if(object.updatedTimestamp) fields.push({name: "Updated", value: `<t:${Math.floor(object.updatedTimestamp/1000)}:f>`, inline: true});
     if(object.deletedTimestamp) fields.push({name: "Deleted", value: `<t:${Math.floor(object.deletedTimestamp/1000)}:f>`, inline: true});
@@ -112,7 +166,9 @@ function objectClassDataToFields(object) {
     }
 
     return fields;
+    
 }
+*/
 
 function objectUpdateGetChangesFields(oldObject, newObject) {
     let fields = [];
