@@ -12,7 +12,7 @@ module.exports = {
          */
         logDelete(
             member.guild,
-            "member",
+            "GuildMember",
             null,
             null,
             member,

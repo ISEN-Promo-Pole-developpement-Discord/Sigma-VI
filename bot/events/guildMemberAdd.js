@@ -13,7 +13,7 @@ module.exports = {
          
             logCreate(
                member.guild,
-               "member",
+               "GuildMember",
                null,
                member,
                "io"
