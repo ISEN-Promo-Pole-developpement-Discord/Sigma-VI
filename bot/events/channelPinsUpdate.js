@@ -1,3 +1,7 @@
+const {getActionAuthor} = require('../modtools/log/logger.js');
+const {logCreate} = require('../modtools/log/log-admin.js');
+
+
 module.exports = {
     name: "channelPinsUpdate",
     once: false,
@@ -9,5 +13,19 @@ module.exports = {
          * @event channelPinsUpdate
          * @returns {Promise<void>}
          */
+        /*
+         getActionAuthor(channel.guild, channel, "Channel").then(userAuthor => {
+            logCreate(
+               channel.guild,
+               "pinned",
+               {   
+                   username: userAuthor.tag,
+                   avatarURL: userAuthor.displayAvatarURL(),
+               },
+               channel,
+               "admin",
+           );
+           })
+           */
     }
 }
