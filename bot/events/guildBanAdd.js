@@ -1,3 +1,5 @@
+const {logCreate, logDelete} = require('../modtools/log/log-admin.js');
+
 module.exports = {
     name: "guildBanAdd",
     once: false,
@@ -8,5 +10,12 @@ module.exports = {
          * @event guildBanAdd
          * @returns {Promise<void>}
          */
+         logCreate(
+            ban.guild,
+            "ban",
+            null,
+            ban.user,
+            "admin"
+            );
     }
 }
