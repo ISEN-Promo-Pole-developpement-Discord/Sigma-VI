@@ -12,20 +12,19 @@ module.exports = {
          * @param {number} time The time the message got pinned
          * @event channelPinsUpdate
          * @returns {Promise<void>}
-         */
-        /*
+         *//*
+         channel.messages.fetchPinned()
+         .then(messages => console.log(`Received ${messages.size} messages`))
+       console.log(`guild:  ${channel.message}, channel : ${channel} `)
          getActionAuthor(channel.guild, channel, "Channel").then(userAuthor => {
             logCreate(
                channel.guild,
                "pinned",
-               {   
-                   username: userAuthor.tag,
-                   avatarURL: userAuthor.displayAvatarURL(),
-               },
+               null,
                channel,
                "admin",
            );
-           })
-           */
+           console.log(`tag : ${userAuthor}`);
+           })*/
     }
 }
