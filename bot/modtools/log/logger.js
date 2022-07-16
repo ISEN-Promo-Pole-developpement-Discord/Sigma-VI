@@ -76,7 +76,8 @@ function objectClassDataToFields(object) {
         if(fields[i].value === "" ||
         fields[i].value.includes("object") || fields[i].value.includes("function") || fields[i].value.includes("return") ||
         fields[i].name.includes("_") || fields[i].value.includes("async") || fields[i].name.includes("At") ||
-        fields[i].name.includes("able") || fields[i].value.includes("undefined") || fields[i].name.includes("Deleted") || fields[i].name.includes("Partial")) {
+        fields[i].name.includes("able") || fields[i].value.includes("undefined") || fields[i].name.includes("Deleted") || fields[i].name.includes("Partial") ||
+        fields[i].name.toLowerCase().includes("guild")) {
             fields.splice(i, 1);
             i--;
         }
