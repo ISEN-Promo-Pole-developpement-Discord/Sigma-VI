@@ -34,6 +34,26 @@ async function getActionAuthor(guild, object) {
     return author;
 }
 
+
+async function getLastMessagePinned(guild,channel) {
+    let message = null;
+    console.log(`\n object :  ${channel} \n`);
+    if(channel.messages) {
+        console.log(`\nchannel.messages  : ${channel.messages}`);
+        await guild.fetchAuditLogs()
+        .then(audit => {
+            if(audit.entries){
+                audit.entires.forEach((entry,snowflake) => {
+                    if(entry){
+                        console.log(`\n entry  : ${entry}`);
+                    }
+                     })
+                }
+            })
+        }
+    return message;
+}
+
 function objectClassDataToFields(object) {
     fields = [];
     let objectHerited = object;
@@ -251,5 +271,6 @@ module.exports = {
     getGuildLogChannel,
     objectClassDataToFields,
     objectUpdateGetChangesFields,
-    getActionAuthor
+    getActionAuthor,
+    getLastMessagePinned
 }

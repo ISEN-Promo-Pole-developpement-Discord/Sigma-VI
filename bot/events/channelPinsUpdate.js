@@ -1,4 +1,4 @@
-const {getActionAuthor} = require('../modtools/log/logger.js');
+const {getActionAuthor,getLastMessagePinned} = require('../modtools/log/logger.js');
 const {logCreate} = require('../modtools/log/log-admin.js');
 
 
@@ -14,9 +14,8 @@ module.exports = {
          * @returns {Promise<void>}
          */
          
-         channel.messages.fetchPinned()
-         .then(messages =>{ 
-         getActionAuthor(channel.guild, messages, "Channel").then(userAuthor => {
+         //getLastMessagePinned(channel.guild,channel);
+         getActionAuthor(channel.guild, channel, "Channel").then(userAuthor => {
             logCreate(
                channel.guild,
                "pinned",
@@ -25,6 +24,5 @@ module.exports = {
                "admin",
            );
            })
-    })
   }
 }
