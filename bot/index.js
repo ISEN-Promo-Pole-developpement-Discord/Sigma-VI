@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, Partials } = require('discord.js');
 const { token } = require('./config.json');
 const fs = require("node:fs");
 const path = require("node:path");
@@ -23,7 +23,11 @@ const clientIntents = [
     GatewayIntentBits.GuildScheduledEvents
 ];
 
-const client = new Client({ intents: clientIntents });
+const clientPartials = [
+    Partials.Channel
+]
+
+const client = new Client({ intents: clientIntents, partials: clientPartials });
 
 // Load all events
 const eventsPath = path.join(__dirname, "events");
