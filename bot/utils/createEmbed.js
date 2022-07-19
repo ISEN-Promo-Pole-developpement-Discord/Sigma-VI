@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, EmbedBuilder } = require('discord.js');
 
 /**
  * Creates a new embed from the given data
@@ -34,7 +34,7 @@ const { MessageEmbed } = require('discord.js');
  * @returns {MessageEmbed}
  */
 function newEmbed(data) {
-    let embed = new MessageEmbed();
+    let embed = new EmbedBuilder();
     if(data.title) embed.setTitle(data.title);
     if(data.description) embed.setDescription(data.description);
     if(data.url) embed.setURL(data.url);
