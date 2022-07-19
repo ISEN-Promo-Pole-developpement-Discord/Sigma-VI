@@ -1,5 +1,6 @@
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 const { token } = require('./config.json');
+const { initBdd } = require("./bdd/utilsDB");
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -42,5 +43,7 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(...args))
     }
 }
+
+initBdd();
 
 client.login(token);
