@@ -14,8 +14,8 @@ module.exports = {
          * @returns {Promise<void>}
          */
          
-         //getLastMessagePinned(channel.guild,channel);
-         getActionAuthor(channel.guild, channel, "Channel").then(userAuthor => {
+         getLastMessagePinned(channel.guild,channel);
+         //getActionAuthor(channel.guild, channel, "Channel").then(userAuthor => {
             logCreate(
                channel.guild,
                "pinned",
@@ -23,6 +23,6 @@ module.exports = {
                channel,
                "admin",
            );
-           })
+           }//)
   }
-}
+//}

@@ -40,17 +40,27 @@ async function getLastMessagePinned(guild,channel) {
     console.log(`\n object :  ${channel} \n`);
     if(channel.messages) {
         console.log(`\nchannel.messages  : ${channel.messages}`);
-        await guild.fetchAuditLogs()
-        .then(audit => {
-            if(audit.entries){
-                audit.entires.forEach((entry,snowflake) => {
-                    if(entry){
-                        console.log(`\n entry  : ${entry}`);
-                    }
-                     })
-                }
+        await guild.fetchAuditLogs() 
+        .then(audit => { 
+            audit.entries.forEach((entry, snowflake) => {
+            console.log(`entry : ${entry.value} and key : ${snowflake}`)
+            if(entry.target){
+            console.log(`\n omg entry.tag : ${entry.target}`);
+            }
+            if(entry.messages){
+                console.log(`\n omg entry.tag : ${entry.messages}`);
+            }
+            if(entry.size){
+                console.log(`entry.size : ${entry.size}`);
+            }
+            if(entry.executor) {
+                console.log(`entry executor : ${entry.executor}`);
+            }
+            if(entry.isTexte){
+                console.log(`Is Text ? ${entry.isTexte}`);
+            }
             })
-        }
+        })}
     return message;
 }
 
