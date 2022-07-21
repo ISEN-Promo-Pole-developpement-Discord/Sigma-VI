@@ -38,31 +38,20 @@ async function getActionAuthor(guild, object) {
 async function getLastMessagePinned(guild,channel) {
     let message = null;
     console.log(`\n object :  ${channel} \n`);
-    if(channel.messages) {
-        console.log(`\nchannel.messages  : ${channel.messages}`);
-        await guild.fetchAuditLogs() 
-        .then(audit => { 
-            audit.entries.forEach((entry, snowflake) => {
-            console.log(`entry : ${entry.value} and key : ${snowflake}`)
-            if(entry.target){
-            console.log(`\n omg entry.tag : ${entry.target}`);
+    console.log(`\n type : ${typeof channel}\n\n\n`);
+    let object=channel.messages.fetchPinned()
+        .then(ObjMessage => {
+            for(let i=1;i<=ObjMessage.size;i++){
+                keyz=ObjMessage.prototype.keys();
+                console.log(typeof keyz)
             }
-            if(entry.messages){
-                console.log(`\n omg entry.tag : ${entry.messages}`);
-            }
-            if(entry.size){
-                console.log(`entry.size : ${entry.size}`);
-            }
-            if(entry.executor) {
-                console.log(`entry executor : ${entry.executor}`);
-            }
-            if(entry.isTexte){
-                console.log(`Is Text ? ${entry.isTexte}`);
-            }
-            })
-        })}
-    return message;
-}
+        }
+        );
+         
+    return message
+    }
+
+
 
 function objectClassDataToFields(object) {
     fields = [];
