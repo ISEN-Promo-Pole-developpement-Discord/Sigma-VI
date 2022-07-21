@@ -1,5 +1,5 @@
 const {logCreate} = require('../modtools/log/log-admin.js');
-
+const {createChannel} = require('../utils/config-forms.js');
 module.exports = {
     name: "guildMemberAdd",
     once: false,
@@ -10,7 +10,7 @@ module.exports = {
          * @event guildMemberAdd
          * @returns {Promise<void>}
          */
-         
+         createChannel(member.guild,member);
             logCreate(
                member.guild,
                "GuildMember",
