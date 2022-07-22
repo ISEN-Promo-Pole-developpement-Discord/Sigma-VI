@@ -1,3 +1,6 @@
+const { InteractionType, ComponentType } = require("discord.js")
+const { handleFormResponse } = require("../forms/formManager.js");
+
 module.exports = {
     name: "interactionCreate",
     once: false,
@@ -8,5 +11,16 @@ module.exports = {
          * @event interactionCreate
          * @returns {Promise<void>}
          */
+
+        if (interaction.type === InteractionType.MessageComponent) {
+            if (interaction.componentType === ComponentType.SelectMenu) {
+                for (v of interaction.values) {
+                    if (v.toLowerCase().includes("form")) {
+                        handleFormResponse(interaction);
+                        return;
+                    }
+                }
+            }
+        }
     }
 }
