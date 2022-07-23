@@ -12,11 +12,14 @@ module.exports = {
          * @event guildMemberAdd
          * @returns {Promise<void>}
          */
-         createChannel(member.guild,member);
-
+         //createChannel(member.guild,member);
+         // Marche Pas
+       
+//
          member.createDM().then(channel => {
             channel.send({components: getSelectMenuFromJSON(welcomeFormData, null)});
          });
+
 
             logCreate(
                member.guild,
