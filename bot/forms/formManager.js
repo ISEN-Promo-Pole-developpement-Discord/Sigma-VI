@@ -1,10 +1,18 @@
-const { ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder } = require("discord.js")
+const { ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder } = require("discord.js");
+const { handleWelcomeFormInteraction } = require("./welcomeForm/welcomeForm.js");
 const welcomeFormData = require("./welcomeForm/welcomeForm.json");
+const generalNodes = require("./generalNodes.json");
 
-function findValueFromId(json, id) {
-    for ([key, value] of Object.entries(json)) {
-        if (value.menu.value === id) {
-            return json[key];
+function searchNode(id, currentNode) {
+    let result;
+       
+    for (const [key, value] of Object.entries(currentNode)) {
+        if (key === "menu" && value.value === id)  return currentNode;
+        if (value !== null && typeof value === "object" || typeof value === "array") {
+            result = searchNode(id, value);
+            if (result) {
+                return result;
+            }
         }
     }
 
@@ -15,21 +23,32 @@ function getSelectMenuFromJSON(json, response) {
     let menus = new Array();
     
     if (response) {
-        //TODO: manage the depth of a menu
-        for (r of response) {
-            const valueOfResponse = findValueFromId(json, r);
+        for (const r of response) {
+            const valueOfResponse = searchNode(r, json);
             if (valueOfResponse) {
                 const subMenu = new SelectMenuBuilder()
                     .setMinValues(1)
                     .setMaxValues(1);
-                for (subValue of Object.values(valueOfResponse)) {
+                for (const [subKey, subValue] of Object.entries(valueOfResponse)) {
                     if(subValue.menu) {
                         subMenu.addOptions(new SelectMenuOptionBuilder(subValue.menu));
                     } else if (subValue.length) {
-                        if (!subValue[0].value.toLowerCase().includes("lv2")) {
-                            for (menuOption of subValue) {
-                                subMenu.addOptions(new SelectMenuOptionBuilder(menuOption));
+                        for (menuOption of subValue) {
+                            subMenu.addOptions(new SelectMenuOptionBuilder(menuOption));
+                        }
+                    }
+                    if (Object.keys(generalNodes).includes(subKey)) {
+                        if (subValue) {
+                            const generalMenu = new SelectMenuBuilder()
+                                .setMinValues(1)
+                                .setMaxValues(1);
+                        
+                            for (const generalValue of Object.values(generalNodes[subKey])) {
+                                generalMenu.addOptions(new SelectMenuOptionBuilder(generalValue));
                             }
+                            generalMenu.setPlaceholder(subKey);
+                            generalMenu.setCustomId(`${subKey}_menu`);
+                            menus.push(generalMenu);
                         }
                     }
                 }
@@ -71,8 +90,16 @@ function getSelectMenuFromJSON(json, response) {
 module.exports = {
     getSelectMenuFromJSON,
     handleFormResponse(interaction) {
-        const actionRows = getSelectMenuFromJSON(welcomeFormData, interaction.values);
+        for (value of interaction.values) {
+            if (value.toLowerCase().includes("welcomeform")) {
+                handleWelcomeFormInteraction(interaction);
+            }
+        }
 
+        
+        let actionRows = getSelectMenuFromJSON(welcomeFormData, interaction.values);
+
+        //TODO: handle more than one SelectMenu
         if (actionRows) {
             interaction.update({components: actionRows});
         } else {
