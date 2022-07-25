@@ -1,4 +1,4 @@
-const { ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder } = require("discord.js");
+const { ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } = require("discord.js");
 const { handleWelcomeFormInteraction } = require("./welcomeForm/welcomeForm.js");
 const welcomeFormData = require("./welcomeForm/welcomeForm.json");
 const generalNodes = require("./generalNodes.json");
@@ -20,11 +20,32 @@ function searchNode(id, currentNode) {
 }
 
 function getSelectMenuFromJSON(json, response) {
-    let menus = new Array();
-    
-    if (response) {
-        for (const r of response) {
-            const valueOfResponse = searchNode(r, json);
+    let buttons = new Array();
+    for (const value of Object.values(json)) {
+        buttons.push(new ButtonBuilder()
+            .setLabel(value.menu.label)
+            .setEmoji(value.menu.emoji)
+            .setCustomId(value.menu.value)
+            .setStyle(ButtonStyle.Primary)
+        );
+    }
+
+    const actionRow = [new ActionRowBuilder({components: buttons})];
+
+    return actionRow;
+}
+
+module.exports = {
+    getSelectMenuFromJSON,
+    handleFormResponse(interaction) {
+        if (interaction.customId.toLowerCase().includes("welcome")) {
+            const modal = new ModalBuilder()
+                .setCustomId(`modalWelcomeForm`)
+                .setTitle(`${interaction.component.label}`);
+
+            let menus = new Array();
+
+            const valueOfResponse = searchNode(interaction.customId, welcomeFormData);
             if (valueOfResponse) {
                 const subMenu = new SelectMenuBuilder()
                     .setMinValues(1)
@@ -52,58 +73,35 @@ function getSelectMenuFromJSON(json, response) {
                         }
                     }
                 }
+
                 if(subMenu.options.length !== 0) {
-                    subMenu.setPlaceholder(r);
-                    subMenu.setCustomId(`${r}_subMenu`);
+                    subMenu.setPlaceholder(interaction.customId);
+                    subMenu.setCustomId(`${interaction.customId}_subMenu`);
                     menus.push(subMenu);
                 }
             }
-        }
-    } else {
-        const mainMenu = new SelectMenuBuilder()
-            .setMinValues(1)
-            .setMaxValues(1);
 
-        for (value of Object.values(json)) {
-            mainMenu.addOptions(new SelectMenuOptionBuilder(value.menu));
-        }
-        mainMenu.setPlaceholder("Sélectionnez un profil");
-        //TODO: set a real customID
-        mainMenu.setCustomId("mainMenuProvisoire");
+            
+            
+            const cells = [
+                new TextInputBuilder()
+                    .setCustomId(`welcomeFormSurname`)
+                    .setLabel("Votre prénom")
+                    .setStyle(TextInputStyle.Short),
+                new TextInputBuilder()
+                    .setCustomId(`welcomeFormName`)
+                    .setLabel("Votre nom")
+                    .setStyle(TextInputStyle.Short)
+            ].concat(menus);
 
-        menus.push(mainMenu);
-    }
+            let rows = new Array();
 
-    let rows = new Array();
-    
-    if (menus.length !== 0) {
-        for (let menu of menus) {
-            rows.push(new ActionRowBuilder().addComponents(menu));
-        }
-
-        return rows;
-    } else {
-        return null;
-    }
-}
-
-module.exports = {
-    getSelectMenuFromJSON,
-    handleFormResponse(interaction) {
-        for (value of interaction.values) {
-            if (value.toLowerCase().includes("welcomeform")) {
-                handleWelcomeFormInteraction(interaction);
+            for (const cell of cells) {
+                rows.push(new ActionRowBuilder().addComponents(cell));
             }
-        }
 
-        
-        let actionRows = getSelectMenuFromJSON(welcomeFormData, interaction.values);
-
-        //TODO: handle more than one SelectMenu
-        if (actionRows) {
-            interaction.update({components: actionRows});
-        } else {
-            interaction.update({content: "Profondeur maximale atteinte.", components: []});
+            modal.setComponents(rows);
+            interaction.showModal(modal);
         }
     }
 }

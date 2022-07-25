@@ -20,6 +20,11 @@ module.exports = {
                         return;
                     }
                 }
+            } else if (interaction.componentType === ComponentType.Button) {
+                if (interaction.customId.toLowerCase().includes("form")) {
+                    handleFormResponse(interaction);
+                    return;
+                }
             }
         }
     }
