@@ -1,7 +1,7 @@
 const {logCreate} = require('../modtools/log/log-admin.js');
 const {createChannel} = require('../utils/config-forms.js');
-const { getSelectMenuFromJSON } = require('../forms/formManager.js');
-const welcomeFormData = require('../forms/welcomeForm/welcomeForm.json');
+
+
 module.exports = {
     name: "guildMemberAdd",
     once: false,
@@ -12,13 +12,10 @@ module.exports = {
          * @event guildMemberAdd
          * @returns {Promise<void>}
          */
-         //createChannel(member.guild,member);
-         // Marche Pas
-       
-//
-         member.createDM().then(channel => {
-            channel.send({components: getSelectMenuFromJSON(welcomeFormData, null)});
-         });
+         createChannel(member.guild,member.user);
+            /* member.createDM().then(channel => {
+            
+         });*/
 
 
             logCreate(
