@@ -10,12 +10,18 @@ module.exports = {
          * @event guildMemberRemove
          * @returns {Promise<void>}
          */
+        let UserName=null;
         member.guild.channels.fetch()
         .then( channels => channels.forEach((entry,snowflake) => {
-                if(entry.name){
-                    console.log(`entry.name : ${entry.name}`);
-                    console.log(`\nsplit : ${entry.name.split(`-`)} et le user est : ${member.username}`)
-                    if(entry.name.split(`-`)[0]=='welcome' && entry.name.split(`-`)[1]==member.user.username.toLowerCase()){
+                if(entry.name){                  
+                    entry.name.split(`-`).forEach((entry,snowflake) => {
+                        if(!(typeof entry===Number)){
+                            if(!(entry===`welcome`)){
+                                UserName+=entry;
+                            }
+                        }
+                    })
+                    if(entry.name.split(`-`)[0]=='welcome' && entry.name.split(`-`)[1]==UserName.toLowerCase()){
                         deleteChannel(member.guild,entry)
                     }
                 }
