@@ -92,7 +92,7 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
         oldObject.name ? 
             embedShematic.title = `${type} "${oldObject.name}" Delete`:
             embedShematic.title = `${type} Delete`;
-        let time=oldObject.timestamp;
+        if(type === "GuildMember") embedShematic.title = `${oldObject.displayName} left`;
         if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
         if(oldObject.image) embedShematic.image = {url: oldObject.image};
         if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
@@ -100,7 +100,7 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
         
         embedShematic.fields = objectClassDataToFields(oldObject);
         embedShematic.timestamp = new Date();
-        embedShematic.color = "#642eda";
+        embedShematic.color = "#FF0000";
 
         const embed = newEmbed(embedShematic);
         try{
@@ -120,7 +120,7 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         newObject.name ? 
             embedShematic.title = `${type} "${newObject.name}" Created`:
             embedShematic.title = `${type} Created`;
-        let time=newObject.timestamp;
+        if(type === "GuildMember") embedShematic.title = `${newObject.displayName} joined`;
         if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
         if(newObject.image) embedShematic.image = {url: newObject.image};
         if(!newObject.timestamp){time=newObject.createdAt}
@@ -128,7 +128,7 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         embedShematic.fields = objectClassDataToFields(newObject);
 
         embedShematic.timestamp = new Date();
-        embedShematic.color = "#642eda";
+        embedShematic.color = "#00FF00";
 
         const embed = newEmbed(embedShematic);
         try{
