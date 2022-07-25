@@ -1,5 +1,7 @@
 {
     "logAdminChannelName": "log-admin",
     "logIoChannelName": "log-io",
-    "logUserChannelName": "log-user"
+    "logUserChannelName": "log-user",
+    "welcomeCategoryName": "Welcome",
+    "welcomeChannelName": "welcome"
 }
