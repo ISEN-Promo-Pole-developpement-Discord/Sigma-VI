@@ -1,5 +1,5 @@
 const { ChannelType } = require("discord.js");
-const { getSelectMenuFromJSON } = require('../forms/formManager.js');
+const { getButtonsFromJSON } = require('../forms/formManager.js');
 const welcomeFormData = require('../forms/welcomeForm/welcomeForm.json');
 
 function createChannel(guild,user,NewChannel,welcomeMsg) {
@@ -15,7 +15,7 @@ function createChannel(guild,user,NewChannel,welcomeMsg) {
       } 
      ).then(channel => {
        channel.send(`bienvenue sur  le serveur : ${guild}`);
-       channel.send({components: getSelectMenuFromJSON(welcomeFormData, null)});
+       channel.send({components: getButtonsFromJSON(welcomeFormData, null)});
      })
    .catch(console.error);
 
@@ -50,7 +50,7 @@ function createChannel(guild,user,NewChannel,welcomeMsg) {
          else{
          channel.send(`bienvenue sur  le serveur : ${guild}`);
          }
-         channel.send({components: getSelectMenuFromJSON(welcomeFormData, null)});
+         channel.send({components: getButtonsFromJSON(welcomeFormData, null)});
        })
 
     }
