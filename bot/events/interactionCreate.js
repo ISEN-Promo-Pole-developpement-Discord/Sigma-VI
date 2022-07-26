@@ -1,5 +1,5 @@
 const { InteractionType, ComponentType } = require("discord.js")
-const { handleButtonClickForm } = require("../forms/formManager.js");
+const { handleButtonClickForm, handleFormResponse } = require("../forms/formManager.js");
 
 module.exports = {
     name: "interactionCreate",
@@ -19,6 +19,8 @@ module.exports = {
                     return;
                 }
             }
+        } else if (interaction.type === InteractionType.ModalSubmit) {
+            handleFormResponse(interaction);
         }
     }
 }

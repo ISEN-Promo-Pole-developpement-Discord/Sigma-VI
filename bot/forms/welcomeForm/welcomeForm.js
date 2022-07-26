@@ -85,5 +85,8 @@ module.exports = {
 
         modal.setComponents(rows);
         interaction.showModal(modal);
+    },
+    handleWelcomeFormResponse(interaction) {
+        console.log("Formulaire d'accueil rempli");
     }
 }
