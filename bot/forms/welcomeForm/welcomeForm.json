@@ -2,7 +2,7 @@
     "EtudiantISEN":{
         "menu":{
             "label": "Etudiant à l'ISEN Méditerranée",
-            "description": "Vous étudiants à l'ISEN Méditerranée",
+            "description": "Vous êtes étudiants à l'ISEN Méditerranée",
             "value": "welcomeForm_menu_EtudiantISEN",
             "emoji": "👨‍🎓"
         },
