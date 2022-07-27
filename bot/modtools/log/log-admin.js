@@ -48,6 +48,7 @@ const { getGuildLogChannel, objectClassDataToFields, objectUpdateGetChangesField
 const { newEmbed } = require("../../utils/createEmbed.js");
 
 function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,channel_log) {
+    if((userAuthor.bot===false)){
     let logChannel = getGuildLogChannel(guild,"default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
         logChannel = getGuildLogChannel(guild, channel_log);
@@ -79,10 +80,11 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
         logChannel.send({ embeds: [embed]});
     } catch(e) {
         console.log(e);
-    }
+    }}
 }
 
 function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
+    if((userAuthor.bot===false)){
     let logChannel = getGuildLogChannel(guild,"default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
         logChannel = getGuildLogChannel(guild, channel_log);
@@ -109,8 +111,10 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
             console.log(e);
         }
 }
+}
 
 function logCreate(guild, type, userAuthor,newObject,channel_log) {
+    if((userAuthor.bot===false)){
     let logChannel = getGuildLogChannel(guild,"default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
         logChannel = getGuildLogChannel(guild, channel_log);
@@ -137,7 +141,7 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
             console.log(e);
         }
 }
-
+}
 
 
 module.exports = {
