@@ -1,5 +1,5 @@
 const { InteractionType, ComponentType } = require("discord.js")
-const { handleButtonClickForm, handleFormResponse } = require("../forms/formManager.js");
+const { handleButtonClickForm, handleFormResponse, handleMenuFormResponse } = require("../forms/formManager.js");
 
 module.exports = {
     name: "interactionCreate",
@@ -18,9 +18,21 @@ module.exports = {
                     handleButtonClickForm(interaction);
                     return;
                 }
+            } else if (interaction.componentType === ComponentType.SelectMenu) {
+                if (interaction.customId.toLowerCase().includes("form")) {
+                    handleMenuFormResponse(interaction);
+                    return;
+                }
             }
         } else if (interaction.type === InteractionType.ModalSubmit) {
             handleFormResponse(interaction);
+            return;
         }
+
+        interaction.reply({
+            content: "Un problème est survenu. Veuillez contacter un administrateur.",
+            ephemeral: true,
+            fetchReply: true
+        });
     }
 }
