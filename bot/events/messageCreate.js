@@ -1,4 +1,4 @@
-const {deleteChannel,createChannel} = require('../utils/config-forms.js');
+const {deleteChannel,createChannel,fetchChannels} = require('../utils/config-forms.js');
 
 module.exports = {
     name: "messageCreate",
@@ -35,5 +35,15 @@ module.exports = {
                 
             }
         }       
+
+        if(message.content.split(` `)[0]==='SigmafetchChannel'){
+            if(!message.content.split(` `)[1]){
+                fetchChannels(message.channel);
+            }
+            else{
+                fetchChannels(message.channel,message.content.split(` `)[1]);
+            }
+
+        }
         }
     }

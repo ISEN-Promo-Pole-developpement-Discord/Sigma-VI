@@ -65,10 +65,37 @@ function deleteChannel(guild,channel) {
   guild.channels.delete(channel);
   }
 }
-  
+
+function fetchChannels(msgChannel,channelWfetch){
+  if(!channelWfetch){
+    msgChannel.guild.channels.fetch()
+    .then( channels => channels.forEach((entry,snowflake) => {
+      if(entry.name){
+        msgChannel.send(`Channel in ${msgChannel.guild} : ${entry.name}`);
+      }}
+      )
+    )
+}
+  else{
+    let exist=false;
+    msgChannel.guild.channels.fetch()
+    .then( channels => channels.forEach((entry,snowflake) => {
+      if(entry.name){
+        if(entry.name === channelWfetch) {
+          msgChannel.send(`le channel : ${channelWfetch} est bien dans le serveur  : ${msgChannel.guild}`);
+        exist=true;
+        }
+      }}
+    ))
+    if(exist===false){
+        msgChannel.send(`Désolé, le channel ${channelWfetch} n'est pas sur le serveur  : ${msgChannel.guild}`);
+    }
+  }
+}
 
 
 module.exports = {
     createChannel,
-    deleteChannel
+    deleteChannel,
+    fetchChannels
 }
