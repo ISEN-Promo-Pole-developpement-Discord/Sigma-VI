@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const { handleWelcomeButtonClick, handleWelcomeFormResponse } = require("./welcomeForm/welcomeForm.js");
+const { handleWelcomeButtonClick, handleWelcomeFormResponse, handleWelcomeFormMenuResponse } = require("./welcomeForm/welcomeForm.js");
 
 function getButtonsFromJSON(json, response) {
     let buttons = new Array();
@@ -22,11 +22,19 @@ module.exports = {
     handleButtonClickForm(interaction) {
         if (interaction.customId.toLowerCase().includes("welcome")) {
             handleWelcomeButtonClick(interaction);
+            return;
         }
     },
     handleFormResponse(interaction) {
-        if (interaction.customId.toLowerCase().includes("welcome")) {
+        if (interaction.customId.includes("modalWelcomeForm")) {
             handleWelcomeFormResponse(interaction);
+            return;
+        }
+    },
+    handleMenuFormResponse(interaction) {
+        if (interaction.customId.toLowerCase().includes("welcome")) {
+            handleWelcomeFormMenuResponse(interaction);
+            return;
         }
     }
 }
