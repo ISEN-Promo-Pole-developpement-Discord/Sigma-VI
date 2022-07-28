@@ -2,8 +2,11 @@ const { ChannelType } = require("discord.js");
 const { getButtonsFromJSON } = require('../forms/formManager.js');
 const welcomeFormData = require('../forms/welcomeForm/welcomeForm.json');
 
+
+
 function createChannel(guild,user,NewChannel,welcomeMsg) {
-    if(!NewChannel){
+  //Création d'un channel "de base"
+  if(!(NewChannel)){
      guild.channels.create(
       {
        name: `welcome-${user.username.split(`-`)}-${user.discriminator}`,
@@ -14,18 +17,20 @@ function createChannel(guild,user,NewChannel,welcomeMsg) {
         }*/
       } 
      ).then(channel => {
-       channel.send(`bienvenue sur  le serveur : ${guild}`);
-       channel.send({components: getButtonsFromJSON(welcomeFormData, null)});
-     })
-   .catch(console.error);
-
-}
+      if(welcomeMsg){
+       channel.send({ content :(welcomeMsg),components: getButtonsFromJSON(welcomeFormData, null)});
+     }
+     else{
+      channel.send({ content :(`bienvenue sur  le serveur : ${guild}`),components: getButtonsFromJSON(welcomeFormData, null)});
+     }
+    })
+  }
+//création d'un channel personalisé
   else{
     let exist=false;
     guild.channels.fetch()
-    .then( channels => channels.forEach((entry,snowflake) => {
-       if(entry.name){
-        if(entry.name===NewChannel){
+    .then(channels => channels.forEach((entry,snowflake) => {
+        if(entry.name==NewChannel){
             exist=true;
             if(typeof entry.lastMessage === null) {
               if(welcomeMsg){ 
@@ -35,7 +40,7 @@ function createChannel(guild,user,NewChannel,welcomeMsg) {
                 entry.send(`bienvenue sur  le serveur : ${guild}`); //message de base
               }
             }
-         }} }
+         }}
     ))
     if(exist===false){
       guild.channels.create(
@@ -45,21 +50,18 @@ function createChannel(guild,user,NewChannel,welcomeMsg) {
         } 
        ).then(channel => {
         if(welcomeMsg){
-          channel.send(welcomeMsg);
+          channel.send({content :welcomeMsg, components: getButtonsFromJSON(welcomeFormData, null)});
          }
          else{
-         channel.send(`bienvenue sur  le serveur : ${guild}`);
-         }
-         channel.send({components: getButtonsFromJSON(welcomeFormData, null)});
+          channel.send({content :`bienvenue sur  le serveur : ${guild}`, components: getButtonsFromJSON(welcomeFormData, null)})
+         } 
        })
-
     }
   }
 }
 
 function deleteChannel(guild,channel) {
   if(channel){
-  console.log(`\nle channel ${channel} dans le serveur ${guild} vient d'être supp\n`);
   guild.channels.delete(channel);
   }
 }
