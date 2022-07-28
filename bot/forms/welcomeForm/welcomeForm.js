@@ -1,4 +1,4 @@
-const { ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require("discord.js");
+const { ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ButtonBuilder, ButtonStyle, ComponentType } = require("discord.js");
 const welcomeFormData = require("./welcomeForm.json");
 const generalNodes = require("./../generalNodes.json");
 
@@ -18,51 +18,64 @@ function searchNode(id, currentNode) {
     return null;
 }
 
-module.exports = {
-    handleWelcomeButtonClick(interaction) {
-        const modal = new ModalBuilder()
-                .setCustomId(`modalWelcomeForm`)
-                .setTitle(`${interaction.component.label}`);
+function getWelcomeSelectMenusFromJSON(id) {
+    let menus = new Array();
 
-        let menus = new Array();
-
-        const valueOfResponse = searchNode(interaction.customId, welcomeFormData);
-        if (valueOfResponse) {
-            const subMenu = new SelectMenuBuilder()
-                .setMinValues(1)
-                .setMaxValues(1);
-            for (const [subKey, subValue] of Object.entries(valueOfResponse)) {
-                if(subValue.menu) {
-                    subMenu.addOptions(new SelectMenuOptionBuilder(subValue.menu));
-                } else if (subValue.length) {
-                    for (menuOption of subValue) {
-                        subMenu.addOptions(new SelectMenuOptionBuilder(menuOption));
-                    }
-                }
-                if (Object.keys(generalNodes).includes(subKey)) {
-                    if (subValue) {
-                        const generalMenu = new SelectMenuBuilder()
-                            .setMinValues(1)
-                            .setMaxValues(1);
-                    
-                        for (const generalValue of Object.values(generalNodes[subKey])) {
-                            generalMenu.addOptions(new SelectMenuOptionBuilder(generalValue));
-                        }
-                        generalMenu.setPlaceholder(subKey);
-                        generalMenu.setCustomId(`${subKey}_menu`);
-                        menus.push(generalMenu);
-                    }
+    const valueOfResponse = searchNode(id, welcomeFormData);
+    if (valueOfResponse) {
+        const subMenu = new SelectMenuBuilder()
+            .setMinValues(1)
+            .setMaxValues(1);
+        for (const [subKey, subValue] of Object.entries(valueOfResponse)) {
+            if(subValue.menu) {
+                subMenu.addOptions(new SelectMenuOptionBuilder(subValue.menu));
+            } else if (subValue.length) {
+                for (menuOption of subValue) {
+                    subMenu.addOptions(new SelectMenuOptionBuilder(menuOption));
                 }
             }
-
-            if(subMenu.options.length !== 0) {
-                subMenu.setPlaceholder(interaction.customId);
-                subMenu.setCustomId(`${interaction.customId}_subMenu`);
-                menus.push(subMenu);
+            if (Object.keys(generalNodes).includes(subKey)) {
+                if (subValue) {
+                    const generalMenu = new SelectMenuBuilder()
+                        .setMinValues(1)
+                        .setMaxValues(1);
+                
+                    for (const generalValue of Object.values(generalNodes[subKey])) {
+                        generalMenu.addOptions(new SelectMenuOptionBuilder(generalValue));
+                    }
+                    generalMenu.setPlaceholder(subKey);
+                    generalMenu.setCustomId(`${subKey}_menu`);
+                    menus.push(generalMenu);
+                }
             }
         }
 
-        
+        if(subMenu.options.length !== 0) {
+            subMenu.setPlaceholder(id);
+            subMenu.setCustomId(`${id}-subMenu`);
+            menus.push(subMenu);
+        }
+    }
+
+    if (menus.length !== 0) {
+        let rows = new Array();
+
+        for (const menu of menus) {
+            rows.push(new ActionRowBuilder().addComponents(menu));
+        }
+
+        return rows;
+    } else {
+        return null;
+    }
+    
+}
+
+module.exports = {
+    handleWelcomeButtonClick(interaction) {
+        const modal = new ModalBuilder()
+                .setCustomId(`modalWelcomeForm-${interaction.customId}`)
+                .setTitle(`${interaction.component.label}`);
         
         const cells = [
             new TextInputBuilder()
@@ -75,7 +88,7 @@ module.exports = {
                 .setLabel("Votre nom")
                 .setStyle(TextInputStyle.Short)
                 .setMaxLength(64)
-        ].concat(menus);
+        ];
 
         let rows = new Array();
 
@@ -86,7 +99,77 @@ module.exports = {
         modal.setComponents(rows);
         interaction.showModal(modal);
     },
+    handleWelcomeFormMenuResponse(interaction) {
+        console.log(interaction.values);
+        let next = searchNode(interaction.values[0], welcomeFormData);
+        if (interaction.message.components.length === 1) {
+            if (next) {
+                interaction.reply({
+                    content: `Vous avez choisi ${next.menu.label}. Veuillez remplir le reste du formulaire :`,
+                    fetchReply: true,
+                    ephemeral: true,
+                    components: getWelcomeSelectMenusFromJSON(interaction.values[0])
+                });
+            } else {
+                interaction.reply({
+                    content: `Récapitulatif des données (en gros parcourir la base de données). Si tout est bon pour vous, vous pouvez accepter ou recommencer le formulaire.`,
+                    fetchReply: true,
+                    ephemeral: true,
+                    components: [
+                        new ActionRowBuilder().addComponents(new ButtonBuilder()
+                            .setCustomId("finishForm")
+                            .setLabel("Accepter et envoyer le formulaire")
+                            .setEmoji('✅')
+                            .setStyle(ButtonStyle.Success)
+                        ),
+                        new ActionRowBuilder().addComponents(new ButtonBuilder()
+                            .setCustomId("retryForm")
+                            .setLabel("Recommencer le formulaire")
+                            .setEmoji('❌')
+                            .setStyle(ButtonStyle.Danger)
+                        )
+                    ]
+                });
+            }
+        } else {
+            interaction.reply({
+                content: `c'est juste pas encore implémenté en fait`,
+                fetchReply: true,
+                ephemeral: true,
+                components: []
+            });
+        }
+    },
     handleWelcomeFormResponse(interaction) {
-        console.log("Formulaire d'accueil rempli");
+        const [name, surname] = interaction.fields.fields.entries();
+
+        if (getWelcomeSelectMenusFromJSON(interaction.customId.split("-")[1])) {
+            interaction.reply({
+                content: `Bienvenue ${name[1].value} ${surname[1].value}. Veuillez choisir votre profil :`,
+                fetchReply: true,
+                ephemeral: true,
+                components: getWelcomeSelectMenusFromJSON(interaction.customId.split("-")[1])
+            });
+        } else {
+            interaction.reply({
+                content: `Récapitulatif des données (en gros parcourir la base de données). Si tout est bon pour vous, vous pouvez accepter ou recommencer le formulaire.`,
+                fetchReply: true,
+                ephemeral: true,
+                components: [
+                    new ActionRowBuilder().addComponents(new ButtonBuilder()
+                        .setCustomId("finishForm")
+                        .setLabel("Accepter et envoyer le formulaire")
+                        .setEmoji('✅')
+                        .setStyle(ButtonStyle.Success)
+                    ),
+                    new ActionRowBuilder().addComponents(new ButtonBuilder()
+                        .setCustomId("retryForm")
+                        .setLabel("Recommencer le formulaire")
+                        .setEmoji('❎')
+                        .setStyle(ButtonStyle.Danger)
+                    )
+                ]
+            });
+        }
     }
 }
