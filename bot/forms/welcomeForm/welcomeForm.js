@@ -101,8 +101,9 @@ module.exports = {
         interaction.showModal(modal);
     },
     handleWelcomeFormMenuResponse(interaction) {
-        console.log(interaction.values);
+        // console.log(interaction.values);
         let next = searchNode(interaction.values[0], welcomeFormData);
+        console.log(interaction.customId);
         if (interaction.message.components.length === 1) {
             if (next) {
                 interaction.reply({
@@ -112,28 +113,28 @@ module.exports = {
                     components: getWelcomeSelectMenusFromJSON(interaction.values[0])
                 });
                 // USER DATA
-                let userData = "";
-                if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_EtudiantISEN")
+                let userData = "{}";
+                if (interaction.customId === "welcomeForm_menu_EtudiantISEN-subMenu")
                 {
                     let userClass = interaction.values[0].split("_");
-                    userData = `(JSON){ class:"${userClass[2]}"}`;
+                    userData = `{"class": "${userClass[2]}"}`;
                 }
-                else if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_Invité")
+                else if (interaction.customId === "welcomeForm_menu_Invité-subMenu")
                 {
                     let userCat = interaction.values[0].split("_");
-                    userData = `(JSON){ category:"${userCat[2]}"}`;
+                    userData = `{"category": "${userCat[2]}"}`;
                 }
-                // else if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_ProfISEN")
+                // else if (interaction.customId === "welcomeForm_menu_ProfISEN-subMenu")
                 // {
                 //     // USER DATA - TOPICS
                 // }
-                // else if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_AdministrationISEN")
+                // else if (interaction.customId === "welcomeForm_menu_AdministrationISEN-subMenu")
                 // {
                 //     // ???
                 // }
 
                 // USER DATA MODIFICATION IN DB
-                db.connection.query(`UPDATE user SET user_data = '{"class": "${userData}"}' WHERE user_id = "${interaction.member.id}"`);
+                db.connection.query(`UPDATE user SET user_data = '${userData}' WHERE user_id = '${interaction.member.id}'`);
             } else {
                 interaction.reply({
                     content: `Récapitulatif des données (en gros parcourir la base de données). Si tout est bon pour vous, vous pouvez accepter ou recommencer le formulaire.`,
