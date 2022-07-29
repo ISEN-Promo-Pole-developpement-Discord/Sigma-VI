@@ -1,5 +1,6 @@
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 const { token } = require('./config.json');
+const { debug } = require('./config-core.json');
 const { initBdd } = require("./bdd/utilsDB");
 const fs = require("node:fs");
 const path = require("node:path");
@@ -30,11 +31,13 @@ const clientPartials = [
 ]
 
 const client = new Client({ intents: clientIntents, partials: clientPartials });
+global.debug = debug;
 
 // Load all events
 const eventsPath = path.join(__dirname, "events");
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".js"));
 
+console.log("Chargement des évènements...");
 for (const file of eventFiles) {
     const filePath = path.join(eventsPath, file);
     const event = require(filePath);
@@ -44,6 +47,7 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(...args))
     }
 }
+console.log("Évènements chargés.");
 
 initBdd();
 
