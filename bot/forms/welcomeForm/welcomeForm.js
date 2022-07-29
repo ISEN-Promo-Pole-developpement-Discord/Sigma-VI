@@ -1,6 +1,7 @@
 const { ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ButtonBuilder, ButtonStyle, ComponentType } = require("discord.js");
 const welcomeFormData = require("./welcomeForm.json");
 const generalNodes = require("./../generalNodes.json");
+const db = require("../../bdd/utilsDB");
 
 function searchNode(id, currentNode) {
     let result;
@@ -110,6 +111,29 @@ module.exports = {
                     ephemeral: true,
                     components: getWelcomeSelectMenusFromJSON(interaction.values[0])
                 });
+                // USER DATA
+                let userData = "";
+                if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_EtudiantISEN")
+                {
+                    let userClass = interaction.values[0].split("_");
+                    userData = `(JSON){ class:"${userClass[2]}"}`;
+                }
+                else if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_Invité")
+                {
+                    let userCat = interaction.values[0].split("_");
+                    userData = `(JSON){ category:"${userCat[2]}"}`;
+                }
+                // else if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_ProfISEN")
+                // {
+                //     // USER DATA - TOPICS
+                // }
+                // else if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_AdministrationISEN")
+                // {
+                //     // ???
+                // }
+
+                // USER DATA MODIFICATION IN DB
+                db.connection.query(`UPDATE user SET user_data = '{"class": "${userData}"}' WHERE user_id = "${interaction.member.id}"`);
             } else {
                 interaction.reply({
                     content: `Récapitulatif des données (en gros parcourir la base de données). Si tout est bon pour vous, vous pouvez accepter ou recommencer le formulaire.`,
@@ -149,6 +173,34 @@ module.exports = {
                 fetchReply: true,
                 ephemeral: true,
                 components: getWelcomeSelectMenusFromJSON(interaction.customId.split("-")[1])
+            });
+            // User Status Identification
+            let userStatus;
+            if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_EtudiantISEN") userStatus = 0;
+            else if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_Invité") userStatus = 3;
+            else if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_ProfISEN") userStatus = 1;
+            else if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_AdministrationISEN") userStatus = 2;
+
+            // VERIFICATION : DOES THE USER ALREADY GOT A LINE IN user TABLE ?
+            db.connection.query(`SELECT * FROM user WHERE user_id = ${interaction.member.id}`, function(err, row)
+            {
+                if (err) {
+                    console.log("ERROR IN DB");
+                    console.log(err);
+                }
+                else {
+                    // If there is no data in db for this user
+                    if (!(row && row.length))
+                        db.connection.query(`INSERT INTO user(user_id, name, surname, status, user_data) VALUES
+                            ('${interaction.member.id}', '${name[1].value}', '${surname[1].value}', ${userStatus}, '{}')`);
+                    else   // If there is data in db for this user
+                        db.connection.query(`UPDATE user
+                            SET name = '${name[1].value}',
+                            surname = '${surname[1].value}',
+                            status = ${userStatus},
+                            user_data = '{}'
+                        WHERE user_id = ${interaction.member.id}`);
+                }
             });
         } else {
             interaction.reply({
