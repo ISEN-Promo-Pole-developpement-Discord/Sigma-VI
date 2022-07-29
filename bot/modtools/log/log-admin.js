@@ -48,7 +48,7 @@ const { getGuildLogChannel, objectClassDataToFields, objectUpdateGetChangesField
 const { newEmbed } = require("../../utils/createEmbed.js");
 
 function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,channel_log) {
-    if((userAuthor.bot===true ||!userAuthor )){
+    if(userAuthor && userAuthor.bot) return;    
     let logChannel = getGuildLogChannel(guild,"default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
         logChannel = getGuildLogChannel(guild, channel_log);
@@ -80,41 +80,40 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
         logChannel.send({ embeds: [embed]});
     } catch(e) {
         console.log(e);
-    }}
+    }
 }
 
 function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
-    if((userAuthor.bot===false ||!userAuthor)){
+    if(userAuthor && userAuthor.bot) return;    
     let logChannel = getGuildLogChannel(guild,"default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
         logChannel = getGuildLogChannel(guild, channel_log);
-    }            
+    }         
     if (!logChannel) return;
-        let embedShematic = new Object();
-        oldObject.name ? 
-            embedShematic.title = `${type} "${oldObject.name}" Delete`:
-            embedShematic.title = `${type} Delete`;
-        if(type === "GuildMember") embedShematic.title = `${oldObject.displayName} left`;
-        if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
-        if(oldObject.image) embedShematic.image = {url: oldObject.image};
-        if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
-        if(!oldObject.timestamp){time=oldObject.createdAt}
-        
-        embedShematic.fields = objectClassDataToFields(oldObject);
-        embedShematic.timestamp = new Date();
-        embedShematic.color = "#FF0000";
+    let embedShematic = new Object();
+    oldObject.name ? 
+        embedShematic.title = `${type} "${oldObject.name}" Delete`:
+        embedShematic.title = `${type} Delete`;
+    if(type === "GuildMember") embedShematic.title = `${oldObject.displayName} left`;
+    if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
+    if(oldObject.image) embedShematic.image = {url: oldObject.image};
+    if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
+    if(!oldObject.timestamp){time=oldObject.createdAt}
+    
+    embedShematic.fields = objectClassDataToFields(oldObject);
+    embedShematic.timestamp = new Date();
+    embedShematic.color = "#FF0000";
 
-        const embed = newEmbed(embedShematic);
-        try{
-            logChannel.send({ embeds: [embed]});
-        } catch(e) {
-            console.log(e);
-        }
-}
+    const embed = newEmbed(embedShematic);
+    try{
+        logChannel.send({ embeds: [embed]});
+    } catch(e) {
+        console.log(e);
+    }
 }
 
 function logCreate(guild, type, userAuthor,newObject,channel_log) {
-    if((!userAuthor || userAuthor.bot===false )){
+    if(userAuthor && userAuthor.bot) return;
     let logChannel = getGuildLogChannel(guild,"default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
         logChannel = getGuildLogChannel(guild, channel_log);
@@ -140,7 +139,6 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         } catch(e) {
             console.log(e);
         }
-}
 }
 
 
