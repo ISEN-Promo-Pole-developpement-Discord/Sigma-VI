@@ -10,21 +10,16 @@ const connection = mysql.createConnection({
     multipleStatements: true
 });
 
-function testConnection(connection) {
-    connection.connect(function(err) {
-        if (err) throw err;
-        console.log("Connecté à la base de données MySQL.");
-    });
-}
-
-function createTables(connection) {
+function updateTables(connection) {
     const sqlScript = fs.readFileSync("./bdd/createTables.sql").toString();
 
+    console.log("Initialisation de la base de données MySQL...");
     connection.query(sqlScript, function(err, results) {
         if (err) throw err;
-        
-        for (let i=0; i<results.length; i++) {
-            console.log(results[i]);
+        console.log("Tables mises à jour.");
+        if(global.debug){
+            console.log("<Résultats de la requête>");
+            console.log(results);
         }
     });
 }
@@ -32,8 +27,11 @@ function createTables(connection) {
 module.exports = {
     connection,
     initBdd() {
-        const con = connection;
-        testConnection(con);
-        createTables(con);
+        console.log("Connexion à la base de données MySQL...");
+        connection.connect(function(err) {
+            if (err) throw err;
+            console.log("Connecté à la base de données MySQL.");
+            updateTables(connection);
+        });
     }
 }
