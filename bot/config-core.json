@@ -3,5 +3,6 @@
     "logIoChannelName": "log-io",
     "logUserChannelName": "log-user",
     "welcomeCategoryName": "Welcome",
-    "welcomeChannelName": "welcome"
+    "welcomeChannelName": "welcome",
+    "debug": true
 }
