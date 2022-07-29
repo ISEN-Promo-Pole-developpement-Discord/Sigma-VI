@@ -26,9 +26,10 @@ module.exports = {
                     }
                 }
 
-        }
-        )
-        )
+        }));
+
+        // TODO : Need to change user status in USER_GUILD_STATUS to 4 (leaved)
+
         logDelete(
             member.guild,
             "GuildMember",
