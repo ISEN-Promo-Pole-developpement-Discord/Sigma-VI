@@ -1,5 +1,7 @@
 const {logDelete} = require('../modtools/log/log-admin.js');
 const {deleteChannel} = require('../utils/config-forms.js');
+const db = require("../bdd/utilsDB");
+
 module.exports = {
     name: "guildMemberRemove",
     once: false,
@@ -28,7 +30,10 @@ module.exports = {
 
         }));
 
-        // TODO : Need to change user status in USER_GUILD_STATUS to 4 (leaved)
+        db.connection.query(`UPDATE user_guild_status
+            SET status = 4,
+             form_id = null
+             WHERE user_id = '${member.id}' && guild_id = '${member.guild.id}'`);
 
         logDelete(
             member.guild,
