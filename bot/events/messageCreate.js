@@ -13,7 +13,7 @@ module.exports = {
         console.log(`Nouveau message par ${message.author.tag}: ${message.content} et en plus l'icon ${message.author.avatarURL()}`);
         console.log(`channel : ${message.channel}`);
 
-        if(message.content.split(` `)[0]==='SigmaDeleteChannel'){
+        if(message.content.split(` `)[0].toLowerCase()==='sigmadeletechannel'){
                 message.guild.channels.fetch()
                      .then( channels => channels.forEach((entry,snowflake) => {
                         if(entry.name){
@@ -26,7 +26,7 @@ module.exports = {
                      deleteChannel(message.guild,message.channel);
             }
 
-            if(message.content.split(` `)[0]==='SigmaCreateChannel'){
+            if(message.content.split(` `)[0].toLowerCase()==='sigmacreatechannel'){
                 if(!message.content.split(` `)[1]){
                 createChannel(message.guild,message.author);
             }
@@ -35,8 +35,8 @@ module.exports = {
                 
             }
         }       
-
-        if(message.content.split(` `)[0]==='SigmafetchChannel'){
+        //Commande SigmaFetchChannel :
+        if(message.content.split(` `)[0].toLowerCase()==='sigmafetchchannel'){
             if(!message.content.split(` `)[1]){
                 fetchChannels(message.channel);
             }
