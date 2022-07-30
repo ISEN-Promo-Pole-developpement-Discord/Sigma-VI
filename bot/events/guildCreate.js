@@ -1,3 +1,5 @@
+const db = require("../bdd/utilsDB");
+
 module.exports = {
     name: "guildCreate",
     once: false,
@@ -8,5 +10,14 @@ module.exports = {
          * @event guildCreate
          * @returns {Promise<void>}
          */
+
+        // VERIF
+        db.connection.query(`SELECT * FROM guild WHERE guild_id = "${guild.id}"`, function (err, row)
+        {
+           if (err) throw err;
+           else
+               if (!(row && row.length))
+                   db.connection.query(`INSERT INTO guild(guild_id, config) VALUES("${guild.id}", "{}")`);
+        });
     }
 }
