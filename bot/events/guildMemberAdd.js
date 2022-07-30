@@ -24,8 +24,15 @@ module.exports = {
             else {
                 // If there is no data in db for this user
 
-                if (!(row && row.length)) db.connection.query(`INSERT INTO user(user_id, name, surname, status, user_data) VALUES('${member.id}', '', '', -1, '{}')`);
-                else {} // TODO : Need to change user status in table USER_GUILD_STATUS from 4 (leaved) to 1 (await form)}
+                if (!(row && row.length))
+                {
+                    db.connection.query(`INSERT INTO user(user_id, name, surname, status, user_data) VALUES('${member.id}', '', '', -1, '{}')`);
+                    db.connection.query(`INSERT INTO user_guild_status(user_id, guild_id, status, form_id) VALUES('${member.id}', '${member.guild.id}', 0, null)`);
+                    // TODO : Need to implement the form_id
+                }
+                else {
+                    db.connection.query(`UPDATE user_guild_status SET status = 0 WHERE user_id = "${member.id}" && guild_id = "${member.guild.id}"`);
+                } // TODO : Need to implement the change of form_id
             }
         });
             /* member.createDM().then(channel => {
