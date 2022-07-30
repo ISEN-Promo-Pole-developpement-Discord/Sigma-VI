@@ -32,7 +32,9 @@ function createChannel(guild,user,NewChannel,welcomeMsg) {
     .then(channels => channels.forEach((entry,snowflake) => {
         if(entry.name==NewChannel){
             exist=true;
-            if(typeof entry.lastMessage === null) {
+            console.log(`Channel déjà existant : NewChannel :${NewChannel}, entry : ${entry.name}`);
+            console.log(entry.lastMessage);
+            if(entry.lastMessage === null) {
               if(welcomeMsg){ 
               entry.send(welcomeMsg) //message personalisé
               }
@@ -41,7 +43,7 @@ function createChannel(guild,user,NewChannel,welcomeMsg) {
               }
             }
          }}
-    ))
+    ));
     if(exist===false){
       guild.channels.create(
         {
@@ -94,8 +96,26 @@ function fetchChannels(msgChannel,channelWfetch){
 }
 
 
+function clearChannel(channel) {
+  if(!channel){return}
+  else{
+      channel.messages.fetch()
+      .then (message=> message.forEach((entry,snowflake) => {
+          channel.messages.delete(entry);
+      }
+      )
+      )
+
+  } 
+
+
+
+}
+
+
 module.exports = {
     createChannel,
     deleteChannel,
-    fetchChannels
+    fetchChannels,
+    clearChannel,
 }
