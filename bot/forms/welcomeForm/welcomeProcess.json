@@ -1,0 +1,110 @@
+{
+    "name": "Formulaire de bienvenue",
+    "tasks": [
+        {
+            "step": 0,
+            "name": "Identité",
+            "toAsk": {
+                "id": "welcomeForm_identity",
+                "type": "Modal",
+                "title": "Veuillez renseigner votre identité",
+                "fields": [
+                    {
+                        "id": "welcomeForm_surname",
+                        "type": "TextInput",
+                        "label": "Prénom"
+                    },
+                    {
+                        "id": "welcomeForm_name",
+                        "type": "TextInput",
+                        "label": "Nom"
+                    }
+                ]
+            }
+        },
+        {
+            "step": 1,
+            "name": "Sexe",
+            "toAsk": {
+                "id": "welcomeForm_sex",
+                "type": "SelectMenu",
+                "label": "Veuillez choisir votre sexe",
+                "options": [
+                    {
+                        "label": "Homme",
+                        "description": "Vous êtes un homme",
+                        "value": "welcomeForm_sex_H",
+                        "emoji": "👨"
+                    },
+                    {
+                        "label": "Femme",
+                        "description": "Vous êtes une femme",
+                        "value": "welcomeForm_sex_F",
+                        "emoji": "👩"
+                    },
+                    {
+                        "label": "Autre",
+                        "description": "Vous n'êtes ni un homme ni une femme",
+                        "value": "welcomeForm_sex_other",
+                        "emoji": "🧑"
+                    }
+                ]
+            }
+        },
+        {
+            "step": 2,
+            "name": "E-Mail",
+            "toAsk": {
+                "id": "welcomeForm_mailForm",
+                "type": "Modal",
+                "title": "Veuillez renseigner votre e-mail",
+                "fields": [
+                    {
+                        "id": "welcomeForm_mail",
+                        "type": "TextInput",
+                        "label": "E-Mail"
+                    }
+                ]
+            }
+        },
+        {
+            "step": 3,
+            "name": "Informations supplémentaires",
+            "toAsk": {
+                "type": "welcomeMenus"
+            }
+        },
+        {
+            "step": 4,
+            "name": "Confirmation",
+            "toAsk": {
+                "id": "welcomeForm_endButtons",
+                "type": "RowButtons",
+                "buttons": [
+                    {
+                        "id": "welcomeForm_confirm",
+                        "type": "Button",
+                        "label": "Confirmer et terminer l'inscription",
+                        "style": "Success",
+                        "emoji": "✅"
+                    },
+                    {
+                        "id": "welcomeForm_retry",
+                        "type": "Button",
+                        "label": "Recommencer le formulaire",
+                        "style": "Danger",
+                        "emoji": "❌"
+                    }
+                ]
+            }
+        },
+        {
+            "step": 5,
+            "name": "Vérification par un administrateur",
+            "toAsk": {
+                "id": "welcomeForm_adminValidate",
+                "type": "adminValidate"
+            }
+        }
+    ]
+}
