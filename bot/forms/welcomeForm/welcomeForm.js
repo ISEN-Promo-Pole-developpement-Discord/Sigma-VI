@@ -1,5 +1,6 @@
 const { ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ButtonBuilder, ButtonStyle, ComponentType } = require("discord.js");
 const welcomeFormData = require("./welcomeForm.json");
+const welcomeProcess = require("./welcomeProcess.json");
 const generalNodes = require("./../generalNodes.json");
 const db = require("../../bdd/utilsDB");
 
@@ -72,33 +73,67 @@ function getWelcomeSelectMenusFromJSON(id) {
     
 }
 
+function responseFromWelcomeProcess(currentStep, interaction) {
+    if (welcomeProcess.tasks[currentStep]) {
+        if (welcomeProcess.tasks[currentStep].toAsk.type === "welcomeMenus") {
+            interaction.reply("tkt les menus ça arrive de fou");
+        }
+    } else {
+        currentStep++;
+        const stepData = welcomeProcess.tasks[currentStep];
+        if (stepData.toAsk.type === "Modal") {
+            interaction.reply({
+                content: `**${stepData.name}**\n${stepData.description}`,
+                components: [
+                    new ActionRowBuilder().addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(`launch_${stepData.toAsk.id}`)
+                            .setLabel(`Renseigner son ${stepData.name}`)
+                            .setStyle(ButtonStyle.Primary)
+                            .setDisabled(false),
+                        new ButtonBuilder()
+                            .setCustomId(`modify_${stepData.toAsk.id}`)
+                            .setLabel(`Modifier`)
+                            .setStyle(ButtonStyle.Secondary)
+                            .setDisabled(true)
+                    )
+                ]
+            });
+        }
+    }
+}
+
 module.exports = {
     handleWelcomeButtonClick(interaction) {
-        const modal = new ModalBuilder()
-                .setCustomId(`modalWelcomeForm-${interaction.customId}`)
-                .setTitle(`${interaction.component.label}`);
-        
-        const cells = [
-            new TextInputBuilder()
-                .setCustomId(`welcomeFormSurname`)
-                .setLabel("Votre prénom")
-                .setStyle(TextInputStyle.Short)
-                .setMaxLength(64),
-            new TextInputBuilder()
-                .setCustomId(`welcomeFormName`)
-                .setLabel("Votre nom")
-                .setStyle(TextInputStyle.Short)
-                .setMaxLength(64)
-        ];
+        if (interaction.customId.includes("launch") || interaction.customId.includes("modify")) {
+            for (const task of welcomeProcess.tasks) {
+                if (task.toAsk.id) {
+                    if (task.toAsk.id.includes(interaction.customId.slice(7))) {
+                        const modal = new ModalBuilder()
+                            .setCustomId(`${task.toAsk.id}`)
+                            .setTitle(`${task.toAsk.title}`);
 
-        let rows = new Array();
+                        let rows = new Array();
 
-        for (const cell of cells) {
-            rows.push(new ActionRowBuilder().addComponents(cell));
+                        for (const field of task.toAsk.fields) {
+                            rows.push(new ActionRowBuilder().addComponents(
+                                new TextInputBuilder()
+                                    .setCustomId(`${field.id}`)
+                                    .setLabel(`${field.label}`)
+                                    .setStyle(TextInputStyle.Short)
+                                    .setMaxLength(64)
+                            ));
+                        }
+
+                        modal.setComponents(rows);
+                        interaction.showModal(modal);
+                        return;
+                    }
+                }
+            }
+        } else {
+            responseFromWelcomeProcess(-1, interaction);
         }
-
-        modal.setComponents(rows);
-        interaction.showModal(modal);
     },
     handleWelcomeFormMenuResponse(interaction) {
         // console.log(interaction.values);
@@ -166,6 +201,31 @@ module.exports = {
         }
     },
     handleWelcomeFormResponse(interaction) {
+
+        let data = {}
+        for (field of interaction.fields.components) {
+            data[field.components[0].customId] = field.components[0].value
+        }
+
+        interaction.update({
+            content: `Vous avez répondu :\n${Object.values(data).join("\n")}\nVous pouvez modifier le formulaire en cliquant sur le bouton Modifier ci-dessous`,
+            components: [
+                new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`launch_${interaction.customId}`)
+                        .setLabel(`Formulaire rempli`)
+                        .setStyle(ButtonStyle.Success)
+                        .setDisabled(true),
+                    new ButtonBuilder()
+                        .setCustomId(`modify_${interaction.customId}`)
+                        .setLabel(`Modifier`)
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(false)
+                )
+            ]
+        });
+
+        /*
         const [name, surname] = interaction.fields.fields.entries();
 
         if (getWelcomeSelectMenusFromJSON(interaction.customId.split("-")[1])) {
@@ -224,5 +284,6 @@ module.exports = {
                 ]
             });
         }
+        */
     }
 }

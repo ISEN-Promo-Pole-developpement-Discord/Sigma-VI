@@ -26,7 +26,7 @@ module.exports = {
         }
     },
     handleFormResponse(interaction) {
-        if (interaction.customId.includes("modalWelcomeForm")) {
+        if (interaction.customId.toLowerCase().includes("welcome")) {
             handleWelcomeFormResponse(interaction);
             return;
         }
