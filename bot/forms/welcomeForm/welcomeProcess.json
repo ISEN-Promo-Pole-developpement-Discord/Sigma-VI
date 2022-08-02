@@ -4,10 +4,11 @@
         {
             "step": 0,
             "name": "Identité",
+            "description": "Pour commencer le formulaire, nous avons besoin de votre nom et prénom.\nVeuillez cliquer sur le bouton ci-dessous pour renseigner vos informations.",
             "toAsk": {
                 "id": "welcomeForm_identity",
                 "type": "Modal",
-                "title": "Veuillez renseigner votre identité",
+                "title": "Renseigner son identité",
                 "fields": [
                     {
                         "id": "welcomeForm_surname",
@@ -25,6 +26,7 @@
         {
             "step": 1,
             "name": "Sexe",
+            "description": "Cliquez sur le menu déroulant ci-dessous pour choisir votre sexe.",
             "toAsk": {
                 "id": "welcomeForm_sex",
                 "type": "SelectMenu",
@@ -54,10 +56,11 @@
         {
             "step": 2,
             "name": "E-Mail",
+            "description": "Nous avons également besoin de votre e-mail.",
             "toAsk": {
                 "id": "welcomeForm_mailForm",
                 "type": "Modal",
-                "title": "Veuillez renseigner votre e-mail",
+                "title": "Renseigner son e-mail",
                 "fields": [
                     {
                         "id": "welcomeForm_mail",
@@ -70,6 +73,7 @@
         {
             "step": 3,
             "name": "Informations supplémentaires",
+            "description": "Précisez votre profil avec les menus déroulants ci-dessous.",
             "toAsk": {
                 "type": "welcomeMenus"
             }
@@ -77,6 +81,7 @@
         {
             "step": 4,
             "name": "Confirmation",
+            "description": "Vous avez terminé le formulaire. Vérifiez vos informations ci-dessous et cliquez sur le bouton adéquat pour terminer le formulaire ou le recommencer.",
             "toAsk": {
                 "id": "welcomeForm_endButtons",
                 "type": "RowButtons",
