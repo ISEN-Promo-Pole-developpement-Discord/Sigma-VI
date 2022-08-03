@@ -32,6 +32,7 @@ const clientPartials = [
 
 const client = new Client({ intents: clientIntents, partials: clientPartials });
 global.debug = debug;
+global.client = client;
 
 // Load all events
 const eventsPath = path.join(__dirname, "events");
