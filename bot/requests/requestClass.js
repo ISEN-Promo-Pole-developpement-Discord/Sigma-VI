@@ -34,12 +34,11 @@ class Request {
     }
 
     async notifyStart(){
-        this.notifyMesssage = await this.getMessage().reply({content: 'Un instant...', ephemeral: true});
         this.getChannel().sendTyping();
     }
 
     notifyError(){
-        this.notifyMesssage.edit({content: 'Une erreur est survenue.', ephemeral: true});
+        this.getMessage().reply({content: "Une erreur est survenue lors de la traitement de votre requête."});
     }
 
     notifyEnd(content){
