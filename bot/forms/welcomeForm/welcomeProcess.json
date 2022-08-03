@@ -81,7 +81,7 @@
         {
             "step": 4,
             "name": "Confirmation",
-            "description": "Vous avez terminé le formulaire. Vérifiez vos informations ci-dessous et cliquez sur le bouton adéquat pour terminer le formulaire ou le recommencer.",
+            "description": "Vous avez terminé le formulaire. Vérifiez vos informations ci-dessus et cliquez sur le bouton adéquat pour terminer le formulaire ou le recommencer.",
             "toAsk": {
                 "id": "welcomeForm_endButtons",
                 "type": "RowButtons",
@@ -98,7 +98,7 @@
                         "type": "Button",
                         "label": "Recommencer le formulaire",
                         "style": "Danger",
-                        "emoji": "❌"
+                        "emoji": "❎"
                     }
                 ]
             }
