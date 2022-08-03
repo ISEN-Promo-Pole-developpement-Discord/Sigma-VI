@@ -46,14 +46,14 @@ function getWelcomeSelectMenusFromJSON(id) {
                         generalMenu.addOptions(new SelectMenuOptionBuilder(generalValue));
                     }
                     generalMenu.setPlaceholder(subKey);
-                    generalMenu.setCustomId(`${subKey}_menu`);
+                    generalMenu.setCustomId(`welcomeForm_${subKey}`);
                     menus.push(generalMenu);
                 }
             }
         }
 
         if(subMenu.options.length !== 0) {
-            subMenu.setPlaceholder(id);
+            subMenu.setPlaceholder(id.split("_").at(-1));
             subMenu.setCustomId(`${id}-subMenu`);
             menus.push(subMenu);
         }
@@ -76,7 +76,18 @@ function getWelcomeSelectMenusFromJSON(id) {
 function responseFromWelcomeProcess(currentStep, interaction) {
     if (welcomeProcess.tasks[currentStep]) {
         if (welcomeProcess.tasks[currentStep].toAsk.type === "welcomeMenus") {
-            return interaction.reply("tkt les menus ça arrive de fou");
+            if (interaction.message.components.length === 1) {
+                const next = searchNode(interaction.values[0], welcomeFormData);
+                if (next) {
+                    const stepData = welcomeProcess.tasks[currentStep];
+                    return interaction.channel.send({
+                        content: `**${stepData.name}**\noui`,
+                        components: getWelcomeSelectMenusFromJSON(interaction.values[0])
+                    });
+                }
+            } else {
+                console.log("oscour");
+            }
         }
     }
 
@@ -117,7 +128,70 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                 )
             ]
         });
+    } else if (stepData.toAsk.type === "welcomeMenus") {
+        //TODO: search in the database what was the initial answer of the user (Étudiant, Invité,...)
+        const userState = 0;
+        switch(userState) {
+            case 0:
+                return interaction.channel.send({
+                    content: `**${stepData.name}**\n${stepData.description}`,
+                    components: getWelcomeSelectMenusFromJSON("welcomeForm_menu_EtudiantISEN")
+                });
+            case 1:
+                return interaction.channel.send({
+                    content: `**${stepData.name}**\n${stepData.description}`,
+                    components: getWelcomeSelectMenusFromJSON("welcomeForm_menu_ProfISEN")
+                });
+            case 2:
+                return interaction.channel.send({
+                    content: `**${stepData.name}**\n${stepData.description}`,
+                    components: getWelcomeSelectMenusFromJSON("welcomeForm_menu_AdministrationISEN")
+                });
+            case 3:
+                return interaction.channel.send({
+                    content: `**${stepData.name}**\n${stepData.description}`,
+                    components: getWelcomeSelectMenusFromJSON("welcomeForm_menu_Invité")
+                });
+        }
+    } else if (stepData.toAsk.type === "RowButtons") {
+        return interaction.channel.send({
+            content: `**${stepData.name}**\n${stepData.description}`,
+            components: [
+                new ActionRowBuilder().addComponents(stepData.toAsk.buttons.map(button => {
+                    let style = null;
+                    switch (button.style) {
+                        case "Primary":
+                            style = ButtonStyle.Primary;
+                            break;
+                        case "Secondary":
+                            style = ButtonStyle.Secondary;
+                            break;
+                        case "Success":
+                            style = ButtonStyle.Success;
+                            break;
+                        case "Danger":
+                            style = ButtonStyle.Danger;
+                            break;
+                        case "Link":
+                            style = ButtonStyle.Link;
+                            break;
+                    }
+                    
+                    return new ButtonBuilder()
+                        .setCustomId(button.id)
+                        .setEmoji(button.emoji)
+                        .setLabel(button.label)
+                        .setStyle(style)
+                }))
+            ]
+        });
+    } else if (stepData.toAsk.type === "adminValidate") {
+        return interaction.channel.send({
+            content: `**${stepData.name}**\nSalut monsieur l'administrateur tu peux vérifier stp ? Merci !`
+        });
     }
+
+    return interaction.channel.send("Fin du formulaire.");
 }
 
 function searchStepFromName(name) {
@@ -158,27 +232,43 @@ module.exports = {
                     }
                 }
             }
-        } else {
+        } else if (interaction.message.content.split("\n").length === 1){
             responseFromWelcomeProcess(-1, interaction);
+        } else {
+            const step = searchStepFromName(interaction.message.content.split("\n")[0].slice(2, -2));
+
+            if (!interaction.message.editedAt) {
+                responseFromWelcomeProcess(step.step, interaction);
+            }
         }
     },
     handleWelcomeFormMenuResponse(interaction) {
 
         const step = searchStepFromName(interaction.message.content.split("\n")[0].slice(2, -2));
-
-        if (!interaction.message.editedAt) {
+        
+        if (interaction.message.components.length === 1) {
+            if (!interaction.message.editedAt) {
+                responseFromWelcomeProcess(step.step, interaction);
+            }
+        } else if (interaction.message.content.split("\n").length === interaction.message.components.length + 3) {
             responseFromWelcomeProcess(step.step, interaction);
         }
 
-        interaction.update({
-            content: `**${step.name}**\nVous avez répondu :\n${interaction.values.map(value => {
-                for (const option of interaction.component.options) {
-                    if (option.value === value) {
-                        return `${option.emoji.name} ${option.label}`;
+        if (interaction.message.components.length === 1) {
+            interaction.update({
+                content: `**${step.name}**\nVous avez répondu :\n${interaction.values.map(value => {
+                    for (const option of interaction.component.options) {
+                        if (option.value === value) {
+                            return `${option.emoji.name} ${option.label}`;
+                        }
                     }
-                }
-            }).join("\n")}\nVous pouvez modifier votre réponse en cliquant à nouveau sur le menu déroulant.`
-        });
+                }).join("\n")}\nVous pouvez modifier votre réponse en cliquant à nouveau sur le menu déroulant.`
+            });
+        } else {
+            interaction.update({
+                content: `**${step.name}**\nVous avez répondu :\nAAAAAAAAAAAA\naaaaaaaaaaaaaaaaa\nVous pouvez modifier votre réponse en cliquant à nouveau sur le menu déroulant.`
+            });
+        }
 
         /*
         let next = searchNode(interaction.values[0], welcomeFormData);
