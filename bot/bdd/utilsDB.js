@@ -24,6 +24,24 @@ function updateTables(connection) {
     });
 }
 
+function userTableQuery(connection, typeOfRequest, insertTab, requestTab)
+{
+    if (typeOfRequest === 0)            // INSERT QUERY
+        connection.query(`INSERT INTO user(user_id, name, surname, status, user_data) VALUES('${insertTab[0]}', '${insertTab[1]}', '${insertTab[2]}', '${insertTab[3]}', '${insertTab[4]}')`);
+    // else if (typeOfRequest === 1)       // UPDATE QUERY
+
+}
+
+function userInfoGrabber(connection, userID)
+{
+    connection.query(`SELECT * FROM user WHERE user_id = '${userID}'`, function(err, results, fields)
+    {
+        if (err) throw(err);
+        else
+            console.log(results);
+    });
+}
+
 module.exports = {
     connection,
     initBdd() {
