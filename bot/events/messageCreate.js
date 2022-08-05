@@ -1,4 +1,4 @@
-const {deleteChannel,createChannel,fetchChannels,clearChannel} = require('../utils/config-forms.js');
+const {deleteChannel,createChannel,fetchChannels,clearChannel,createThread} = require('../utils/config-forms.js');
 
 module.exports = {
     name: "messageCreate",
@@ -51,5 +51,15 @@ module.exports = {
         if(message.content.split(` `)[0].toLowerCase()==='sigmaclearchannel'){
             clearChannel(message.channel)
         }
+
+        if(message.content.split(` `)[0].toLowerCase()===`sigmacreatethread`){
+            if(message.content.split(` `)[1]){
+                console.log(`\nmessage channel omg : ${message.channel}\n`);
+                createThread(message.channel,message.content.split(` `)[1],message);
+            }
+            createThread(message.channel,message.content.split(` `)[1],null);
+        }
+
+        }
     }
-    }
+    

@@ -3,7 +3,7 @@ const { getButtonsFromJSON } = require('../forms/formManager.js');
 const welcomeFormData = require('../forms/welcomeForm/welcomeForm.json');
 
 
-
+//fonction à supprimer(je pense) après le test 
 function createChannel(guild,user,NewChannel,welcomeMsg) {
   //Création d'un channel "de base"
   if(!(NewChannel)){
@@ -67,7 +67,7 @@ function deleteChannel(guild,channel) {
   guild.channels.delete(channel);
   }
 }
-
+//fonction à supprimer après les tests
 function fetchChannels(msgChannel,channelWfetch){
   if(!channelWfetch){
     msgChannel.guild.channels.fetch()
@@ -85,13 +85,15 @@ function fetchChannels(msgChannel,channelWfetch){
       if(entry.name){
         if(entry.name === channelWfetch) {
           msgChannel.send(`le channel : ${channelWfetch} est bien dans le serveur  : ${msgChannel.guild}`);
-        exist=true;
+          exist=true;
+          return entry;
         }
       }}
     ))
     if(exist===false){
         msgChannel.send(`Désolé, le channel ${channelWfetch} n'est pas sur le serveur  : ${msgChannel.guild}`);
-    }
+      return null;
+      }
   }
 }
 
@@ -107,9 +109,21 @@ function clearChannel(channel) {
       )
 
   } 
+} 
 
-
-
+function createThread(channel,ThreadName,message){
+  if(channel) {
+    console.log(`\n\n\nCreation of a thread : ${ThreadName}\n\n\n`)
+    if(ThreadName){
+      channel.threads.create({
+        name : `Welcome : ${ThreadName}`,
+        //startMessage :{components: getButtonsFromJSON(welcomeFormData, null)},
+        startMessage: message,
+      })
+      channel.send(`thread create : ${ThreadName}`);
+    }
+  
+  }
 }
 
 
@@ -118,4 +132,5 @@ module.exports = {
     deleteChannel,
     fetchChannels,
     clearChannel,
+    createThread
 }
