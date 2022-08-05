@@ -34,7 +34,7 @@ class Request {
     }
 
     async notifyStart(){
-        this.getChannel().sendTyping();
+        await this.getChannel().sendTyping();
     }
 
     notifyError(){

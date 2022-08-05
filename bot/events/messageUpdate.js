@@ -1,4 +1,5 @@
 const {logUpdate} = require('../modtools/log/log-admin.js');
+const {updateRequestsFromMessage} = require('../requests/requestManager.js');
 
 module.exports = {
     name: "messageUpdate",
@@ -23,5 +24,6 @@ module.exports = {
                 newMessage,
                 "user",
             );
+        updateRequestsFromMessage(newMessage, global.client);
     }
 }
