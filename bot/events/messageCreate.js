@@ -1,5 +1,5 @@
-const {deleteChannel,createChannel,fetchChannels} = require('../utils/config-forms.js');
-
+const { deleteChannel, createChannel, fetchChannels } = require('../utils/config-forms.js');
+const { launchRequestProcessing } = require('../requests/requestManager.js');
 module.exports = {
     name: "messageCreate",
     once: false,
@@ -10,40 +10,8 @@ module.exports = {
          * @event messageCreate
          * @returns {Promise<void>}
          */
-        console.log(`Nouveau message par ${message.author.tag}: ${message.content} et en plus l'icon ${message.author.avatarURL()}`);
-        console.log(`channel : ${message.channel}`);
-
-        if(message.content.split(` `)[0]==='SigmaDeleteChannel'){
-                message.guild.channels.fetch()
-                     .then( channels => channels.forEach((entry,snowflake) => {
-                        if(entry.name){
-                         if(entry.name===message.content.split(` `)[1]){
-                             deleteChannel(message.guild,entry.name);
-                         }
-                }}
-                     )
-                     )
-                     deleteChannel(message.guild,message.channel);
-            }
-
-            if(message.content.split(` `)[0]==='SigmaCreateChannel'){
-                if(!message.content.split(` `)[1]){
-                createChannel(message.guild,message.author);
-            }
-            else {
-                   createChannel(message.guild,message.author,message.content.split(` `)[1]);
-                
-            }
-        }       
-
-        if(message.content.split(` `)[0]==='SigmafetchChannel'){
-            if(!message.content.split(` `)[1]){
-                fetchChannels(message.channel);
-            }
-            else{
-                fetchChannels(message.channel,message.content.split(` `)[1]);
-            }
-
-        }
-        }
+        if (message.author.bot) return;
+        if (!message.content) return;
+        launchRequestProcessing(message, global.client);
     }
+}
