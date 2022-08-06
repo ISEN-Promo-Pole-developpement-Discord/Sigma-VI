@@ -1,13 +1,23 @@
 const {getListOfModules, getModuleKeys} = require('../modules/modulesManager.js');
 
+function getBestStringModule(string){
+    var scores = getPerModuleScores(string);
+    var module = null;
+    var maxScore = 0;
+    for(var score in scores){
+        if(scores[score] > maxScore){
+            maxScore = scores[score];
+            module = score;
+        }
+    }
+    return module;
+}
 
-function getPerModuleScores (string) {
+function getPerModuleScores(string) {
     var scores = {};
     var modules = getListOfModules();
-    console.log(modules);
     for(var module of modules){
         var keys = getModuleKeys(module);
-        console.log(keys);
         if(keys !== null){
             for(var key in keys){
                 if(string.includes(key)){
@@ -19,3 +29,5 @@ function getPerModuleScores (string) {
     }
     return scores;
 }
+
+module.exports = {getPerModuleScores, getBestStringModule};

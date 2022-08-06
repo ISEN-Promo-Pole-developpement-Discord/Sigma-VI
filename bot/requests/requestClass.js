@@ -26,7 +26,8 @@ class Request {
 
     //Standardized Request Wording Format
     SRWF(){
-        return this.content.toLowerCase().trim().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+        var content = this.content.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+        return content.toLowerCase().trim().normalize("NFD").replace(/\p{Diacritic}/gu, "");
     }
     
     SRWFwords(){

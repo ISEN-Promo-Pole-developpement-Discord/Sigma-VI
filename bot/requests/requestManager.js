@@ -1,6 +1,11 @@
 const {ChannelType, MessageType} = require('discord.js');
-const { createPool } = require('mysql2');
 const {Request} = require('./requestClass.js');
+const {submitRequestToModule} = require('./modules/modulesManager.js');
+const {getBestStringModule} = require('./processors/getScore.js');
+const {testRequestScore} = require('./processors/tests.js');
+
+// test modules validity and scoring at startup
+testRequestScore();
 
 async function updateRequestsFromMessage(message, client){
 
@@ -20,9 +25,9 @@ async function updateRequestsFromMessage(message, client){
 async function launchRequestProcessing(message, client){
     var requests = await getRequestsFromMessage(message, client);
     for(var request of requests){
-        await request.notifyStart();
-        console.log("[REQUEST] "+request.message.author.tag+" : "+request.message.content);
-        request.notifyEnd("Requête traitée.\n> " + request.content + "\n> " + request.SRWF());
+        var module = getBestStringModule(request.SRWF());
+        if(module !== null) submitRequestToModule(request, module);
+        else request.getMessage().react("❔");
     }
 }
 
