@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/ISEN-Promo-Pole-developpement-Discord/Sigma-VI#readme",
   "dependencies": {
+    "chai": "^4.3.6",
     "discord.js": "^14.0.2",
     "mysql2": "^2.3.3"
   }
