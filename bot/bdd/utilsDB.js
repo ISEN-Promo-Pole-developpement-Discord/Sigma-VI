@@ -10,6 +10,8 @@ const connection = mysql.createConnection({
     multipleStatements: true
 });
 
+global.sqlConnection = connection;
+
 function updateTables(connection) {
     const sqlScript = fs.readFileSync("./bdd/createTables.sql").toString();
 
@@ -32,6 +34,7 @@ function userTableQuery(connection, typeOfRequest, insertTab, requestTab)
 
 }
 
+// TODO : Need to move out this function into UserManager Class
 function userInfoGrabber(connection, userID)
 {
     connection.query(`SELECT * FROM user WHERE user_id = '${userID}'`, function(err, results, fields)
