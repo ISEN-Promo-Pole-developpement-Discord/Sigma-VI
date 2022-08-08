@@ -2,12 +2,12 @@ const {User} = require('./user.js');
 
 class UsersManager
 {
-    async getUser(id)
+    static async getUser(id)
     {
         // PROBLEM WITH await AND promise
-        const connexion = global.sqlConnection;
+        const connection = global.sqlConnection;
         const query = "SELECT * FROM user WHERE user_id = ?";
-        const data = await connexion.query(query, id);
+        const data = await connection(query, id);
         if (data === null || data === undefined) return null;
         else
             return new User(id);
