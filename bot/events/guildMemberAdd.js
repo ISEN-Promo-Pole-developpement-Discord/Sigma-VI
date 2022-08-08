@@ -28,8 +28,8 @@ module.exports = {
 
                 if (!(row && row.length))
                 {
-                    UsersManager.addUser({id: member.id, name: "", surname: "", email: "", password: ""});
-                    UserGuildStatusManager.addUserGuildStatus({user_id: member.id, guild_id: member.guild.id, status: 0, form_id: null});
+                    // UsersManager.addUser({id: member.id, name: "", surname: "", email: "", password: ""});
+                    // UserGuildStatusManager.addUserGuildStatus({user_id: member.id, guild_id: member.guild.id, status: 0, form_id: null});
                     // TODO : Need to implement the form_id
                 }
                 else {
@@ -38,7 +38,9 @@ module.exports = {
             }
         });
         // Only here to test
-        // console.log(UsersManager.getUser(member.id));
+        UsersManager.getUser(member.id).then((result) => {
+            console.log(result);
+        });
             /* member.createDM().then(channel => {
 
          });*/
