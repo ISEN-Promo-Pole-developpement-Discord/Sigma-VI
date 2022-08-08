@@ -1,6 +1,7 @@
 const mysql = require("mysql2");
 const config = require("../config.json");
-const fs = require("node:fs")
+const fs = require("node:fs");
+const util = require("util");
 
 const connection = mysql.createConnection({
     host: config.mysql.host,
@@ -10,7 +11,9 @@ const connection = mysql.createConnection({
     multipleStatements: true
 });
 
-global.sqlConnection = connection;
+const query = util.promisify(connection.query).bind(connection);
+
+global.sqlConnection = query;
 
 function updateTables(connection) {
     const sqlScript = fs.readFileSync("./bdd/createTables.sql").toString();
@@ -24,14 +27,6 @@ function updateTables(connection) {
             console.log(results);
         }
     });
-}
-
-function userTableQuery(connection, typeOfRequest, insertTab, requestTab)
-{
-    if (typeOfRequest === 0)            // INSERT QUERY
-        connection.query(`INSERT INTO user(user_id, name, surname, status, user_data) VALUES('${insertTab[0]}', '${insertTab[1]}', '${insertTab[2]}', '${insertTab[3]}', '${insertTab[4]}')`);
-    // else if (typeOfRequest === 1)       // UPDATE QUERY
-
 }
 
 // TODO : Need to move out this function into UserManager Class
