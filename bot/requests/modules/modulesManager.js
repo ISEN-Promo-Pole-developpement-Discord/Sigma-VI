@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require("path");
+const { Collection } = require('discord.js');
 
 const modulesPath = path.join(__dirname);
 
@@ -9,12 +10,17 @@ function getModulePath(moduleName){
 
 async function submitRequestToModule(request, module){
     moduleProcessPath = getModulePath(module) + '/mod.js';
-    console.log(moduleProcessPath);
     if(fs.existsSync(moduleProcessPath)){
         var moduleProcess = require(moduleProcessPath);
         console.log("[MODULE] "+module+" : "+request.content);
-        if(typeof moduleProcess === "function")
-        moduleProcess(request);
+        if(typeof moduleProcess === "function"){
+            try{
+                moduleProcess(request);
+            }catch(err){
+                console.log(err);
+                request.notifyEnd(`Une erreur est survenue. (module "${module.toUpperCase()}")\n`);
+            }
+        }
     }
 }
 
@@ -46,12 +52,35 @@ function getModuleTests(moduleName){
     if(fs.existsSync(testsPath)) return require(testsPath);
     return null;
 }
+ function loadModulesCommands(guildId){
+    const { REST } = require('@discordjs/rest');
+    const { Routes } = require('discord.js');
+    var modules = getListOfModules();
+    var commands = [];
+    for(var module of modules){
+        var moduleCommand = loadModuleCommand(module);
+        if(moduleCommand !== undefined) commands.push(moduleCommand.data.toJSON());
+    }
+    const rest = new REST({version: '10'}).setToken(global.config.token);
+    rest.put(Routes.applicationGuildCommands(global.client.user.id, guildId), { body: commands })
+	.then(() => console.log('Successfully registered modules application commands for server ' + guildId))
+	.catch(console.error);
+}
 
+function loadModuleCommand(moduleName){
+    commandPath = getModulePath(moduleName) + '/command.json';
+    if(fs.existsSync(commandPath)){
+        const command = require(commandPath);
+        global.client.commands.set(command.data.name, command);
+        return command;
+    }
+}
 
 module.exports = {
     getListOfModules,
     getModuleKeys,
     getModuleTests,
     submitRequestToModule,
-    getModulePath
+    getModulePath,
+    loadModulesCommands
 }
