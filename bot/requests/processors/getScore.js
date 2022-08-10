@@ -1,4 +1,5 @@
 const {getListOfModules, getModuleKeys} = require('../modules/modulesManager.js');
+const {includedSimilarity} = require('./stringIncludeSimilarity.js');
 
 function getBestStringModule(string){
     var scores = getPerModuleScores(string);
@@ -10,6 +11,7 @@ function getBestStringModule(string){
             module = score;
         }
     }
+    if(maxScore < 10) return null;
     return module;
 }
 
@@ -20,9 +22,10 @@ function getPerModuleScores(string) {
         var keys = getModuleKeys(module);
         if(keys !== null){
             for(var key in keys){
-                if(string.includes(key)){
+                var similarity = includedSimilarity(string, key);
+                if(similarity > 0.5){
                     if(!scores[module]) scores[module] = 0;
-                    scores[module]+=(keys[key]);
+                    scores[module]+=(keys[key] * similarity);
                 }
             }
         }
