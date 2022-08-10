@@ -36,8 +36,8 @@ global.debug = debug;
 // Load all events
 const eventsPath = path.join(__dirname, "events");
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".js"));
-launch = async () => {
-    console.log("< Chargement des évènements...");
+(async () => {
+    console.log("> Chargement des évènements...");
     for (const file of eventFiles) {
         const filePath = path.join(eventsPath, file);
         const event = require(filePath);
@@ -47,24 +47,19 @@ launch = async () => {
             client.on(event.name, (...args) => event.execute(...args))
         }
     }
-    console.log("> Évènements chargés.");
 
-    console.log("< Connection à la base de données...");
+    console.log("> Connection à la base de données...");
     await initBdd();
-    console.log("> Base de données connectée.");
 
-    console.log("< Connection à Discord...");
+    console.log("> Connection à Discord...");
     await client.login(global.config.token);
     global.client = client;
     global.client.commands = new Collection();
-    console.log("> Connecté.");
 
-    console.log("< Chargement des modules...");
+    console.log("> Chargement des modules...");
     guilds = await client.guilds.fetch();
-    for (const guild of guilds) {
-        await loadModulesCommands(guild[0]);
-    }
-    console.log("> Modules chargés.");
-};
-
-launch();
+    // for (const guild of guilds) {
+    //     loadModulesCommands(guild[0]);
+    // }
+    loadModulesCommands();
+})();

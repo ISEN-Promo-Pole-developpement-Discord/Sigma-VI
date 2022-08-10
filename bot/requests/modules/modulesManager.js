@@ -52,7 +52,7 @@ function getModuleTests(moduleName){
     if(fs.existsSync(testsPath)) return require(testsPath);
     return null;
 }
- function loadModulesCommands(guildId){
+function loadModulesCommands(guildId = null){
     const { REST } = require('@discordjs/rest');
     const { Routes } = require('discord.js');
     var modules = getListOfModules();
@@ -62,13 +62,19 @@ function getModuleTests(moduleName){
         if(moduleCommand !== undefined) commands.push(moduleCommand.data.toJSON());
     }
     const rest = new REST({version: '10'}).setToken(global.config.token);
-    rest.put(Routes.applicationGuildCommands(global.client.user.id, guildId), { body: commands })
-	.then(() => console.log('Successfully registered modules application commands for server ' + guildId))
-	.catch(console.error);
+    if(guildId){
+        rest.put(Routes.applicationGuildCommands(global.client.user.id, guildId), { body: commands })
+        .then(() => console.log('Successfully registered modules application commands for server ' + guildId))
+        .catch(console.error);
+    }else{
+        rest.put(Routes.applicationCommands(global.client.user.id), { body: commands })
+        .then(() => console.log('Successfully registered modules global application commands'))
+        .catch(console.error);
+    }
 }
 
 function loadModuleCommand(moduleName){
-    commandPath = getModulePath(moduleName) + '/command.json';
+    commandPath = getModulePath(moduleName) + '/command.js';
     if(fs.existsSync(commandPath)){
         const command = require(commandPath);
         global.client.commands.set(command.data.name, command);

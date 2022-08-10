@@ -4,13 +4,25 @@ const { handleButtonClickForm, handleFormResponse, handleMenuFormResponse } = re
 module.exports = {
     name: "interactionCreate",
     once: false,
-    execute(interaction) {
+    async execute(interaction) {
         /**
          * Emitted when an interaction is created.
          * @param {Interaction} interaction The interaction that got created
          * @event interactionCreate
          * @returns {Promise<void>}
          */
+
+        if(interaction.type === InteractionType.ApplicationCommand){
+            const command = global.client.commands.get(interaction.commandName);
+	        if (!command) return;
+            try {
+                await command.execute(interaction);
+            } catch (error) {
+                console.error(error);
+                await interaction.reply({ content: 'Une erreur est survenue.', ephemeral: true });
+            }
+            return;
+        }
 
         if (interaction.type === InteractionType.MessageComponent) {
             if (interaction.componentType === ComponentType.Button) {
