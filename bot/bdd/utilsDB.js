@@ -27,7 +27,7 @@ function updateTables(connection) {
 module.exports = {
     connection,
     initBdd() {
-        console.log("Connexion à la base de données MySQL...");
+        console.log("Connexion...");
         connection.connect(function(err) {
             if (err) throw err;
             console.log("Connecté à la base de données MySQL.");
