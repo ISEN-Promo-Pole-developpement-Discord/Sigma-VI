@@ -43,8 +43,12 @@ class Request {
     }
 
     notifyEnd(content){
-        this.getMessage().reply({content: content});
+        this.getMessage().reply(content);
         // this.notifyMesssage.delete();
+    }
+
+    createdAt(){
+        return this.message.createdAt;
     }
 }
 
