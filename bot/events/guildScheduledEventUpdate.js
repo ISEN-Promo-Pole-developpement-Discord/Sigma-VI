@@ -14,12 +14,8 @@ module.exports = {
          logUpdate(
             oldGuildScheduledEvent.guild,
             "GuildScheduled",
-            {
-                username: oldGuildScheduledEvent.name,
-            },
-            {
-                username: newGuildScheduledEvent.name,
-            } ,
+            null,
+            null,
             oldGuildScheduledEvent,
             newGuildScheduledEvent,
             "admin",

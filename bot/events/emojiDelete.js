@@ -15,10 +15,7 @@ module.exports = {
          logDelete(
             emoji.guild,
             "Emoji",
-            {   
-                username: userAuthor.tag,
-                avatarURL: userAuthor.displayAvatarURL(),
-            },
+            userAuthor,
             null,
             emoji,
             "admin",

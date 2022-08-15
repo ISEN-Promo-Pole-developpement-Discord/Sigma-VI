@@ -17,10 +17,7 @@ module.exports = {
          logUpdate(
             oldGuild,   
             "GuildUpdate",
-            {
-                username: userAuthor.tag,
-                avatarURL: userAuthor.displayAvatarURL(),
-            },
+            userAuthor,
             null,
             oldGuild,
             newGuild,

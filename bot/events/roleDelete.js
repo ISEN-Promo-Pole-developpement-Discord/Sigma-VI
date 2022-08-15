@@ -10,13 +10,16 @@ module.exports = {
          * @event roleDelete
          * @returns {Promise<void>}
         */
-         logDelete(
-            role.guild,
-            "Role",
-            null,
-            null,
-            role,
-            "admin",
-        )
+
+         getActionAuthor(oldGuild.guild, oldGuild, "role").then(userAuthor => {
+            logDelete(
+                role.guild,
+                "Role",
+                userAuthor,
+                null,
+                role,
+                "admin",
+            )
+        });
     }
 }

@@ -17,10 +17,7 @@ module.exports = {
         logUpdate(
             newEmoji.guild,
             "Emoji",
-            {   
-                username: userAuthor.tag,
-                avatarURL: userAuthor.displayAvatarURL(),
-            },
+            userAuthor,
             null,
             oldEmoji,
             newEmoji,

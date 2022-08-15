@@ -16,10 +16,7 @@ module.exports = {
          logCreate(
             emoji.guild,
             "Emoji",
-            {   
-                username: userAuthor.tag,
-                avatarURL: userAuthor.displayAvatarURL(),
-            },
+            userAuthor,
             emoji,
             "admin",
         );

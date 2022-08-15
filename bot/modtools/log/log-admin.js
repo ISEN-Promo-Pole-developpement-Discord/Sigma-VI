@@ -63,10 +63,10 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
 
     if(userAuthor){
         if(userTarget){
-            embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
-            embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
+            embedShematic.author = {name: userTarget.tag, icon_url: userTarget.displayAvatarURL()};
+            embedShematic.footer = {text: userAuthor.tag, icon_url: userAuthor.displayAvatarURL()};
         } 
-        else embedShematic.author = {name: userAuthor.username, icon_url: userAuthor.avatarURL};
+        else embedShematic.author = {name: userAuthor.tag, icon_url: userAuthor.displayAvatarURL()};
     }
 
     if(newObject.iconURL) embedShematic.image = {url: newObject.iconURL()};
@@ -97,9 +97,9 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
         embedShematic.title = `${type} "${oldObject.name}" Delete`:
         embedShematic.title = `${type} Delete`;
     if(type === "GuildMember") embedShematic.title = `${oldObject.displayName} left`;
-    if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
+    if(userAuthor) embedShematic.footer = {text: userAuthor.tag, icon_url: userAuthor.displayAvatarURL()};
     if(oldObject.image) embedShematic.image = {url: oldObject.image};
-    if(userTarget) embedShematic.author = {name: userTarget.username, icon_url: userTarget.avatarURL};
+    if(userTarget) embedShematic.author = {name: userTarget.tag, icon_url: userTarget.displayAvatarURL()};
     if(!oldObject.timestamp){time=oldObject.createdAt}
     
     embedShematic.fields = objectClassDataToFields(oldObject);
@@ -127,7 +127,7 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
             embedShematic.title = `${type} "${newObject.name}" Created`:
             embedShematic.title = `${type} Created`;
         if(type === "GuildMember") embedShematic.title = `${newObject.displayName} joined`;
-        if(userAuthor) embedShematic.footer = {text: userAuthor.username, icon_url: userAuthor.avatarURL};
+        if(userAuthor) embedShematic.footer = {text: userAuthor.tag, icon_url: userAuthor.displayAvatarURL()};
         if(newObject.image) embedShematic.image = {url: newObject.image};
         if(!newObject.timestamp){time=newObject.createdAt}
 

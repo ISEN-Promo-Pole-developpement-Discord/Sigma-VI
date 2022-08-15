@@ -11,14 +11,17 @@ module.exports = {
          * @event roleUpdate
          * @returns {Promise<void>}
         */
-        logUpdate(
-            oldRole.guild,
-            "Role",
-            null,
-            null,
-            oldRole,
-            newRole,
-            "admin"
-        );
+
+        getActionAuthor(oldGuild.guild, oldGuild, "role").then(userAuthor => {
+            logUpdate(
+                oldRole.guild,
+                "Role",
+                userAuthor,
+                null,
+                oldRole,
+                newRole,
+                "admin"
+            );
+        });
     }
 }

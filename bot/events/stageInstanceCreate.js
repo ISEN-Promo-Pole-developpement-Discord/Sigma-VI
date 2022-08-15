@@ -14,10 +14,7 @@ module.exports = {
             logCreate(
                 stageInstance.guild,
                 "Stage Instance",
-                {
-                    username: userAuthor.tag,
-                    avatarURL: userAuthor.displayAvatarURL(),
-                },
+                userAuthor,
                 stageInstance,
                 "admin",
             );

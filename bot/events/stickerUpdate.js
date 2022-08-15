@@ -16,10 +16,7 @@ module.exports = {
          logUpdate(
             oldSticker.guild,
             "Sticker",
-            {
-                username: userAuthor.tag,
-                avatarURL: userAuthor.displayAvatarURL(),
-            },
+            userAuthor,
             null,
             oldSticker,
             newSticker,

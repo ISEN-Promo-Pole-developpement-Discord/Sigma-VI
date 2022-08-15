@@ -22,10 +22,7 @@ module.exports = {
           logUpdate(
             oldChannel.guild,
             "Channel",
-            {   
-                username: userAuthor.tag,
-                avatarURL: userAuthor.displayAvatarURL(),
-            },
+            userAuthor,
             null,
             oldChannel,
             newChannel,

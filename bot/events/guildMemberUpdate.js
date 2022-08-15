@@ -14,14 +14,8 @@ module.exports = {
     logUpdate(
         newMember.guild,
         "GuildMember",
-        {
-            username: oldMember.displayName,
-            avatarURL: oldMember.displayAvatarURL(),
-        },
-        {
-            username: newMember.displayName,
-            avatarURL: newMember.displayAvatarURL(),
-        },
+        null,
+        newMember,
         oldMember,
         newMember,
         "admin",

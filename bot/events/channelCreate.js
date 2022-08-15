@@ -15,10 +15,7 @@ module.exports = {
          logCreate(
             channel.guild,
             "Channel",
-            {   
-                username: userAuthor.tag,
-                avatarURL: userAuthor.displayAvatarURL(),
-            },
+            userAuthor,
             channel,
             "admin",
         );

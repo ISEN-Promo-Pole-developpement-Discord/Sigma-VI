@@ -15,10 +15,7 @@ module.exports = {
          logDelete(
             sticker.guild,
             "Sticker",
-            {
-                username: userAuthor.tag,
-                avatarURL: userAuthor.displayAvatarURL(),
-            },
+            userAuthor,
             null,
             sticker,
             "admin",

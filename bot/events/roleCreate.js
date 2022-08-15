@@ -14,12 +14,14 @@ module.exports = {
         // FIXME - Update of a role provoke a role creation logs spam (in every case except one)
         // FIXME - Update of a role is considered as a role creation (in logs)
        
-        logCreate(
-            role.guild,
-            "role",
-            null,
-            role,
-            "admin",
-        );
+        getActionAuthor(oldGuild.guild, oldGuild, "role").then(userAuthor => {
+            logCreate(
+                role.guild,
+                "role",
+                userAuthor,
+                role,
+                "admin",
+            );
+        });
     }
 }

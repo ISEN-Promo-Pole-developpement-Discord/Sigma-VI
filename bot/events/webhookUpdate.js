@@ -25,9 +25,7 @@ module.exports = {
         logUpdate(
             channel.guild,
             "Webhook",
-            {
-                username  : channel.name,
-            },
+            null,
             null,
             channel,
             channel,

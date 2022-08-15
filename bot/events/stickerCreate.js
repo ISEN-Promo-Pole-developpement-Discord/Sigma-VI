@@ -14,10 +14,7 @@ module.exports = {
          logCreate(
             sticker.guild,
             "Sticker",
-            {
-                username: userAuthor.tag,
-                avatarURL: userAuthor.displayAvatarURL(),
-            },
+            userAuthor,
             sticker,
             "admin",
         );

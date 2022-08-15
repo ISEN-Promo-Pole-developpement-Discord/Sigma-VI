@@ -15,10 +15,7 @@ module.exports = {
          logCreate(
             guildScheduledEvent.guild,
             "GuildScheduled Event",
-            {   
-                username: userAuthor.tag,
-                avatarURL: userAuthor.displayAvatarURL(),
-            },
+            userAuthor,
             guildScheduledEvent,
             "admin",
         );

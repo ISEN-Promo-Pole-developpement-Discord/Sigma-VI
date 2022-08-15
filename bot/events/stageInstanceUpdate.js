@@ -16,10 +16,7 @@ module.exports = {
             logCreate(
                 invite.guild,
                 "invite",
-                {
-                    username: userAuthor.tag,
-                    avatarURL: userAuthor.displayAvatarURL(),
-                },
+                userAuthor,
                 null,
                 invite,
                 "admin",

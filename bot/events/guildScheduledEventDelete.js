@@ -16,10 +16,7 @@ module.exports = {
             logDelete(
                guildScheduledEvent.guild,
                "GuildScheduled Event",
-               {   
-                   username: userAuthor.tag,
-                   avatarURL: userAuthor.displayAvatarURL(),
-               },
+               userAuthor,
                null,
                guildScheduledEvent,
                "admin",
