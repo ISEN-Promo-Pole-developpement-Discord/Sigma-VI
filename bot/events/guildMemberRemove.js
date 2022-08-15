@@ -1,4 +1,4 @@
-const {logDelete} = require('../modtools/log/log-admin.js');
+const {logDelete} = require('../modtools/log/logModules.js');
 const {deleteChannel} = require('../utils/config-forms.js');
 const db = require("../bdd/utilsDB");
 

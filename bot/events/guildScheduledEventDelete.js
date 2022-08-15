@@ -1,4 +1,4 @@
-const { logDelete } = require("../modtools/log/log-admin");
+const { logDelete } = require("../modtools/log/logModules");
 const {getActionAuthor} = require('../modtools/log/logger.js');
 
 module.exports = {

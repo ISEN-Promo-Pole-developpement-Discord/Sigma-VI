@@ -1,4 +1,4 @@
-const {logCreate, logDelete} = require('../modtools/log/log-admin.js');
+const {logCreate, logDelete} = require('../modtools/log/logModules.js');
 
 module.exports = {
     name: "guildBanRemove",

@@ -1,4 +1,4 @@
-const {logCreate} = require('../modtools/log/log-admin.js');
+const {logCreate} = require('../modtools/log/logModules.js');
 const {createChannel} = require('../utils/config-forms.js');
 const db = require("../bdd/utilsDB");
 const {UsersManager} = require("../bdd/classes/usersManager")

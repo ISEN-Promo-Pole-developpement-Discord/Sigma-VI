@@ -1,4 +1,4 @@
-const {logCreate} = require('../modtools/log/log-admin.js');
+const {logCreate} = require('../modtools/log/logModules.js');
 
 module.exports = {
     name: "roleCreate",
