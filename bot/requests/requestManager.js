@@ -63,7 +63,7 @@ async function getRequestsFromMessage(message, client, force = false){
 
 function containACall(string, client, exclusive = false){
     string = string.toLowerCase().trim();
-    supportedCalls = ["sigma,", "sigma ?", "dit sigma", "<@"+client.user.id+">", "<@!"+client.user.id+">", "<@&"+client.user.id+">"];
+    supportedCalls = ["sigma,", "sigma ?", "sigma !", "hey sigma", "dit sigma", "<@"+client.user.id+">", "<@!"+client.user.id+">", "<@&"+client.user.id+">"];
     if(exclusive) return supportedCalls.includes(string);
     return supportedCalls.some(call => string.includes(call));
 }
