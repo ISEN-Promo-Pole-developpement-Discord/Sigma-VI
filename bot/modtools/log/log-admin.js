@@ -74,7 +74,6 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
 
     embedShematic.timestamp = new Date();
     embedShematic.fields = objectUpdateGetChangesFields(oldObject, newObject);
-    embedShematic.fields = embedShematic.fields.concat(objectClassDataToFields(newObject));
     embedShematic.color = "#642eda";
     const embed = newEmbed(embedShematic);
     try{

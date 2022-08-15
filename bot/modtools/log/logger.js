@@ -62,7 +62,6 @@ function objectClassDataToFields(object) {
             if (object[key] !== null) {
                 try {
                     if(typeof object[key] == "string" || typeof object[key] == "number" || typeof object[key] == "boolean" || object[key].toString){
-                        if(key.toLowerCase().includes("edited") || key.toLowerCase().includes("identifier")) break;
                         if(key.toLowerCase().includes("timestamp")) fields.push({name: keyMajor, value: `<t:${Math.floor(object[key]/1000)}:f>`, inline: true});
                         else if(key.toLowerCase().includes("color")) fields.push({name: keyMajor, value: `${object.hexColor}`, inline: true});
                         else if(key.toLowerCase().includes("content") && typeof object[key] == "string"){
@@ -192,22 +191,34 @@ function objectClassDataToFields(object) {
 */
 
 function objectUpdateGetChangesFields(oldObject, newObject) {
+
     let fields = [];
-    
-    for(let key of Object.keys(oldObject)) {
-        if(oldObject[key] !== newObject[key]) {
+    let objectHerited = oldObject;
+    while (objectHerited !== null) {
+        for(let key of Object.getOwnPropertyNames(objectHerited)) {
             const keyMajor = key.charAt(0).toUpperCase() + key.slice(1);
-            if(typeof oldObject[key] == "string" || typeof oldObject[key] == "number" || typeof oldObject[key] == "boolean"){
-                if(key.toLowerCase().includes("edited") || key.toLowerCase().includes("identifier")) break;
-                if(key.toLowerCase().includes("timestamp")) fields.push({name: `${keyMajor} updated`, value: `<t:${Math.floor(oldObject[key]/1000)}:f> -> <t:${Math.floor(newObject[key]/1000)}:f>`, inline: false});
-                else if(key.toLowerCase().includes("color")) fields.push({name: `${keyMajor} updated`, value: `${oldObject.hexColor} -> ${newObject.hexColor}`, inline: false});
-                else if(key.toLowerCase().includes("content")){
-                    fields.push({name: `Content before`, value: oldObject[key], inline: false});
-                    fields.push({name: `Content after`, value: newObject[key], inline: false});
-                } else fields.push({name: `${keyMajor} updated`, value: `${oldObject[key]} -> ${newObject[key]}`, inline: false});
+            if (oldObject[key] !== null && newObject[key] !== null) {
+                try {
+                    if(oldObject[key] !== newObject[key] && !fields.map(x => {return x.name}).includes(`${keyMajor} updated`)) {
+                        if(typeof oldObject[key] == "string" || typeof oldObject[key] == "number" || typeof oldObject[key] == "boolean"){
+                            if(key.toLowerCase().includes("timestamp")) fields.push({name: `${keyMajor} updated`, value: `<t:${Math.floor(oldObject[key]/1000)}:f> -> <t:${Math.floor(newObject[key]/1000)}:f>`, inline: false});
+                            else if(key.toLowerCase().includes("color")) fields.push({name: `${keyMajor} updated`, value: `${oldObject.hexColor} -> ${newObject.hexColor}`, inline: false});
+                            else if(key.toLowerCase().includes("content")){
+                                if (!fields.map(x => {return x.name}).includes(`Content before`)) {
+                                    fields.push({name: `Content before`, value: oldObject[key], inline: false});
+                                    fields.push({name: `Content after`, value: newObject[key], inline: false});
+                                }
+                            } else fields.push({name: `${keyMajor} updated`, value: `${oldObject[key]} -> ${newObject[key]}`, inline: false});
+                        }
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
             }
         }
-    }
+
+        objectHerited = Object.getPrototypeOf(objectHerited);
+    };
 
     if(oldObject.permissions){
         let updatedPermissions = null;
