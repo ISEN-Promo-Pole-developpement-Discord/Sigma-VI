@@ -14,7 +14,7 @@ module.exports = {
             logUpdate(
                 oldMessage.guild,
                 "Message",
-                userAuthor,
+                oldMessage.author,
                 null,
                 oldMessage,
                 newMessage,
