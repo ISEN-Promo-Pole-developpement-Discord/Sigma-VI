@@ -95,7 +95,8 @@ function objectClassDataToFields(object) {
         fields[i].value.includes("object") || fields[i].value.includes("function") || fields[i].value.includes("return") ||
         fields[i].name.includes("_") || fields[i].value.includes("async") || fields[i].name.includes("At") ||
         fields[i].name.includes("able") || fields[i].value.includes("undefined") || fields[i].name.includes("Deleted") || fields[i].name.includes("Partial") ||
-        fields[i].name.toLowerCase().includes("guild")) {
+        fields[i].name.toLowerCase().includes("guild") || fields[i].name.includes("Pending") || fields[i].name.includes("System") ||
+        fields[i].name.includes("Username") || fields[i].name.includes("Discriminator")) {
             fields.splice(i, 1);
             i--;
         }
