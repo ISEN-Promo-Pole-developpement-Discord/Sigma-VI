@@ -95,13 +95,22 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
     oldObject.name ? 
         embedShematic.title = `${type} "${oldObject.name}" Delete`:
         embedShematic.title = `${type} Delete`;
-    if(type === "GuildMember") embedShematic.title = `${oldObject.displayName} left`;
     if(userAuthor) embedShematic.footer = {text: userAuthor.tag, icon_url: userAuthor.displayAvatarURL()};
     if(oldObject.image) embedShematic.image = {url: oldObject.image};
     if(userTarget) embedShematic.author = {name: userTarget.tag, icon_url: userTarget.displayAvatarURL()};
     if(!oldObject.timestamp){time=oldObject.createdAt}
     
     embedShematic.fields = objectClassDataToFields(oldObject);
+    if(type === "GuildMember"){
+        embedShematic.title = `${oldObject.displayName} left`;
+        embedShematic.fields = embedShematic.fields.concat(objectClassDataToFields(oldObject.user));
+        for(let i = 0; i < embedShematic.fields.length; i++) {
+            if(embedShematic.fields.map(x => {return x.name}).slice(i+1).includes(embedShematic.fields[i].name)) {
+                embedShematic.fields.splice(i, 1);
+                i--;
+            }
+        }
+    }
     embedShematic.timestamp = new Date();
     embedShematic.color = "#FF0000";
 
@@ -125,12 +134,21 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         newObject.name ? 
             embedShematic.title = `${type} "${newObject.name}" Created`:
             embedShematic.title = `${type} Created`;
-        if(type === "GuildMember") embedShematic.title = `${newObject.displayName} joined`;
         if(userAuthor) embedShematic.footer = {text: userAuthor.tag, icon_url: userAuthor.displayAvatarURL()};
         if(newObject.image) embedShematic.image = {url: newObject.image};
         if(!newObject.timestamp){time=newObject.createdAt}
 
         embedShematic.fields = objectClassDataToFields(newObject);
+        if(type === "GuildMember"){
+            embedShematic.title = `${newObject.displayName} joined`;
+            embedShematic.fields = embedShematic.fields.concat(objectClassDataToFields(newObject.user));
+            for(let i = 0; i < embedShematic.fields.length; i++) {
+                if(embedShematic.fields.map(x => {return x.name}).slice(i+1).includes(embedShematic.fields[i].name)) {
+                    embedShematic.fields.splice(i, 1);
+                    i--;
+                }
+            }
+        }
 
         embedShematic.timestamp = new Date();
         embedShematic.color = "#00FF00";
