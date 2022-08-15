@@ -111,6 +111,9 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
             }
         }
     }
+    embedShematic.fields = embedShematic.fields.filter((value, index, arr) => {
+        return value.name !== "Preview";
+    })
     embedShematic.timestamp = new Date();
     embedShematic.color = "#FF0000";
 
