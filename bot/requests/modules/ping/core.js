@@ -2,9 +2,9 @@ const Discord = require("discord.js");
 const ping = require('ping');
 const config = require('./#config.json');
 
-async function coreProcess(url = null, requestCall = new Date()){
+async function coreProcess(url = [], requestCall = new Date()){
     if(typeof requestCall === "date") requestCall = requestCall.getTime();
-    if(!url || !url.length) url = config.services;
+    if(!url.length) url = config.services;
     if(typeof url === "string") url = [url];
     var results = [];
     for(var service of url){
