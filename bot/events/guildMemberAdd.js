@@ -4,7 +4,6 @@ const db = require("../bdd/utilsDB");
 const {UsersManager} = require("../bdd/classes/usersManager")
 const {UserGuildStatusManager} = require("../bdd/classes/userGuildStatusManager");
 
-
 module.exports = {
     name: "guildMemberAdd",
     once: false,
@@ -18,29 +17,21 @@ module.exports = {
         if (member.id !== "417952727167926274")
             createChannel(member.guild, member.user);
 
-         // TODO : Need to be change with getUser() ?
-        db.connection.query(`SELECT * FROM user WHERE user_id = ${member.id}`, function(err, row)
+        if (UsersManager.getUser(member.id) == null)
         {
-            if (err)
-                throw(err);
-            else {
-                // If there is no data in db for this user
+            await UsersManager.addUser({id: member.id, name: "", surname: "", email: "", password: "", status: -1, user_data: "{}"});
+            // TODO : Make the welcome form with form ID
+            await UserGuildStatusManager.addUserGuildStatus({id: member.id, guild_id: member.guild.id, status: 0, form_id: null});
+        }
+        else {
+            let status = UserGuildStatusManager.getUserGuildStatus({id: member.id, guild_id: member.guild.id});
+            if (status !== null) status.setStatus(0);
+            else await UserGuildStatusManager.addUserGuildStatus({id: member.id, guild_id: member.guild.id, status: 0, form_id: null});
+        }
 
-                if (!(row && row.length))
-                {
-                    // UsersManager.addUser({id: member.id, name: "", surname: "", email: "", password: ""});
-                    // UserGuildStatusManager.addUserGuildStatus({user_id: member.id, guild_id: member.guild.id, status: 0, form_id: null});
-                    // TODO : Need to implement the form_id
-                }
-                else {
-                    // db.connection.query(`UPDATE user_guild_status SET status = 0 WHERE user_id = "${member.id}" && guild_id = "${member.guild.id}"`);
-                } // TODO : Need to implement the change of form_id
-            }
-        });
-        // Only here to test
-        UsersManager.getUser(member.id).then((result) => {
-            console.log(result);
-        });
+        // User Search Example
+        // UsersManager.searchUsers({name: "test"}).then(result => console.log(result));
+
             /* member.createDM().then(channel => {
 
          });*/
