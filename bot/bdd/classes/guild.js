@@ -1,7 +1,8 @@
 class Guild
 {
-    construction(guild_id) {
+    construction(guild_id, config) {
         this.guild_id = guild_id;
+        this.config = config;
     }
 
     // GETTERS
