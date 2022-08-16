@@ -4,43 +4,56 @@ class UsersManager
 {
     static async getUser(id)
     {
-        // PROBLEM WITH await AND promise
         const connection = global.sqlConnection;
         const query = "SELECT * FROM user WHERE user_id = ?";
-        const data = await connection(query, id);
-        if (data === null || data === undefined) return null;
+        const data = await connection(query, id, err => {
+            if (err) throw err;
+        });
+        if (data.length === 0) return null;
         else
-            return new User(id);
+            return new User(id, data[0].name, data[0].surname, data[0].email, data[0].password, data[0].status, data[0].user_data);
     }
 
     // TODO : Make this function compatible with user_data
-    searchUsers(flags)
+    static async searchUsers(args)
     {
         let flag = 0;
         const connection = global.sqlConnection;
         let query = "SELECT user_id FROM user WHERE";
 
-        // QUERY COMPLETION
-        flags.forEach((value, index) => {
+        Object.entries(args).forEach(entry => {
+            const [key, value] = entry;
+
             if (flag) query += " AND";
             else flag = 1;
-            query += ` ${index} = '${value}'`;
+
+            query += ` ${key} = '${value}'`;
         });
 
-        // TODO : Need to return an array of user objects
-        // This function's query will collect all users id
-        // Then, forEach loop which will generate user Object via ID by getUser() and stock it into an array ??
+        // This query will collect all users' id
+        const data = await connection(query, err => {
+            if (err) throw err;
+        });
+
+        // forEach loop which will generate user Object via ID by getUser() and stock it into an array
+        if (data.length === 0) return null;
+        else
+        {
+            let userArray = {};
+            data.forEach((value) => {
+                userArray.push(UsersManager.getUser(value));
+            });
+            return userArray;
+        }
     }
 
-    static addUser(user)
+    static async addUser(user)
     {
         const connection = global.sqlConnection;
         const query = "INSERT INTO user (user_id, name, surname, email, password, status, user_data) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        const values = [user.id, user.name, user.surname, user.email, user.password, -1, "{}"];
-        connection.query(query, values);        // NO await HERE BECAUSE SAME PROBLEM AS getUser()
-
-        // const [createdUser] = await connection.query("SELECT LAST_INSERT_ID() as id");
-        // return new User(createdUser[0].id);
+        const values = [user.id, user.name, user.surname, user.email, user.password, user.status, user.data];
+        await connection(query, values);
+        return new User(user.id, user.name, user.surname, user.email, user.password, user.status, user.data);
     }
 }
 
