@@ -29,16 +29,15 @@ function updateTables(connection) {
     });
 }
 
-// TODO : Need to move out this function into UserManager Class
-function userInfoGrabber(connection, userID)
-{
-    connection.query(`SELECT * FROM user WHERE user_id = '${userID}'`, function(err, results, fields)
-    {
-        if (err) throw(err);
-        else
-            console.log(results);
-    });
-}
+// function userInfoGrabber(connection, userID)
+// {
+//     connection.query(`SELECT * FROM user WHERE user_id = '${userID}'`, function(err, results, fields)
+//     {
+//         if (err) throw(err);
+//         else
+//             console.log(results);
+//     });
+// }
 
 module.exports = {
     connection,
