@@ -137,6 +137,7 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         newObject.name ? 
             embedShematic.title = `${type} "${newObject.name}" Created`:
             embedShematic.title = `${type} Created`;
+        if(newObject.url) embedShematic.url = newObject.url;
         if(userAuthor) embedShematic.footer = {text: userAuthor.tag, icon_url: userAuthor.displayAvatarURL()};
         if(newObject.image) embedShematic.image = {url: newObject.image};
         if(!newObject.timestamp){time=newObject.createdAt}

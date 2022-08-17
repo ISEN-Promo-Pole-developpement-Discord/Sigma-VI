@@ -66,8 +66,7 @@ function objectClassDataToFields(object) {
                         else if(key.toLowerCase().includes("color")) fields.push({name: keyMajor, value: `${object.hexColor}`, inline: true});
                         else if(key.toLowerCase().includes("content") && typeof object[key] == "string"){
                             fields.push({name: `Content`, value: object[key], inline: true});
-                        } else if(key.toLowerCase().includes("url")) fields.push({name: "URL", value: `[Object URL](${object.url})`, inline: true});
-                        else fields.push({name: keyMajor, value: `${object[key]}`, inline: true});
+                        } else fields.push({name: keyMajor, value: `${object[key]}`, inline: true});
                     }  else if (key === "avatarURL") {
                         fields.push({name: "Avatar", value: object.displayAvatarURL(), inline: true});
                     }
@@ -96,7 +95,7 @@ function objectClassDataToFields(object) {
         fields[i].name.includes("_") || fields[i].value.includes("async") || fields[i].name.includes("At") ||
         fields[i].name.includes("able") || fields[i].value.includes("undefined") || fields[i].name.includes("Deleted") || fields[i].name.includes("Partial") ||
         fields[i].name.toLowerCase().includes("guild") || fields[i].name.includes("Pending") || fields[i].name.includes("System") ||
-        fields[i].name.includes("Username") || fields[i].name.includes("Discriminator")) {
+        fields[i].name.includes("Username") || fields[i].name.includes("Discriminator") || fields[i].name.includes("Url")) {
             fields.splice(i, 1);
             i--;
         }
