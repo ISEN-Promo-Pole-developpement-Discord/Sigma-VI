@@ -101,9 +101,11 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
     embedShematic.fields = objectClassDataToFields(oldObject);
     if(type === "GuildMember"){
         embedShematic.title = `${oldObject.displayName} left`;
+        embedShematic.thumbnail = {url: oldObject.displayAvatarURL()};
         embedShematic.fields = embedShematic.fields.concat(objectClassDataToFields(oldObject.user));
         for(let i = 0; i < embedShematic.fields.length; i++) {
-            if(embedShematic.fields.map(x => {return x.name}).slice(i+1).includes(embedShematic.fields[i].name)) {
+            if(embedShematic.fields.map(x => {return x.name}).slice(i+1).includes(embedShematic.fields[i].name)
+            || embedShematic.fields[i].name === "User" || embedShematic.fields[i].name === "DisplayName" || embedShematic.fields[i].name === "Avatar") {
                 embedShematic.fields.splice(i, 1);
                 i--;
             }
@@ -142,9 +144,11 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         embedShematic.fields = objectClassDataToFields(newObject);
         if(type === "GuildMember"){
             embedShematic.title = `${newObject.displayName} joined`;
+            embedShematic.thumbnail = {url: newObject.displayAvatarURL()};
             embedShematic.fields = embedShematic.fields.concat(objectClassDataToFields(newObject.user));
             for(let i = 0; i < embedShematic.fields.length; i++) {
-                if(embedShematic.fields.map(x => {return x.name}).slice(i+1).includes(embedShematic.fields[i].name)) {
+                if(embedShematic.fields.map(x => {return x.name}).slice(i+1).includes(embedShematic.fields[i].name
+                    || embedShematic.fields[i].name === "User" || embedShematic.fields[i].name === "DisplayName" || embedShematic.fields[i].name === "Avatar")) {
                     embedShematic.fields.splice(i, 1);
                     i--;
                 }
