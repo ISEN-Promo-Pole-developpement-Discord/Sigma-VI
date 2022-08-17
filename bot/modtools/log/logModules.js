@@ -46,6 +46,7 @@
 
 const { getGuildLogChannel, objectClassDataToFields, objectUpdateGetChangesFields} = require("./logger.js");
 const { newEmbed } = require("../../utils/createEmbed.js");
+const { ChannelType } = require("discord.js");
 
 function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,channel_log) {
     if(userAuthor && userAuthor.bot) return;    
@@ -111,6 +112,50 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
             }
         }
     }
+
+    if (type === "Channel") {
+        switch (oldObject.type) {
+            case ChannelType.DM:
+                embedShematic.title = "DM" + embedShematic.title;
+                break;
+            case ChannelType.GroupDM:
+                embedShematic.title = "Group DM" + embedShematic.title;
+                break;
+            case ChannelType.GuildCategory:
+                embedShematic.title = "Category" + embedShematic.title.substring(7);
+                break;
+            case ChannelType.GuildDirectory:
+                embedShematic.title = "Directory" + embedShematic.title.substring(7);
+                break;
+            case ChannelType.GuildForum:
+                embedShematic.title = "Forum" + embedShematic.title.substring(7);
+                break;
+            case ChannelType.GuildNews:
+                embedShematic.title = "News" + embedShematic.title;
+                break;
+            case ChannelType.GuildNewsThread:
+                embedShematic.title = "News Thread" + embedShematic.title.substring(7);
+                break;
+            case ChannelType.GuildPrivateThread:
+                embedShematic.title = "Private Thread" + embedShematic.title.substring(7);
+                break;
+            case ChannelType.GuildPublicThread:
+                embedShematic.title = "Thread" + embedShematic.title.substring(7);
+                break;
+            case ChannelType.GuildStageVoice:
+                embedShematic.title = "Stage" + embedShematic.title.substring(7);
+                break;
+            case ChannelType.GuildText:
+                embedShematic.title = "Text" + embedShematic.title;
+                break;
+            case ChannelType.GuildVoice:
+                embedShematic.title = "Voice" + embedShematic.title;
+                break;
+            default:
+                embedShematic.title = "Unknown channel type" + embedShematic.title.substring(7);
+                break;
+        }
+    }
     embedShematic.fields = embedShematic.fields.filter((value, index, arr) => {
         return value.name !== "Preview";
     })
@@ -152,6 +197,50 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
                     embedShematic.fields.splice(i, 1);
                     i--;
                 }
+            }
+        }
+
+        if (type === "Channel") {
+            switch (newObject.type) {
+                case ChannelType.DM:
+                    embedShematic.title = "DM" + embedShematic.title;
+                    break;
+                case ChannelType.GroupDM:
+                    embedShematic.title = "Group DM" + embedShematic.title;
+                    break;
+                case ChannelType.GuildCategory:
+                    embedShematic.title = "Category" + embedShematic.title.substring(7);
+                    break;
+                case ChannelType.GuildDirectory:
+                    embedShematic.title = "Directory" + embedShematic.title.substring(7);
+                    break;
+                case ChannelType.GuildForum:
+                    embedShematic.title = "Forum" + embedShematic.title.substring(7);
+                    break;
+                case ChannelType.GuildNews:
+                    embedShematic.title = "News" + embedShematic.title;
+                    break;
+                case ChannelType.GuildNewsThread:
+                    embedShematic.title = "News Thread" + embedShematic.title.substring(7);
+                    break;
+                case ChannelType.GuildPrivateThread:
+                    embedShematic.title = "Private Thread" + embedShematic.title.substring(7);
+                    break;
+                case ChannelType.GuildPublicThread:
+                    embedShematic.title = "Thread" + embedShematic.title.substring(7);
+                    break;
+                case ChannelType.GuildStageVoice:
+                    embedShematic.title = "Stage" + embedShematic.title.substring(7);
+                    break;
+                case ChannelType.GuildText:
+                    embedShematic.title = "Text" + embedShematic.title;
+                    break;
+                case ChannelType.GuildVoice:
+                    embedShematic.title = "Voice" + embedShematic.title;
+                    break;
+                default:
+                    embedShematic.title = "Unknown channel type" + embedShematic.title.substring(7);
+                    break;
             }
         }
 

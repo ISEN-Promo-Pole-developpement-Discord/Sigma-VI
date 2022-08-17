@@ -97,7 +97,8 @@ function objectClassDataToFields(object) {
         fields[i].name.includes("_") || fields[i].value.includes("async") || fields[i].name.includes("At") ||
         fields[i].name.includes("able") || fields[i].value.includes("undefined") || fields[i].name.includes("Deleted") || fields[i].name.includes("Partial") ||
         fields[i].name.toLowerCase().includes("guild") || fields[i].name.includes("Pending") || fields[i].name.includes("System") ||
-        fields[i].name.includes("Username") || fields[i].name.includes("Discriminator") || fields[i].name.toLowerCase().includes("url")) {
+        fields[i].name.includes("Username") || fields[i].name.includes("Discriminator") || fields[i].name.toLowerCase().includes("url") ||
+        fields[i].name.includes("Type")) {
             fields.splice(i, 1);
             i--;
         }
