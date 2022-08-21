@@ -1,4 +1,5 @@
-const {deleteChannel,createChannel,fetchChannels,clearChannel,createThread} = require('../utils/config-forms.js');
+const { deleteChannel, createChannel, fetchChannels, clearChannel, createThread } = require('../utils/config-forms.js');
+const { launchRequestProcessing } = require('../requests/requestManager.js');
 
 module.exports = {
     name: "messageCreate",
@@ -10,56 +11,57 @@ module.exports = {
          * @event messageCreate
          * @returns {Promise<void>}
          */
-        console.log(`Nouveau message par ${message.author.tag}: ${message.content} et en plus l'icon ${message.author.avatarURL()}`);
-        console.log(`channel : ${message.channel}`);
 
         //Commande SigmaDeleteChannel :
-        if(message.content.split(` `)[0].toLowerCase()==='sigmadeletechannel'){
-                message.guild.channels.fetch()
-                     .then( channels => channels.forEach((entry,snowflake) => {
-                        if(entry.name){
-                         if(entry.name===message.content.split(` `)[1]){
-                             deleteChannel(message.guild,entry.name);
-                         }
-                }}
-                     )
-                     )
-                     deleteChannel(message.guild,message.channel);
-            }
-            //Commande SigmaCreateChannel :  
-            if(message.content.split(` `)[0].toLowerCase()==='sigmacreatechannel'){
-                if(!message.content.split(` `)[1]){
-                createChannel(message.guild,message.author);
+        if (message.content.split(` `)[0].toLowerCase() === 'sigmadeletechannel') {
+            message.guild.channels.fetch()
+                .then(channels => channels.forEach((entry, snowflake) => {
+                    if (entry.name) {
+                        if (entry.name === message.content.split(` `)[1]) {
+                            deleteChannel(message.guild, entry.name);
+                        }
+                    }
+                }
+                )
+                )
+            deleteChannel(message.guild, message.channel);
+        }
+        //Commande SigmaCreateChannel :  
+        if (message.content.split(` `)[0].toLowerCase() === 'sigmacreatechannel') {
+            if (!message.content.split(` `)[1]) {
+                createChannel(message.guild, message.author);
             }
             else {
-                   createChannel(message.guild,message.author,message.content.split(` `)[1]);
-                
+                createChannel(message.guild, message.author, message.content.split(` `)[1]);
+
             }
-        }       
+        }
         //Commande SigmaFetchChannel :
-        if(message.content.split(` `)[0].toLowerCase()==='sigmafetchchannel'){
-            if(!message.content.split(` `)[1]){
+        if (message.content.split(` `)[0].toLowerCase() === 'sigmafetchchannel') {
+            if (!message.content.split(` `)[1]) {
                 fetchChannels(message.channel);
             }
-            else{
-                fetchChannels(message.channel,message.content.split(` `)[1]);
+            else {
+                fetchChannels(message.channel, message.content.split(` `)[1]);
             }
 
         }
-        
+
         //Commande SigmaClearChannel :
-        if(message.content.split(` `)[0].toLowerCase()==='sigmaclearchannel'){
+        if (message.content.split(` `)[0].toLowerCase() === 'sigmaclearchannel') {
             clearChannel(message.channel)
         }
 
-        if(message.content.split(` `)[0].toLowerCase()===`sigmacreatethread`){
-            if(message.content.split(` `)[1]){
+        if (message.content.split(` `)[0].toLowerCase() === `sigmacreatethread`) {
+            if (message.content.split(` `)[1]) {
                 console.log(`\nmessage channel omg : ${message.channel}\n`);
-                createThread(message.channel,message.content.split(` `)[1],message);
+                createThread(message.channel, message.content.split(` `)[1], message);
             }
-            createThread(message.channel,message.content.split(` `)[1],null);
+            createThread(message.channel, message.content.split(` `)[1], null);
         }
 
-        }
+        if (message.author.bot) return;
+        if (!message.content) return;
+        launchRequestProcessing(message, global.client);
     }
-    
+}
