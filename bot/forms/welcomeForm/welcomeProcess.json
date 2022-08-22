@@ -105,6 +105,23 @@
         },
         {
             "step": 5,
+            "name": "Vérification de l'adresse e-mail",
+            "description": "Je vous ai envoyé un e-mail sur l'adresse que vous m'avez renseigné. Je vous invite donc à regarder votre boîte mail et trouver le **message envoyé par no-reply@sigma-bot.fr**\n**Attention, le mail peut se trouver dans vos spams !**\nUne fois le mail trouvé, ouvrez le et renseignez la suite de 6 chiffres indiquée.\n*Si vous ne trouvez pas le mail, vous pouvez cliquer sur Passer, ce qui demandera une vérification manuelle d'un modérateur.*",
+            "toAsk": {
+                "id": "welcomeForm_checkMail",
+                "type": "checkMail",
+                "title": "Saisir le code reçu par e-mail",
+                "fields": [
+                    {
+                        "id": "welcomeForm_mailCode",
+                        "type": "TextInput",
+                        "label": "Code reçu par e-mail"
+                    }
+                ]
+            }
+        },
+        {
+            "step": 6,
             "name": "Vérification par un administrateur",
             "toAsk": {
                 "id": "welcomeForm_adminValidate",
