@@ -156,9 +156,12 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
                 break;
         }
     }
+
+    const deleteBlackList = ["RawPosition", "LastMessageId", "Position", "Preview", "Name"];
     embedShematic.fields = embedShematic.fields.filter((value, index, arr) => {
-        return value.name !== "Preview";
-    })
+        return !deleteBlackList.includes(value.name);
+    });
+    
     embedShematic.timestamp = new Date();
     embedShematic.color = "#FF0000";
 
@@ -172,10 +175,10 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
 
 function logCreate(guild, type, userAuthor,newObject,channel_log) {
     if(userAuthor && userAuthor.bot) return;
-    let logChannel = getGuildLogChannel(guild,"default");
+    let logChannel = getGuildLogChannel(guild, "default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
         logChannel = getGuildLogChannel(guild, channel_log);
-    }            
+    }
     if (!logChannel) return;
         let embedShematic = new Object();
         newObject.name ? 
@@ -198,6 +201,10 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
                     i--;
                 }
             }
+
+            embedShematic.fields = embedShematic.fields.filter((value, index, arr) => {
+                return value.name !== "Preview";
+            });
         }
 
         if (type === "Channel") {
