@@ -1,13 +1,7 @@
 class User
 {
-    constructor(id, name, surname, email, password, status, user_data) {
+    constructor(id) {
         this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.password = password;
-        this.status = status;
-        this.user_data = user_data;
     }
 
     // GETTERS
@@ -57,34 +51,34 @@ class User
     }
 
     // SETTERS
-    setName(name)
+    async setName(name)
     {
         const connection = global.sqlConnection;
-        connection(`UPDATE user SET name = ? WHERE user_id = ?`, name, [this.id]);
+        await connection(`UPDATE user SET name = ? WHERE user_id = ?`, [name, this.id]);
     }
 
-    setSurname(surname)
+    async setSurname(surname)
     {
         const connection = global.sqlConnection;
-        connection(`UPDATE user SET surname = ? WHERE user_id = ?`, surname, [this.id]);
+        await connection(`UPDATE user SET surname = ? WHERE user_id = ?`, [surname, this.id]);
     }
 
-    setEmail(email)
+    async setEmail(email)
     {
         const connection = global.sqlConnection;
-        connection(`UPDATE user SET email = ? WHERE user_id = ?`, email, [this.id]);
+        await connection(`UPDATE user SET email = ? WHERE user_id = ?`, [email, this.id]);
     }
 
-    setStatus(status)
+    async setStatus(status)
     {
         const connection = global.sqlConnection;
-        connection(`UPDATE user SET status = ? WHERE user_id = ?`, status, [this.id]);
+        await connection(`UPDATE user SET status = ? WHERE user_id = ?`, [status, this.id]);
     }
 
-    setData(data)
+    async setData(data)
     {
         const connection = global.sqlConnection;
-        connection(`UPDATE user SET user_data = ? WHERE user_id = ?`, data, [this.id]);
+        await connection(`UPDATE user SET user_data = ? WHERE user_id = ?`, [data, this.id]);
     }
 }
 

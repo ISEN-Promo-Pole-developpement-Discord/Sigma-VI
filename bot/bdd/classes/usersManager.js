@@ -6,12 +6,11 @@ class UsersManager
     {
         const connection = global.sqlConnection;
         const query = "SELECT * FROM user WHERE user_id = ?";
-        const data = await connection(query, id, err => {
-            if (err) throw err;
-        });
+        const data = await connection(query, id);
+        console.log(data);
         if (data.length === 0) return null;
         else
-            return new User(id, data[0].name, data[0].surname, data[0].email, data[0].password, data[0].status, data[0].user_data);
+            return new User(id);
     }
 
     // TODO : Make this function compatible with user_data
@@ -31,9 +30,7 @@ class UsersManager
         });
 
         // This query will collect all users' id
-        const data = await connection(query, err => {
-            if (err) throw err;
-        });
+        const data = await connection(query);
 
         // forEach loop which will generate user Object via ID by getUser() and stock it into an array
         if (data.length === 0) return null;
@@ -53,7 +50,7 @@ class UsersManager
         const query = "INSERT INTO user (user_id, name, surname, email, password, status, user_data) VALUES (?, ?, ?, ?, ?, ?, ?)";
         const values = [user.id, user.name, user.surname, user.email, user.password, user.status, user.data];
         await connection(query, values);
-        return new User(user.id, user.name, user.surname, user.email, user.password, user.status, user.data);
+        return new User(user.id);
     }
 }
 
