@@ -3,6 +3,7 @@ const welcomeFormData = require("./welcomeForm.json");
 const welcomeProcess = require("./welcomeProcess.json");
 const generalNodes = require("./../generalNodes.json");
 const db = require("../../bdd/utilsDB");
+const { sendCodeMail } = require("../sendMail.js");
 
 function searchNode(id, currentNode) {
     let result;
@@ -85,8 +86,6 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                         components: getWelcomeSelectMenusFromJSON(interaction.values[0])
                     });
                 }
-            } else {
-                console.log("oscour");
             }
         }
     }
@@ -115,6 +114,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
         const menuOptions = stepData.toAsk.options.map(option => {
             return new SelectMenuOptionBuilder(option);
         });
+        
         return interaction.channel.send({
             content: `**${stepData.name}**\n${stepData.description}`,
             components: [
@@ -185,6 +185,27 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                 }))
             ]
         });
+    } else if (stepData.toAsk.type === "checkMail") {
+
+        sendCodeMail(interaction.user, "569874");
+
+        return interaction.channel.send({
+            content: `**${stepData.name}**\n${stepData.description}`,
+            components: [
+                new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`launch_${stepData.toAsk.id}`)
+                        .setLabel(`Saisir le code reçu par e-mail`)
+                        .setStyle(ButtonStyle.Primary)
+                        .setDisabled(false),
+                    new ButtonBuilder()
+                        .setCustomId(`dopass_${stepData.toAsk.id}`)
+                        .setLabel(`Passer`)
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(false)
+                )
+            ]
+        });
     } else if (stepData.toAsk.type === "adminValidate") {
         return interaction.channel.send({
             content: `**${stepData.name}**\nSalut monsieur l'administrateur tu peux vérifier stp ? Merci !`
@@ -222,12 +243,13 @@ module.exports = {
                                     .setCustomId(`${field.id}`)
                                     .setLabel(`${field.label}`)
                                     .setStyle(TextInputStyle.Short)
-                                    .setMaxLength(64)
+                                    .setMaxLength(task.toAsk.id === "welcomeForm_checkMail" ? 6 : 64)
                             ));
                         }
 
                         modal.setComponents(rows);
                         interaction.showModal(modal);
+                        
                         return;
                     }
                 }
@@ -250,8 +272,6 @@ module.exports = {
             if (!interaction.message.editedAt) {
                 responseFromWelcomeProcess(step.step, interaction);
             }
-        } else if (interaction.message.content.split("\n").length === interaction.message.components.length + 3) {
-            responseFromWelcomeProcess(step.step, interaction);
         }
 
         if (interaction.message.components.length === 1) {
@@ -265,78 +285,55 @@ module.exports = {
                 }).join("\n")}\nVous pouvez modifier votre réponse en cliquant à nouveau sur le menu déroulant.`
             });
         } else {
-            interaction.update({
-                content: `**${step.name}**\nVous avez répondu :\nAAAAAAAAAAAA\naaaaaaaaaaaaaaaaa\nVous pouvez modifier votre réponse en cliquant à nouveau sur le menu déroulant.`
-            });
-        }
-
-        /*
-        let next = searchNode(interaction.values[0], welcomeFormData);
-        console.log(interaction.customId);
-        if (interaction.message.components.length === 1) {
-            if (next) {
-                interaction.reply({
-                    content: `Vous avez choisi ${next.menu.label}. Veuillez remplir le reste du formulaire :`,
-                    fetchReply: true,
-                    ephemeral: true,
-                    components: getWelcomeSelectMenusFromJSON(interaction.values[0])
+            if (!interaction.message.editedAt) {
+                interaction.update({
+                    content: `**${step.name}**\nVous avez répondu :\n${interaction.values.map(value => {
+                        for (const option of interaction.component.options) {
+                            if (option.value === value) {
+                                return `${option.emoji.name} ${option.label}`;
+                            }
+                        }
+                    }).join("\n")}\nIl vous reste encore ${interaction.message.components.length - 1 > 1 ? `${interaction.message.components.length - 1} options`: "1 option"} à remplir ci-dessous.`
                 });
-                // USER DATA
-                let userData = "{}";
-                if (interaction.customId === "welcomeForm_menu_EtudiantISEN-subMenu")
-                {
-                    let userClass = interaction.values[0].split("_");
-                    userData = `{"class": "${userClass[2]}"}`;
-                }
-                else if (interaction.customId === "welcomeForm_menu_Invité-subMenu")
-                {
-                    let userCat = interaction.values[0].split("_");
-                    userData = `{"category": "${userCat[2]}"}`;
-                }
-                // else if (interaction.customId === "welcomeForm_menu_ProfISEN-subMenu")
-                // {
-                //     // USER DATA - TOPICS
-                // }
-                // else if (interaction.customId === "welcomeForm_menu_AdministrationISEN-subMenu")
-                // {
-                //     // ???
-                // }
-
-                // USER DATA MODIFICATION IN DB
-                db.connection.query(`UPDATE user SET user_data = '${userData}' WHERE user_id = '${interaction.member.id}'`);
             } else {
-                interaction.reply({
-                    content: `Récapitulatif des données (en gros parcourir la base de données). Si tout est bon pour vous, vous pouvez accepter ou recommencer le formulaire.`,
-                    fetchReply: true,
-                    ephemeral: true,
-                    components: [
-                        new ActionRowBuilder().addComponents(new ButtonBuilder()
-                            .setCustomId("finishForm")
-                            .setLabel("Accepter et envoyer le formulaire")
-                            .setEmoji('✅')
-                            .setStyle(ButtonStyle.Success)
-                        ),
-                        new ActionRowBuilder().addComponents(new ButtonBuilder()
-                            .setCustomId("retryForm")
-                            .setLabel("Recommencer le formulaire")
-                            .setEmoji('❌')
-                            .setStyle(ButtonStyle.Danger)
-                        )
-                    ]
-                });
+                let answers = [];
+                
+                for (const row of interaction.message.components) {
+                    for (const option of row.components[0].data.options) {
+                        for (str of interaction.message.content.split("\n")) {
+                            if (str.includes(option.label)) {
+                                if (!interaction.component.options.map(x => {return x.label}).includes(str.split(" ")[1])) {
+                                    answers.push(str);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for (value of interaction.values) {
+                    for (const option of interaction.component.options) {
+                        if (option.value === value) {
+                            answers.push(`${option.emoji.name} ${option.label}`);
+                        }
+                    }
+                };
+
+                if (answers.length < interaction.message.components.length) {
+                    interaction.update({
+                        content: `**${step.name}**\nVous avez répondu :\n${answers.join("\n")}\nIl vous reste encore ${interaction.message.components.length - 1 > 1 ? `${interaction.message.components.length - 1} options`: "1 option"} à remplir ci-dessous.`
+                    });
+                } else {
+                    interaction.update({
+                        content: `**${step.name}**\nVous avez répondu :\n${answers.join("\n")}\nVous pouvez modifier votre réponse en cliquant à nouveau sur le menu déroulant.`
+                    });
+                    if (interaction.channel.lastMessage === interaction.message) {
+                        responseFromWelcomeProcess(step.step, interaction);
+                    }
+                }
             }
-        } else {
-            interaction.reply({
-                content: `c'est juste pas encore implémenté en fait`,
-                fetchReply: true,
-                ephemeral: true,
-                components: []
-            });
         }
-        */
     },
     handleWelcomeFormResponse(interaction) {
-
         let data = {}
         for (field of interaction.fields.components) {
             data[field.components[0].customId] = field.components[0].value
@@ -344,87 +341,32 @@ module.exports = {
 
         const step = searchStepFromName(interaction.message.content.split("\n")[0].slice(2, -2));
 
-        if (!interaction.message.editedAt) {
-            responseFromWelcomeProcess(step.step, interaction);
-        }
-
-        interaction.update({
-            content: `**${step.name}**\nVous avez répondu :\n${Object.values(data).join("\n")}\nVous pouvez modifier le formulaire en cliquant sur le bouton Modifier ci-dessous`,
-            components: [
-                new ActionRowBuilder().addComponents(
-                    new ButtonBuilder()
-                        .setCustomId(`launch_${interaction.customId}`)
-                        .setLabel(`Formulaire rempli`)
-                        .setStyle(ButtonStyle.Success)
-                        .setDisabled(true),
-                    new ButtonBuilder()
-                        .setCustomId(`modify_${interaction.customId}`)
-                        .setLabel(`Modifier`)
-                        .setStyle(ButtonStyle.Secondary)
-                        .setDisabled(false)
-                )
-            ]
-        });
-
-        /*
-        const [name, surname] = interaction.fields.fields.entries();
-
-        if (getWelcomeSelectMenusFromJSON(interaction.customId.split("-")[1])) {
-            interaction.reply({
-                content: `Bienvenue ${name[1].value} ${surname[1].value}. Veuillez choisir votre profil :`,
-                fetchReply: true,
-                ephemeral: true,
-                components: getWelcomeSelectMenusFromJSON(interaction.customId.split("-")[1])
-            });
-            // User Status Identification
-            let userStatus;
-            if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_EtudiantISEN") userStatus = 0;
-            else if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_Invité") userStatus = 3;
-            else if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_ProfISEN") userStatus = 1;
-            else if (interaction.customId === "modalWelcomeForm-welcomeForm_menu_AdministrationISEN") userStatus = 2;
-
-            // VERIFICATION : DOES THE USER ALREADY GOT A LINE IN user TABLE ?
-            db.connection.query(`SELECT * FROM user WHERE user_id = ${interaction.member.id}`, function(err, row)
-            {
-                if (err) {
-                    console.log("ERROR IN DB");
-                    console.log(err);
-                }
-                else {
-                    // If there is no data in db for this user
-                    if (!(row && row.length))
-                        db.connection.query(`INSERT INTO user(user_id, name, surname, status, user_data) VALUES
-                            ('${interaction.member.id}', '${name[1].value}', '${surname[1].value}', ${userStatus}, '{}')`);
-                    else   // If there is data in db for this user
-                        db.connection.query(`UPDATE user
-                            SET name = '${name[1].value}',
-                            surname = '${surname[1].value}',
-                            status = ${userStatus},
-                            user_data = '{}'
-                        WHERE user_id = ${interaction.member.id}`);
-                }
-            });
+        if (interaction.customId.includes("checkMail")) {
+            
         } else {
-            interaction.reply({
-                content: `Récapitulatif des données (en gros parcourir la base de données). Si tout est bon pour vous, vous pouvez accepter ou recommencer le formulaire.`,
-                fetchReply: true,
-                ephemeral: true,
+            if (!interaction.message.editedAt) {
+                responseFromWelcomeProcess(step.step, interaction);
+            }
+    
+            interaction.update({
+                content: `**${step.name}**\nVous avez répondu :\n${Object.values(data).join("\n")}\nVous pouvez modifier le formulaire en cliquant sur le bouton Modifier ci-dessous`,
                 components: [
-                    new ActionRowBuilder().addComponents(new ButtonBuilder()
-                        .setCustomId("finishForm")
-                        .setLabel("Accepter et envoyer le formulaire")
-                        .setEmoji('✅')
-                        .setStyle(ButtonStyle.Success)
-                    ),
-                    new ActionRowBuilder().addComponents(new ButtonBuilder()
-                        .setCustomId("retryForm")
-                        .setLabel("Recommencer le formulaire")
-                        .setEmoji('❎')
-                        .setStyle(ButtonStyle.Danger)
+                    new ActionRowBuilder().addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(`launch_${interaction.customId}`)
+                            .setLabel(`Formulaire rempli`)
+                            .setStyle(ButtonStyle.Success)
+                            .setDisabled(true),
+                        new ButtonBuilder()
+                            .setCustomId(`modify_${interaction.customId}`)
+                            .setLabel(`Modifier`)
+                            .setStyle(ButtonStyle.Secondary)
+                            .setDisabled(false)
                     )
                 ]
             });
         }
-        */
+
+        
     }
 }
