@@ -59,14 +59,16 @@ function objectClassDataToFields(object) {
     while (objectHerited !== null) {
         for(let key of Object.getOwnPropertyNames(objectHerited)) {
             const keyMajor = key.charAt(0).toUpperCase() + key.slice(1);
-            if (object[key] !== null) {
+            if (object[key] !== null && object[key] !== undefined && !key.includes("_")) {
                 try {
                     if(typeof object[key] == "string" || typeof object[key] == "number" || typeof object[key] == "boolean" || object[key].toString){
                         if(key.toLowerCase().includes("timestamp")) fields.push({name: keyMajor, value: `<t:${Math.floor(object[key]/1000)}:f>`, inline: true});
                         else if(key.toLowerCase().includes("color")) fields.push({name: keyMajor, value: `${object.hexColor}`, inline: true});
                         else if(key.toLowerCase().includes("content") && typeof object[key] == "string"){
                             fields.push({name: `Content`, value: object[key], inline: true});
-                        } else fields.push({name: keyMajor, value: `${object[key]}`, inline: true});
+                        } else{
+                            fields.push({name: keyMajor, value: `${object[key]}`, inline: true});
+                        }
                     }  else if (key === "avatarURL") {
                         fields.push({name: "Avatar", value: object.displayAvatarURL(), inline: true});
                     }
