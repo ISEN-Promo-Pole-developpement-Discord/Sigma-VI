@@ -14,35 +14,33 @@ module.exports = {
          * @event guildMemberAdd
          * @returns {Promise<void>}
          */
-        if (member.id !== "417952727167926274")
+        if(!member.user.bot)
             createChannel(member.guild, member.user);
+        // TODO : form creation
 
-        if (UsersManager.getUser(member.id) == null)
+        console.log(`>> [+] ${member.user.tag} a rejoint ${member.guild.name}`);
+        
+        logCreate(
+            member.guild,
+            "GuildMember",
+            null,
+            member,
+            "io"
+        );
+
+        let USER = await UsersManager.getUser(member.id);
+        if(USER === null)
         {
-            await UsersManager.addUser({id: member.id, name: "", surname: "", email: "", password: "", status: -1, user_data: "{}"});
+            if(global.debug) console.log("> User not found, creating new user");
+            USER = await UsersManager.addUser({id: member.id, name: "", surname: "", email: "", password: "", status: -1, data: "{}"});
+            if(global.debug) console.log("> User created");
             // TODO : Make the welcome form with form ID
             await UserGuildStatusManager.addUserGuildStatus({id: member.id, guild_id: member.guild.id, status: 0, form_id: null});
+            if(global.debug) console.log("> UserGuildStatus created");
+        } else {
+            if(global.debug) console.log("> User found");
+            await UserGuildStatusManager.addUserGuildStatus({id: member.id, guild_id: member.guild.id, status: 0, form_id: null});
+            if(global.debug) console.log("> UserGuildStatus updated");
         }
-        else {
-            let status = UserGuildStatusManager.getUserGuildStatus({id: member.id, guild_id: member.guild.id});
-            if (status !== null) status.setStatus(0);
-            else await UserGuildStatusManager.addUserGuildStatus({id: member.id, guild_id: member.guild.id, status: 0, form_id: null});
-        }
-
-        // User Search Example
-        // UsersManager.searchUsers({name: "test"}).then(result => console.log(result));
-
-            /* member.createDM().then(channel => {
-
-         });*/
-
-
-            logCreate(
-               member.guild,
-               "GuildMember",
-               null,
-               member,
-               "io"
-               );
-        }
+    }
 }
