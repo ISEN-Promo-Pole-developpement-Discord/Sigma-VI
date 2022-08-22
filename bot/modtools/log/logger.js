@@ -113,88 +113,6 @@ function objectClassDataToFields(object) {
     return fields;
 }
 
-    /*
-    fields = [];
-    if(object.createdTimestamp) fields.push({name: "Created", value: `<t:${Math.floor(object.createdTimestamp/1000)}:f>`, inline: true});
-    if(object.updatedTimestamp) fields.push({name: "Updated", value: `<t:${Math.floor(object.updatedTimestamp/1000)}:f>`, inline: true});
-    if(object.deletedTimestamp) fields.push({name: "Deleted", value: `<t:${Math.floor(object.deletedTimestamp/1000)}:f>`, inline: true});
-    if(object.joinedTimestamp) fields.push({name: "Joined", value: `<t:${Math.floor(object.joinedTimestamp/1000)}:f>`, inline: true});
-    if(object.displayName) fields.push({name: "Name", value: object.displayName, inline: true});
-    if(object.name) fields.push({name: "Name", value: object.name, inline: true});
-    if(object.nickname) fields.push({name: "Nickname", value: object.nickname, inline: true});
-    if(object.id) fields.push({name: "ID", value: object.id, inline: true});
-    if(object.url) fields.push({name: "URL", value: `[Object URL](${object.url})`, inline: true});
-    if(object.avatarURL) fields.push({name: "Avatar", value: object.displayAvatarURL(), inline: true});
-    if(object.position) fields.push({name: "Position", value: object.position.toString(), inline: true});
-    if(object.type){
-        if(typeof object.type === "string") fields.push({name: "Type", value: object.type, inline: true});
-        else if(object.type.toString) fields.push({name: "Type", value: object.type.toString(), inline: true});
-    }
-    if(object.description) fields.push({name: "Description", value: object.description, inline: true});
-    if(object.hexColor) fields.push({name: "hexColor", value: object.hexColor, inline: true});
-    if(object.displayHexColor) fields.push({name: "Display Color", value: object.displayHexColor, inline: true});
-    if(object.parentId) fields.push({name: "Parent ID", value: object.parentId, inline: true});
-    if(object.ownerId) fields.push({name: "Owner ID", value: object.ownerId, inline: true});
-    if(object.animated) fields.push({name: "Animated", value: object.animated ? "True" : "False", inline: true});
-    if(object.author) fields.push({name: "Author", value: `<@${object.author.id}>`, inline: true});
-    if(object.inviter) fields.push({name: "Inviter", value: `<@${object.inviter.id}>`, inline: true});
-    if(object.creatorId) fields.push({name: "Creator ID", value: object.creatorId, inline: true});
-    if(object.identifier) fields.push({name: "Identifier", value: object.identifier, inline: true});
-    if(object.reason) fields.push({name: "Reason", value: object.reason, inline: true});
-    if(object.roles){
-        rolesString = "";
-    
-        if(object.guild){
-        for(role of object.roles.cache.values() ) {
-            rolesString += `- ${role.toString()}\n`;
-        }
-    }
-        fields.push({name: "Roles", value: rolesString, inline: true});
-    }
-//}
-    if(object.communicationDisabledUntilTimestamp) fields.push({name: "Communication Disabled Until", value: `<t:${Math.floor(object.communicationDisabledUntilTimestamp/1000)}:f>`, inline: true});
-    if(object.premiumSinceTimestamp) fields.push({name: "Premium Since", value: `<t:${Math.floor(object.premiumSinceTimestamp/1000)}:f>`, inline: true});
-    if(object.userCount) fields.push({name: "User Count", value: object.userCount, inline: true});
-    if(object.scheduledStartTimestamp) fields.push({name: "Scheduled Start", value: `<t:${Math.floor(object.scheduledStartTimestamp/1000)}:f>`, inline: true});
-    if(object.scheduledEndTimestamp) fields.push({name: "Scheduled End", value: `<t:${Math.floor(object.scheduledEndTimestamp/1000)}:f>`, inline: true});
-    if(object.uses) fields.push({name: "Uses", value: object.uses, inline: true});
-    if(object.maxUses) fields.push({name: "Max Uses", value: object.maxUses, inline: true});
-    if(object.expiresTimestamp) fields.push({name: "Expires", value: `<t:${Math.floor(object.expiresTimestamp/1000)}:f>`, inline: true});
-    if(object.maxAge) fields.push({name: "Max Age", value: object.maxAge, inline: true});
-    if(object.archived){
-        fields.push({name: "Archived", value: object.archived ? "True" : "False", inline: true});
-        fields.push({name: "Archived At", value: `<t:${Math.floor(object.archivedTimestamp/1000)}:f>`, inline: true});
-    }
-    if(object.muted) fields.push({name: "Muted", value: object.muted ? "True" : "False", inline: true});
-    if(object.mutedTimestamp) fields.push({name: "Muted At", value: `<t:${Math.floor(object.mutedTimestamp/1000)}:f>`, inline: true});
-    if(object.locked) fields.push({name: "Locked", value: object.locked ? "True" : "False", inline: true});
-    if(object.members) {
-        if(object.members.cache) fields.push({name: "Members", value: object.members.cache.size.toString(), inline: true});
-        else fields.push({name: "Members", value: object.members.size.toString(), inline: true});
-    }
-    if(object.rateLimitPerUser) fields.push({name: "Rate Limit Per User", value: object.rateLimitPerUser, inline: true});
-    if(object.packId) fields.push({name: "Pack ID", value: object.packId, inline: true});
-    if(object.unicodeEmoji) fields.push({name: "Unicode Emoji", value: unicodeEmoji, inline: true});
-    if(object.channel) fields.push({name: "Channel", value: `<#${object.channel.id}>`, inline: true});
-    if(object.toString && !object.content) fields.push({name: "Preview", value: object.toString(), inline: true});
-
-    //removed empty strings and reduce field lentgh to 1000
-    for(let i = 0; i < fields.length; i++) {
-        if(fields[i].value === "") {
-            fields.splice(i, 1);
-            i--;
-        }
-        else if(fields[i].value.length > 1000) {
-            fields[i].value = fields[i].value.substring(0, 1000);
-            fields[i].value += "...";
-        }
-    }
-
-    return fields;
-    
-}
-*/
-
 function objectUpdateGetChangesFields(oldObject, newObject) {
 
     let fields = [];
@@ -249,25 +167,6 @@ function objectUpdateGetChangesFields(oldObject, newObject) {
         }
     }
 
-    //c'est Maxime
-    /*
-    if(oldObject.permissionOverwrites){
-        if (!oldObject.permissionOverwrites.cache.equals(newObject.permissionOverwrites.cache)){
-            let permissionChanged = new Array();
-            
-            newObject.permissionOverwrites.cache.forEach((newPerms, snowflake) => {
-                const oldPerms = oldObject.permissionOverwrites.cache.get(snowflake);
-                if(!oldPerms.allow.equals(newPerms.allow) || !oldPerms.deny.equals(newPerms.deny)){
-                    permissionChanged = permissionChanged.concat([{value: newPerms, added: false}]);
-                }
-            });
-            console.log(permissionChanged);
-        }
-        
-    }
-    */
-
-    
     for(let i = 0; i < fields.length; i++) {
         if(fields[i].value === "") {
             fields.splice(i, 1);
@@ -280,6 +179,10 @@ function objectUpdateGetChangesFields(oldObject, newObject) {
     }
 
     return fields;
+}
+
+function getLogIcon(string, color){
+    
 }
 
 module.exports = {
