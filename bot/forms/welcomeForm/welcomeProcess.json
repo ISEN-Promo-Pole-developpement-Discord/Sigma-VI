@@ -36,19 +36,19 @@
                         "label": "Homme",
                         "description": "Vous êtes un homme",
                         "value": "welcomeForm_sex_H",
-                        "emoji": "👨"
+                        "emoji": "♂️"
                     },
                     {
                         "label": "Femme",
                         "description": "Vous êtes une femme",
                         "value": "welcomeForm_sex_F",
-                        "emoji": "👩"
+                        "emoji": "♀️"
                     },
                     {
                         "label": "Autre",
                         "description": "Vous n'êtes ni un homme ni une femme",
                         "value": "welcomeForm_sex_other",
-                        "emoji": "🧑"
+                        "emoji": "⬜"
                     }
                 ]
             }
