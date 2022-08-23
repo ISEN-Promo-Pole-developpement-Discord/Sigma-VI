@@ -1,16 +1,14 @@
 class Form
 {
-    constructor(user_id, guild_id, channel_id) {
-        this.user_id = user_id;
-        this.guild_id = guild_id;
-        this.channel_id = channel_id;
+    constructor(form_id) {
+        this.form_id = form_id;
     }
 
-    async getID()
+    async getChannelID()
     {
         const connection = global.sqlConnection;
         const [rows] = await connection(
-            "SELECT form_id FROM form WHERE user_id = ? AND guild_id = ?", [this.user_id, this.guild_id]
+            "SELECT channel_id FROM form WHERE form_id = ?", [this.form_id]
         );
         return rows[0].name;
     }
@@ -19,7 +17,7 @@ class Form
     {
         const connection = global.sqlConnection;
         const [rows] = await connection(
-            "SELECT status FROM form WHERE user_id = ? AND guild_id  = ?", [this.user_id, this.guild_id]
+            "SELECT status FROM form WHERE form_id = ?", [this.form_id]
         );
         return rows[0].name;
     }
@@ -27,7 +25,7 @@ class Form
     async getVerificationCode(){
         const connection = global.sqlConnection;
         const [rows] = await connection(
-            "SELECT verification_code FROM form WHERE user_id = ? AND guild_id  = ?", [this.user_id, this.guild_id]
+            "SELECT verification_code FROM form WHERE form_id = ?", [this.form_id]
         );
         return rows[0].name;
     }
@@ -35,13 +33,13 @@ class Form
     async setChannelID(channel_id)
     {
         const connection = global.sqlConnection;
-        await connection(`UPDATE form SET channel_id = ? WHERE user_id = ? AND guild_id = ?`, [channel_id, this.user_id, this.guild_id]);
+        await connection(`UPDATE form SET channel_id = ? WHERE form_id = ?`, [channel_id, this.form_id]);
     }
 
     async setStatus(status)
     {
         const connection = global.sqlConnection;
-        await connection(`UPDATE form SET status = ? WHERE user_id = ? AND guild_id = ?`, [status, this.user_id, this.guild_id]);
+        await connection(`UPDATE form SET status = ? WHERE form_id = ?`, [status, this.form_id]);
     }
     
     async generateVerificationCode(){
@@ -53,7 +51,7 @@ class Form
     async setVerificationCode(verification_code)
     {
         const connection = global.sqlConnection;
-        await connection(`UPDATE form SET verification_code = ? WHERE user_id = ? AND guild_id = ?`, [verification_code, this.user_id, this.guild_id]);
+        await connection(`UPDATE form SET verification_code = ? WHERE form_id = ?`, [verification_code, this.form_id]);
     }
 }
 
