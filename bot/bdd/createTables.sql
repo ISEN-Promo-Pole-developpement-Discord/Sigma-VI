@@ -58,6 +58,6 @@ create table if not exists `user_guild_status`
     foreign key (`guild_id`) references `guild` (`guild_id`) on delete cascade on update cascade,
     primary key (`user_id`, `guild_id`),
     `status` TINYINT not null,
-    `form_id` varchar(30),
+    `form_id` int,
     foreign key (`form_id`) references `form` (`form_id`) on delete cascade on update cascade
 );
