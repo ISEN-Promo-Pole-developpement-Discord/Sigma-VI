@@ -111,16 +111,18 @@ function clearChannel(channel) {
   } 
 } 
 
-function createThread(channel,ThreadName,message){
+async function createThread(channel,ThreadName,message){
+  console.log(1);
   if(channel) {
     console.log(`\n\n\nCreation of a thread : ${ThreadName}\n\n\n`)
     if(ThreadName){
-      channel.threads.create({
+      const thread = await channel.threads.create({
         name : `Welcome : ${ThreadName}`,
         //startMessage :{components: getButtonsFromJSON(welcomeFormData, null)},
         startMessage: message,
-      })
-      channel.send(`thread create : ${ThreadName}`);
+      });
+
+      return thread;
     }
   
   }
