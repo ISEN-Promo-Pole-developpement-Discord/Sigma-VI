@@ -10,9 +10,11 @@ let transporter = nodemailer.createTransport(config.mail,{
 
 module.exports = {
     sendCodeMail(user, code) {
+        /*user.name = "Thomas";
+        user.surname = "SEIGNOUR";
+        user.mail = "thomas.seignour@isen.yncrea.fr";*/
         let message = {
-            //to: `${user.name, user.surname} <${user.mail}>`,
-            to: "Thomas SEIGNOUR <$thomas.seignour@isen.yncrea.fr>",
+            to: `${user.name, user.surname} <${user.mail}>`,
             subject: "SIGMA | Code d'authentification",
             text: `[CODE D'AUTHENTIFICATION]\n${code}\nPour lier votre compte discord (${user.tag}) à votre identité, un code de vérification est demandé.`,
             // HTML body
