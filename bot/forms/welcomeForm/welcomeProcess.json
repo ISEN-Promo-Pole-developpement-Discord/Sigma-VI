@@ -57,6 +57,11 @@
             "step": 2,
             "name": "E-Mail",
             "description": "Nous avons également besoin de votre e-mail.",
+            "condition": {
+                "type": "valueIncludes",
+                "value": "mail",
+                "valueSearched": "ISEN"
+            },
             "toAsk": {
                 "id": "welcomeForm_mailForm",
                 "type": "Modal",
@@ -123,6 +128,10 @@
         {
             "step": 6,
             "name": "Vérification par un administrateur",
+            "condition": {
+                "type": "valueIsFalse",
+                "value": "mailValidated"
+            },
             "toAsk": {
                 "id": "welcomeForm_adminValidate",
                 "type": "adminValidate"

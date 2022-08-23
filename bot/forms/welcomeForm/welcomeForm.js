@@ -92,6 +92,40 @@ function responseFromWelcomeProcess(currentStep, interaction) {
 
     currentStep++;
     const stepData = welcomeProcess.tasks[currentStep];
+
+    if (stepData.condition) {
+        const userDB = {};
+        switch (stepData.condition.type) {
+            case "valueExists":
+                if (typeof(userDB[stepData.condition.value]) === undefined) {
+                    return responseFromWelcomeProcess(currentStep, interaction);
+                }
+                break;
+            case "valueIsTrue":
+                if (userDB[stepData.condition.value] == false) {
+                    return responseFromWelcomeProcess(currentStep, interaction);
+                }
+                break;
+            case "valueIsFalse":
+                if (userDB[stepData.condition.value] == true) {
+                    return responseFromWelcomeProcess(currentStep, interaction);
+                }
+                break;
+            case "valueIncludes":
+                if (!userDB[stepData.condition.value].includes(stepData.condition.valueSearched)) {
+                    return responseFromWelcomeProcess(currentStep, interaction);
+                }
+                break;
+            case "valueIs":
+                if (userDB[stepData.condition.value] != stepData.condition.valueSearched) {
+                    return responseFromWelcomeProcess(currentStep, interaction);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     if (stepData.toAsk.type === "Modal") {
         return interaction.channel.send({
             content: `**${stepData.name}**\n${stepData.description}`,
@@ -186,6 +220,8 @@ function responseFromWelcomeProcess(currentStep, interaction) {
             ]
         });
     } else if (stepData.toAsk.type === "checkMail") {
+
+        //TODO: implement user DB to automatically generate e-mail here, in case user didn't registered it
 
         sendCodeMail(interaction.user, "569874");
 
