@@ -35,6 +35,7 @@ create table if not exists `asso_roles`
 create table if not exists `delegates`
 (
     `user_id` varchar(30) not null primary key,
+    `class` varchar(10),
     foreign key (`user_id`) references `user`(`user_id`) on delete cascade on update cascade
 );
 
