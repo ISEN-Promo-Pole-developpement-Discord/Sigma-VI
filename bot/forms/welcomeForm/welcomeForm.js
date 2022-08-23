@@ -225,6 +225,14 @@ function searchStepFromName(name) {
     return null;
 }
 
+function checkCodeMail(user, code) {
+    if (code === "569874") {
+        return true;
+    }
+
+    return false;
+}
+
 module.exports = {
     handleWelcomeButtonClick(interaction) {
         if (interaction.customId.includes("launch") || interaction.customId.includes("modify")) {
@@ -254,12 +262,39 @@ module.exports = {
                     }
                 }
             }
-        } else if (interaction.message.content.split("\n").length === 1){
+        } else if (interaction.customId.includes("dopass")) {
+            for (const task of welcomeProcess.tasks) {
+                if (task.toAsk.id) {
+                    if (task.toAsk.id.includes(interaction.customId.slice(7))) {
+                        interaction.update({
+                            content: `**${task.name}**\nVous avez passé cette étape. Vous pouvez malgré tout toujours remplir le code en cliquant sur le bouton ci-dessous.`,
+                            components: [
+                                new ActionRowBuilder().addComponents(
+                                    new ButtonBuilder()
+                                        .setCustomId(`launch_${interaction.customId}`)
+                                        .setLabel(`Saisir le code reçu par e-mail`)
+                                        .setStyle(ButtonStyle.Primary)
+                                        .setDisabled(false)
+                                )
+                            ]
+                        });
+                        
+                        responseFromWelcomeProcess(task.step, interaction);
+                        
+                        return;
+                    }
+                }
+            }
+        } 
+        
+        else if (interaction.message.content.split("\n").length === 1){
+            interaction.update(interaction.message.content);
             responseFromWelcomeProcess(-1, interaction);
         } else {
             const step = searchStepFromName(interaction.message.content.split("\n")[0].slice(2, -2));
 
             if (!interaction.message.editedAt) {
+                interaction.update(interaction.message.content);
                 responseFromWelcomeProcess(step.step, interaction);
             }
         }
@@ -342,7 +377,31 @@ module.exports = {
         const step = searchStepFromName(interaction.message.content.split("\n")[0].slice(2, -2));
 
         if (interaction.customId.includes("checkMail")) {
-            
+            if (checkCodeMail(interaction.user, Object.values(data)[0])) {
+                interaction.update({
+                    content: `**${step.name}**\n✅ Votre adresse e-mail a bien été vérifiée. Merci.`,
+                    components: []
+                });
+                responseFromWelcomeProcess(step.step, interaction);
+            } else {
+                interaction.update({
+                    content: `**${step.name}**\n❌ Vous venez de rentrer le mauvais code. Veuillez réessayer, ou cliquer sur Passer pour procéder à une vérification manuelle.`,
+                    components: [
+                        new ActionRowBuilder().addComponents(
+                            new ButtonBuilder()
+                                .setCustomId(`launch_${interaction.customId}`)
+                                .setLabel(`Ressaisir le code reçu par e-mail`)
+                                .setStyle(ButtonStyle.Primary)
+                                .setDisabled(false),
+                            new ButtonBuilder()
+                                .setCustomId(`dopass_${interaction.customId}`)
+                                .setLabel(`Passer`)
+                                .setStyle(ButtonStyle.Secondary)
+                                .setDisabled(false)
+                        )
+                    ]
+                });
+            }
         } else {
             if (!interaction.message.editedAt) {
                 responseFromWelcomeProcess(step.step, interaction);
