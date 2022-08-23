@@ -1,13 +1,12 @@
 const {Form} = require("./form.js");
-const {User} = require("./user");
 
 class FormsManager
 {
-    static async getForm(user_id, guild_id)
+    static async getForm(form_id)
     {
         const connection = global.sqlConnection;
-        const query = "SELECT * FROM form WHERE user_id = ? AND guild_id = ?";
-        const data = await connection(query, [args.user_id, args.guild_id]);
+        const query = "SELECT * FROM form WHERE form_id = ?";
+        const data = await connection(query, [form_id]);
 
         if (data.length === 0) return null;
         else
