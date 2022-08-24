@@ -7,13 +7,11 @@ class UsersManager
         const connection = global.sqlConnection;
         const query = "SELECT * FROM user WHERE user_id = ?";
         const data = await connection(query, id);
-        console.log(data);
         if (data.length === 0) return null;
         else
             return new User(id);
     }
 
-    // TODO : Make this function compatible with user_data
     static async searchUsers(args)
     {
         let flag = 0;
@@ -36,10 +34,10 @@ class UsersManager
         if (data.length === 0) return null;
         else
         {
-            let userArray = {};
-            data.forEach((value) => {
-                userArray.push(UsersManager.getUser(value));
-            });
+            let userArray = [];
+            for (const value of data) {
+                userArray.push(await UsersManager.getUser(value.user_id));
+            }
             return userArray;
         }
     }
