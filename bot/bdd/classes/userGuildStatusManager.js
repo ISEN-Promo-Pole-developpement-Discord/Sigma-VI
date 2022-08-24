@@ -10,7 +10,7 @@ class UserGuildStatusManager
          const data = await connection(query, values);
          if (data.length === 0) return null;
          else
-             return new UserGuildStatus(user.id, user.guild_id, data[0].form_id);
+             return new UserGuildStatus(user.id, user.guild_id);
     }
 
     static async addUserGuildStatus(user)
@@ -18,8 +18,8 @@ class UserGuildStatusManager
         const curentStatus = await this.getUserGuildStatus(user);
         
         if (curentStatus !== null){
-            curentStatus.setFormID(user.form_id);
-            curentStatus.setStatus(user.status);
+            await curentStatus.setFormID(user.form_id);
+            await curentStatus.setStatus(user.status);
             return curentStatus;
         }
 
