@@ -1,10 +1,9 @@
 class UserGuildStatus
 {
-    constructor(user_id, guild_id, form_id)
+    constructor(user_id, guild_id)
     {
         this.user_id = user_id;
         this.guild_id = guild_id;
-        this.form_id = form_id;
     }
 
     // GETTERS
