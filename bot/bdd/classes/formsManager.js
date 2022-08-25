@@ -36,8 +36,8 @@ class FormsManager
     static async addForm(form)
     {
         const connection = global.sqlConnection;
-        const query = "INSERT INTO form (user_id, guild_id, channel_id, status, verification_code) VALUES (?, ?, ?, ?, null)";
-        const values = [form.user_id, form.guild_id, form.channel_id, form.status];
+        const query = "INSERT INTO form (user_id, guild_id, channel_id, status, fields, verification_code) VALUES (?, ?, ?, ?, ?, null)";
+        const values = [form.user_id, form.guild_id, form.channel_id, form.status, form.fields];
         await connection(query, values);
 
         return await this.getForm(form.user_id, form.guild_id);
