@@ -48,7 +48,8 @@ create table if not exists `form`
     foreign key (`guild_id`) references `guild` (`guild_id`) on delete cascade on update cascade,
     `channel_id` varchar(30) not null,
     `status` TINYINT not null,
-    `verification_code` varchar(6)
+    `verification_code` varchar(6),
+    `fields` json
 );
 
 create table if not exists `user_guild_status`
