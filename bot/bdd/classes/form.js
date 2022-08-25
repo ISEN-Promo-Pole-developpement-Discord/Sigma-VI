@@ -10,7 +10,7 @@ class Form
         const [rows] = await connection(
             "SELECT channel_id FROM form WHERE form_id = ?", [this.form_id]
         );
-        return rows[0].name;
+        return rows[0].channel_id;
     }
 
     async getStatus()
@@ -19,7 +19,7 @@ class Form
         const [rows] = await connection(
             "SELECT status FROM form WHERE form_id = ?", [this.form_id]
         );
-        return rows[0].name;
+        return rows[0].status;
     }
 
     async getVerificationCode(){
@@ -27,7 +27,16 @@ class Form
         const [rows] = await connection(
             "SELECT verification_code FROM form WHERE form_id = ?", [this.form_id]
         );
-        return rows[0].name;
+        return rows[0].verificatio_code;
+    }
+
+    async getFields()
+    {
+        const connection = global.sqlConnection;
+        const [rows] = await connection(
+            "SELECT fields FROM form WHERE form_id = ?", [this.form_id]
+        );
+        return rows[0].fields;
     }
 
     async setChannelID(channel_id)
@@ -52,6 +61,12 @@ class Form
     {
         const connection = global.sqlConnection;
         await connection(`UPDATE form SET verification_code = ? WHERE form_id = ?`, [verification_code, this.form_id]);
+    }
+
+    async setFields(fields)
+    {
+        const connection = global.sqlConnection;
+        await connection(`UPDATE form SET fields = ? WHERE form_id = ?`, [fields, this.form_id]);
     }
 }
 
