@@ -28,10 +28,10 @@ module.exports = {
 
         if(!member.user.bot)
         {
-            const userForms = await FormsManager.searchForms(member.id, member.guild.id);
-            if (userForms !== null) {
-                for (const form_id of userForms) await FormsManager.deleteForm(form_id);
-            }
+            // const userForms = await FormsManager.searchForms(member.id, member.guild.id);
+            // if (userForms !== null) {
+            //     for (const form_id of userForms) await FormsManager.deleteForm(form_id);
+            // }
             // TODO: Need to make this function returns the channel obj to get its id (or fetch it)
             const channel = createChannel(member.guild, member.user);
 
@@ -43,8 +43,8 @@ module.exports = {
                 USER = await UsersManager.addUser({id: member.id, name: "", surname: "", email: "", password: "", status: -1, data: "{}"});
                 if(global.debug) console.log("> User created");
                 // Form
-                const form = await FormsManager.addForm({user_id: member.id, guild_id: member.guild.id, channel_id: channel.id, status: 0});
-                await form.generateVerificationCode();
+                // const form = await FormsManager.addForm({user_id: member.id, guild_id: member.guild.id, channel_id: channel.id, status: 0});
+                // await form.generateVerificationCode();
                 // User Guild Status
                 await UserGuildStatusManager.addUserGuildStatus({id: member.id, guild_id: member.guild.id, status: 0, form_id: null});
                 if(global.debug) console.log("> UserGuildStatus created");
