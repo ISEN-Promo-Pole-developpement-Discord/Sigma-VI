@@ -1,6 +1,6 @@
 class Guild
 {
-    construction(guild_id, config) {
+    constructor(guild_id) {
         this.guild_id = guild_id;
     }
 
