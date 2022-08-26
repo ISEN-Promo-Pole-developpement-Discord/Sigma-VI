@@ -10,6 +10,4 @@ function getMentions(string){
     return mentions;
 }
 
-console.log(getMentions("<@!123456789>"));
-
 module.exports = getMentions;
