@@ -20,7 +20,7 @@ class UserGuildStatus
     {
         const connection = global.sqlConnection;
         const [rows] = await connection("SELECT form_id FROM user_guild_status WHERE user_id = ? AND guild_id = ?", [this.user_id, this.guild_id]);
-        return rows[0].name;
+        return rows[0].form_id;
     }
 
     // SETTERS

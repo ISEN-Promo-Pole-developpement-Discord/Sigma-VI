@@ -39,6 +39,15 @@ class User
         return url;
     }
 
+    async getPassword()
+    {
+        const connection = global.sqlConnection;
+        const [rows] = await connection(
+            "SELECT password FROM user WHERE id = ?", [this.id]
+        );
+        return rows[0].password;
+    }
+
     async getStatus()
     {
         const connection = global.sqlConnection;
@@ -74,6 +83,12 @@ class User
     {
         const connection = global.sqlConnection;
         await connection(`UPDATE user SET email = ? WHERE user_id = ?`, [email, this.id]);
+    }
+
+    async setPassword(password)
+    {
+        const connection = global.sqlConnection;
+        await connection(`UPDATE user SET password = ? WHERE user_id = ?`, [password, this.id]);
     }
 
     async setStatus(status)

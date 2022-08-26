@@ -1,4 +1,4 @@
-const { deleteChannel, createChannel, fetchChannels, clearChannel, createThread } = require('../utils/config-forms.js');
+const { deleteChannel, createChannel, fetchChannels, clearChannel, createThread, terminatorChannels } = require('../utils/channelManager.js');
 const { launchRequestProcessing } = require('../requests/requestManager.js');
 
 module.exports = {
@@ -13,6 +13,7 @@ module.exports = {
          */
 
         //Commande SigmaDeleteChannel :
+        console.log(message.content)
         if (message.content.split(` `)[0].toLowerCase() === 'sigmadeletechannel') {
             message.guild.channels.fetch()
                 .then(channels => channels.forEach((entry, snowflake) => {
@@ -28,14 +29,9 @@ module.exports = {
         }
         //Commande SigmaCreateChannel :  
         if (message.content.split(` `)[0].toLowerCase() === 'sigmacreatechannel') {
-            if (!message.content.split(` `)[1]) {
-                createChannel(message.guild, message.author);
+            console.log(`\n omg un nouveau channel`)
+                createChannel(message.guild, message.author, message.content.split(` `)[1],message.content.split(` `)[2]);
             }
-            else {
-                createChannel(message.guild, message.author, message.content.split(` `)[1]);
-
-            }
-        }
         //Commande SigmaFetchChannel :
         if (message.content.split(` `)[0].toLowerCase() === 'sigmafetchchannel') {
             if (!message.content.split(` `)[1]) {
@@ -60,6 +56,11 @@ module.exports = {
             createThread(message.channel, message.content.split(` `)[1], null);
         }
 
+        if(message.content.split(` `)[0].toLowerCase() === 'sigmaterminatorchannel') {
+            console.log(message.content.split(` `)[1]);
+            terminatorChannels(message.guild,message.content.split(` `)[1]);
+            }
+        
         if (message.author.bot) return;
         if (!message.content) return;
         launchRequestProcessing(message, global.client);

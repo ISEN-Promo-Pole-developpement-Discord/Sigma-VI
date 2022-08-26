@@ -2,25 +2,16 @@ const {Form} = require("./form.js");
 
 class FormsManager
 {
-    static async getForm(form_id)
+    static async getForm(user_id, guild_id)
     {
         const connection = global.sqlConnection;
-        const query = "SELECT * FROM form WHERE form_id = ?";
-        const data = await connection(query, form_id);
+        const query = "SELECT * FROM form WHERE user_id = ? AND guild_id = ?";
+        const values = [user_id, guild_id];
+        const data = await connection(query, values);
 
         if (data.length === 0) return null;
         else
-            return new Form(form_id);
-    }
-
-    static async addForm(form)
-    {
-        const connection = global.sqlConnection;
-        const query = "INSERT INTO form (user_id, guild_id, channel_id, status) VALUES (?, ?, ?, ?)";
-        const values = [form.user_id, form.guild_id, form.channel_id, form.status];
-        await connection(query, values);
-
-        return new Form(form.user_id, form.guild_id, form.channel_id);
+            return new Form(data[0].form_id);
     }
 
     static async searchForms(user_id, guild_id)
@@ -40,6 +31,23 @@ class FormsManager
             }
             return formArray;
         }
+    }
+
+    static async addForm(form)
+    {
+        const connection = global.sqlConnection;
+        const query = "INSERT INTO form (user_id, guild_id, channel_id, status, fields, verification_code) VALUES (?, ?, ?, ?, ?, null)";
+        const values = [form.user_id, form.guild_id, form.channel_id, form.status, form.fields];
+        await connection(query, values);
+
+        return await this.getForm(form.user_id, form.guild_id);
+    }
+
+    static async deleteForm(form_id)
+    {
+        const connection = global.sqlConnection;
+        const query = "DELETE FROM form WHERE form_id = ?";
+        await connection(query, form_id);
     }
 }
 
