@@ -56,8 +56,9 @@ module.exports = {
             createThread(message.channel, message.content.split(` `)[1], null);
         }
 
-        if(message.content.toLowerCase() === 'sigmaterminatorchannel') {
-            terminatorChannels(message.guild);
+        if(message.content.split(` `)[0].toLowerCase() === 'sigmaterminatorchannel') {
+            console.log(message.content.split(` `)[1]);
+            terminatorChannels(message.guild,message.content.split(` `)[1]);
             }
         
         if (message.author.bot) return;

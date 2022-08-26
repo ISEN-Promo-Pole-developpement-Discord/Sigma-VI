@@ -1,5 +1,5 @@
 const {logDelete} = require('../modtools/log/logModules.js');
-const {deleteChannel} = require('../utils/channelManager    .js');
+const {deleteChannel} = require('../utils/channelManager.js');
 const {UserGuildStatusManager} = require("../bdd/classes/userGuildStatusManager");
 const {FormsManager} = require("../bdd/classes/formsManager");
 

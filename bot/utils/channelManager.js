@@ -1,57 +1,50 @@
-const { ChannelType, WelcomeChannel } = require("discord.js");
+const { ChannelType, WelcomeChannel, GuildScheduledEvent } = require("discord.js");
 const { getButtonsFromJSON } = require('../forms/formManager.js');
 const welcomeFormData = require('../forms/welcomeForm/welcomeForm.json');
 
-
 //fonction à supprimer(je pense) après le test 
-function createChannel(guild,user,NewChannel,Ntryparent) {
-  console.log('channel en creation')  
-  let exist=false;
-    guild.channels.fetch()
-    .then( channels => channels.forEach((entry,snowflake) => {
-      if(entry.name){
-        if(entry.name === NewChannel) {
-          console.log(`le channel : ${NewChannel} est bien dans le serveur  : ${guild}`);
-          exist=true;
-          if((entry.lastMessage)){
-           console.log(`déja un message `)
-          }
-          else{
-            entry.send({ content :(`bienvenue sur  le serveur : ${guild}`),components: getButtonsFromJSON(welcomeFormData, null)});
-          }
-        }
-      }}
-    ))
-    
-    if(exist===false){
-      guild.channels.create(
+async function createChannel(guild,user,NewChannel,Ntryparent) {
+  await guild.channels.fetch()
+  .then( channels => channels.forEach((entry,snowflake) => {
+      if(entry.name===NewChannel){
+          NewChannel=entry;
+          console.log(`NewChannel find ${NewChannel}`);
+      }
+    }
+  )
+  )
+  if(typeof(NewChannel)===`string`){
+  guild.channels.create(
         {
          name: NewChannel,
         type: ChannelType.GuildText,
         } 
        ).then(channel => {
         channel.send({ content :(`bienvenue sur  le serveur : ${guild}`),components: getButtonsFromJSON(welcomeFormData, null)});
-       /* if(Ntryparent){
+        if(Ntryparent){
           guild.channels.fetch()
           .then( channels => channels.forEach((entry,snowflake) => {
             if(entry.name){
               if(entry.name === Ntryparent) {
                 channel.setParent(entry);
-        }}})*/
-          //)
-        //}
-      
+        }}})
+        )
+        }
       })
+       
+      }
 
-
-
-      console.log(`channel create`);
-  }
-  
-}
-  
-  
-
+  else{
+      console.log(`aohoahoa`);
+      NewChannel.messages.fetch().then(
+        messages => {
+          if(messages.size === 0 ){
+            NewChannel.send({ content :(`bienvenue sur  le serveur : ${guild}`),components: getButtonsFromJSON(welcomeFormData, null)});
+          }
+        }
+      )
+    }
+    }
 
 function deleteChannel(guild,channel) {
   if(channel){
@@ -89,11 +82,11 @@ function fetchChannels(msgChannel,channelWfetch){
 }
 
 
-function terminatorChannels(guild){
+function terminatorChannels(guild,name){
     guild.channels.fetch()
     .then(channels => channels.forEach((entry,snowflake) => {
       if(entry.name){
-        if(entry.name.split(`-`)[0]===`welcome` && entry.name.split(`-`)[1]){
+        if(entry.name.split(`-`)[0]===name){
           guild.channels.delete(entry);
         }
       }}
