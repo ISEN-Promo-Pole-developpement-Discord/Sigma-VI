@@ -1,9 +1,9 @@
-const db = require("../bdd/utilsDB");
+const { GuildsManager } = require("../bdd/classes/guildsManager");
 
 module.exports = {
     name: "guildCreate",
     once: false,
-    execute(guild) {
+    async execute(guild) {
         /**
          * Triggered when a user invites the bot onto his server
          * @param {Guild} guild The guild the bot got invited to
@@ -11,13 +11,9 @@ module.exports = {
          * @returns {Promise<void>}
          */
 
-        // VERIF
-        db.connection.query(`SELECT * FROM guild WHERE guild_id = "${guild.id}"`, function (err, row)
-        {
-           if (err) throw err;
-           else
-               if (!(row && row.length))
-                   db.connection.query(`INSERT INTO guild(guild_id, config) VALUES("${guild.id}", "{}")`);
-        });
+        const isGuildExist = await GuildsManager.getGuild(guild.id);
+        if (isGuildExist === null) {
+            await GuildsManager.addGuild({id: guild.id, config: "{}"});
+        }
     }
 }
