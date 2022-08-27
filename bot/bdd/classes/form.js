@@ -10,13 +10,13 @@ class Form
         const channel_id = await connection(
             "SELECT channel_id FROM form WHERE form_id = ?", [this.form_id]
         );
-        return channel_id;
+        return [channel_id];
     }
 
     async getStatus()
     {
         const connection = global.sqlConnection;
-        const status = await connection(
+        const [status] = await connection(
             "SELECT status FROM form WHERE form_id = ?", [this.form_id]
         );
         return status;
@@ -24,7 +24,7 @@ class Form
 
     async getVerificationCode(){
         const connection = global.sqlConnection;
-        const verification_code = await connection(
+        const [verification_code] = await connection(
             "SELECT verification_code FROM form WHERE form_id = ?", [this.form_id]
         );
         return verification_code;
@@ -34,7 +34,7 @@ class Form
     {
         console.log(this.form_id);
         const connection = global.sqlConnection;
-        const fields = await connection(
+        const [fields] = await connection(
             "SELECT fields FROM form WHERE form_id = ?", [this.form_id]
         );
 
