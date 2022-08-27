@@ -76,6 +76,44 @@ function getWelcomeSelectMenusFromJSON(id) {
     
 }
 
+async function isSkipped(interaction, stepData) {
+    if (stepData.condition) {
+        const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id);
+        const fields = await form.getFields();
+        const answer = fields.answers.find((x) => x.id === stepData.condition.value);
+        switch (stepData.condition.type) {
+            case "valueExists":
+                if (typeof(answer.value) === undefined) {
+                    return true;
+                }
+                return false;
+            case "valueIsTrue":
+                if (answer.value == false) {
+                    return true;
+                }
+                return false;
+            case "valueIsFalse":
+                if (answer.value == true) {
+                    return true;
+                }
+                return false;
+            case "valueIncludes":
+                if (answer.value.includes(stepData.condition.valueSearched)) {
+                    return true;
+                }
+                return false;
+            case "valueIs":
+                if (answer.value != stepData.condition.valueSearched) {
+                    return true;
+                }
+                return false;
+            default:
+                return false;
+        }
+    }
+    return false;
+}
+
 function responseFromWelcomeProcess(currentStep, interaction) {
     if (welcomeProcess.tasks[currentStep]) {
         if (welcomeProcess.tasks[currentStep].toAsk.type === "welcomeMenus") {
@@ -106,162 +144,124 @@ function responseFromWelcomeProcess(currentStep, interaction) {
     currentStep++;
     const stepData = welcomeProcess.tasks[currentStep];
 
-    if (stepData.condition) {
-        const userDB = {};
-        switch (stepData.condition.type) {
-            case "valueExists":
-                if (typeof(userDB[stepData.condition.value]) === undefined) {
-                    return responseFromWelcomeProcess(currentStep, interaction);
-                }
-                break;
-            case "valueIsTrue":
-                if (userDB[stepData.condition.value] == false) {
-                    return responseFromWelcomeProcess(currentStep, interaction);
-                }
-                break;
-            case "valueIsFalse":
-                if (userDB[stepData.condition.value] == true) {
-                    return responseFromWelcomeProcess(currentStep, interaction);
-                }
-                break;
-            case "valueIncludes":
-                if (!userDB[stepData.condition.value].includes(stepData.condition.valueSearched)) {
-                    return responseFromWelcomeProcess(currentStep, interaction);
-                }
-                break;
-            case "valueIs":
-                if (userDB[stepData.condition.value] != stepData.condition.valueSearched) {
-                    return responseFromWelcomeProcess(currentStep, interaction);
-                }
-                break;
-            default:
-                break;
-        }
-    }
+    isSkipped(interaction, stepData).then((skipped => {
+        if (skipped === true) {
+            return responseFromWelcomeProcess(currentStep, interaction);
+        } else {
+            if (stepData.toAsk.type === "Modal") {
+                return channel.send({
+                    content: `**${stepData.name}**\n${stepData.description}`,
+                    components: [
+                        new ActionRowBuilder().addComponents(
+                            new ButtonBuilder()
+                                .setCustomId(`launch_${stepData.toAsk.id}`)
+                                .setLabel(`Renseigner son ${stepData.name}`)
+                                .setStyle(ButtonStyle.Primary)
+                                .setDisabled(false),
+                            new ButtonBuilder()
+                                .setCustomId(`modify_${stepData.toAsk.id}`)
+                                .setLabel(`Modifier`)
+                                .setStyle(ButtonStyle.Secondary)
+                                .setDisabled(true)
+                        )
+                    ]
+                });
+            } else if (stepData.toAsk.type === "SelectMenu") {
+                const menuOptions = stepData.toAsk.options.map(option => {
+                    return new SelectMenuOptionBuilder(option);
+                });
+                
+                return channel.send({
+                    content: `**${stepData.name}**\n${stepData.description}`,
+                    components: [
+                        new ActionRowBuilder().addComponents(
+                            new SelectMenuBuilder()
+                                .setCustomId(`${stepData.toAsk.id}`)
+                                .setPlaceholder(`${stepData.toAsk.label}`)
+                                .setMinValues(1)
+                                .setMaxValues(1)
+                                .setOptions(menuOptions)
+                        )
+                    ]
+                });
+            } else if (stepData.toAsk.type === "welcomeMenus") {
+                
+                FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id).then(async (form) => {
+                    const fields = await form.getFields();
+                    const profileAnswer = fields.answers.find((x) => x.id === "menu");
 
-    if (stepData.toAsk.type === "Modal") {
-        return channel.send({
-            content: `**${stepData.name}**\n${stepData.description}`,
-            components: [
-                new ActionRowBuilder().addComponents(
-                    new ButtonBuilder()
-                        .setCustomId(`launch_${stepData.toAsk.id}`)
-                        .setLabel(`Renseigner son ${stepData.name}`)
-                        .setStyle(ButtonStyle.Primary)
-                        .setDisabled(false),
-                    new ButtonBuilder()
-                        .setCustomId(`modify_${stepData.toAsk.id}`)
-                        .setLabel(`Modifier`)
-                        .setStyle(ButtonStyle.Secondary)
-                        .setDisabled(true)
-                )
-            ]
-        });
-    } else if (stepData.toAsk.type === "SelectMenu") {
-        const menuOptions = stepData.toAsk.options.map(option => {
-            return new SelectMenuOptionBuilder(option);
-        });
+                    channel.send({
+                        content: `**${stepData.name}**\n${stepData.description}`,
+                        components: getWelcomeSelectMenusFromJSON(`welcomeForm_generalProfile_${profileAnswer.value}`)
+                    });
+                    //return `welcomeForm_${profileAnswer.id}_${profileAnswer.value}`;
+                });
+
+                return;
+            } else if (stepData.toAsk.type === "RowButtons") {
+                return channel.send({
+                    content: `**${stepData.name}**\n${stepData.description}`,
+                    components: [
+                        new ActionRowBuilder().addComponents(stepData.toAsk.buttons.map(button => {
+                            let style = null;
+                            switch (button.style) {
+                                case "Primary":
+                                    style = ButtonStyle.Primary;
+                                    break;
+                                case "Secondary":
+                                    style = ButtonStyle.Secondary;
+                                    break;
+                                case "Success":
+                                    style = ButtonStyle.Success;
+                                    break;
+                                case "Danger":
+                                    style = ButtonStyle.Danger;
+                                    break;
+                                case "Link":
+                                    style = ButtonStyle.Link;
+                                    break;
+                            }
+                            
+                            return new ButtonBuilder()
+                                .setCustomId(button.id)
+                                .setEmoji(button.emoji)
+                                .setLabel(button.label)
+                                .setStyle(style)
+                        }))
+                    ]
+                });
+            } else if (stepData.toAsk.type === "checkMail") {
         
-        return channel.send({
-            content: `**${stepData.name}**\n${stepData.description}`,
-            components: [
-                new ActionRowBuilder().addComponents(
-                    new SelectMenuBuilder()
-                        .setCustomId(`${stepData.toAsk.id}`)
-                        .setPlaceholder(`${stepData.toAsk.label}`)
-                        .setMinValues(1)
-                        .setMaxValues(1)
-                        .setOptions(menuOptions)
-                )
-            ]
-        });
-    } else if (stepData.toAsk.type === "welcomeMenus") {
-        //TODO: search in the database what was the initial answer of the user (Étudiant, Invité,...)
-        const userState = 0;
-        switch(userState) {
-            case 0:
+                //TODO: implement user DB to automatically generate e-mail here, in case user didn't registered it
+        
+                sendCodeMail(interaction.user, "569874");
+        
                 return channel.send({
                     content: `**${stepData.name}**\n${stepData.description}`,
-                    components: getWelcomeSelectMenusFromJSON("welcomeForm_menu_EtudiantISEN")
+                    components: [
+                        new ActionRowBuilder().addComponents(
+                            new ButtonBuilder()
+                                .setCustomId(`launch_${stepData.toAsk.id}`)
+                                .setLabel(`Saisir le code reçu par e-mail`)
+                                .setStyle(ButtonStyle.Primary)
+                                .setDisabled(false),
+                            new ButtonBuilder()
+                                .setCustomId(`dopass_${stepData.toAsk.id}`)
+                                .setLabel(`Passer`)
+                                .setStyle(ButtonStyle.Secondary)
+                                .setDisabled(false)
+                        )
+                    ]
                 });
-            case 1:
+            } else if (stepData.toAsk.type === "adminValidate") {
                 return channel.send({
-                    content: `**${stepData.name}**\n${stepData.description}`,
-                    components: getWelcomeSelectMenusFromJSON("welcomeForm_menu_ProfISEN")
+                    content: `**${stepData.name}**\nSalut monsieur l'administrateur tu peux vérifier stp ? Merci !`
                 });
-            case 2:
-                return channel.send({
-                    content: `**${stepData.name}**\n${stepData.description}`,
-                    components: getWelcomeSelectMenusFromJSON("welcomeForm_menu_AdministrationISEN")
-                });
-            case 3:
-                return channel.send({
-                    content: `**${stepData.name}**\n${stepData.description}`,
-                    components: getWelcomeSelectMenusFromJSON("welcomeForm_menu_Invité")
-                });
+            }
+        
+            return channel.send("Fin du formulaire.");
         }
-    } else if (stepData.toAsk.type === "RowButtons") {
-        return channel.send({
-            content: `**${stepData.name}**\n${stepData.description}`,
-            components: [
-                new ActionRowBuilder().addComponents(stepData.toAsk.buttons.map(button => {
-                    let style = null;
-                    switch (button.style) {
-                        case "Primary":
-                            style = ButtonStyle.Primary;
-                            break;
-                        case "Secondary":
-                            style = ButtonStyle.Secondary;
-                            break;
-                        case "Success":
-                            style = ButtonStyle.Success;
-                            break;
-                        case "Danger":
-                            style = ButtonStyle.Danger;
-                            break;
-                        case "Link":
-                            style = ButtonStyle.Link;
-                            break;
-                    }
-                    
-                    return new ButtonBuilder()
-                        .setCustomId(button.id)
-                        .setEmoji(button.emoji)
-                        .setLabel(button.label)
-                        .setStyle(style)
-                }))
-            ]
-        });
-    } else if (stepData.toAsk.type === "checkMail") {
-
-        //TODO: implement user DB to automatically generate e-mail here, in case user didn't registered it
-
-        sendCodeMail(interaction.user, "569874");
-
-        return channel.send({
-            content: `**${stepData.name}**\n${stepData.description}`,
-            components: [
-                new ActionRowBuilder().addComponents(
-                    new ButtonBuilder()
-                        .setCustomId(`launch_${stepData.toAsk.id}`)
-                        .setLabel(`Saisir le code reçu par e-mail`)
-                        .setStyle(ButtonStyle.Primary)
-                        .setDisabled(false),
-                    new ButtonBuilder()
-                        .setCustomId(`dopass_${stepData.toAsk.id}`)
-                        .setLabel(`Passer`)
-                        .setStyle(ButtonStyle.Secondary)
-                        .setDisabled(false)
-                )
-            ]
-        });
-    } else if (stepData.toAsk.type === "adminValidate") {
-        return channel.send({
-            content: `**${stepData.name}**\nSalut monsieur l'administrateur tu peux vérifier stp ? Merci !`
-        });
-    }
-
-    return channel.send("Fin du formulaire.");
+    }));
 }
 
 function searchStepFromName(name) {
