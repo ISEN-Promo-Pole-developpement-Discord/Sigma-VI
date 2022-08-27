@@ -3,7 +3,7 @@
         "menu":{
             "label": "Etudiant à l'ISEN Méditerranée",
             "description": "Vous êtes étudiants à l'ISEN Méditerranée",
-            "value": "welcomeForm_menu_EtudiantISEN",
+            "value": "welcomeForm_generalProfile_EtudiantISEN",
             "emoji": "👨‍🎓"
         },
         "CIN":{
@@ -350,7 +350,7 @@
         "menu":{
             "label": "Invité",
             "description": "Vous souhaitez des renseignements sur l'ISEN Méditerranée",
-            "value": "welcomeForm_menu_Invité",
+            "value": "welcomeForm_generalProfile_Invité",
             "emoji": "👤"
         },
         "profil":[
@@ -385,7 +385,7 @@
         "menu":{
             "label": "Prof ISEN",
             "description": "Grade pour les Professeurs de l'ISEN Méditerranée",
-            "value": "welcomeForm_menu_ProfISEN",
+            "value": "welcomeForm_generalProfile_ProfISEN",
             "emoji": "👩🏼‍🏫"
         }
     },
@@ -394,7 +394,7 @@
         "menu":{
             "label": "Administration ISEN",
             "description": "Grade pour l'administration de l'ISEN Méditerranée",
-            "value": "welcomeForm_menu_AdministrationISEN",
+            "value": "welcomeForm_generalProfile_AdministrationISEN",
             "emoji": "👩‍💼"
         }
     }

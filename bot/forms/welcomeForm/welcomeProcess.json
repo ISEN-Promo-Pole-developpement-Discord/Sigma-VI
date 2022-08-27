@@ -59,7 +59,7 @@
             "description": "Nous avons également besoin de votre e-mail.",
             "condition": {
                 "type": "valueIncludes",
-                "value": "mail",
+                "value": "globalProfile",
                 "valueSearched": "ISEN"
             },
             "toAsk": {
