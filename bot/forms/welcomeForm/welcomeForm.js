@@ -81,35 +81,38 @@ async function isSkipped(interaction, stepData) {
         const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id);
         const fields = await form.getFields();
         const answer = fields.answers.find((x) => x.id === stepData.condition.value);
-        switch (stepData.condition.type) {
-            case "valueExists":
-                if (typeof(answer.value) === undefined) {
-                    return true;
-                }
-                return false;
-            case "valueIsTrue":
-                if (answer.value == false) {
-                    return true;
-                }
-                return false;
-            case "valueIsFalse":
-                if (answer.value == true) {
-                    return true;
-                }
-                return false;
-            case "valueIncludes":
-                if (answer.value.includes(stepData.condition.valueSearched)) {
-                    return true;
-                }
-                return false;
-            case "valueIs":
-                if (answer.value != stepData.condition.valueSearched) {
-                    return true;
-                }
-                return false;
-            default:
-                return false;
+        if (answer) {
+            switch (stepData.condition.type) {
+                case "valueExists":
+                    if (typeof(answer.value) === undefined) {
+                        return true;
+                    }
+                    return false;
+                case "valueIsTrue":
+                    if (answer.value == false) {
+                        return true;
+                    }
+                    return false;
+                case "valueIsFalse":
+                    if (answer.value == true) {
+                        return true;
+                    }
+                    return false;
+                case "valueIncludes":
+                    if (answer.value.includes(stepData.condition.valueSearched)) {
+                        return true;
+                    }
+                    return false;
+                case "valueIs":
+                    if (answer.value != stepData.condition.valueSearched) {
+                        return true;
+                    }
+                    return false;
+                default:
+                    return false;
+            }
         }
+        return false;
     }
     return false;
 }
@@ -188,7 +191,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                 
                 FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id).then(async (form) => {
                     const fields = await form.getFields();
-                    const profileAnswer = fields.answers.find((x) => x.id === "menu");
+                    const profileAnswer = fields.answers.find((x) => x.id === "generalProfile");
 
                     channel.send({
                         content: `**${stepData.name}**\n${stepData.description}`,
@@ -232,27 +235,46 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                 });
             } else if (stepData.toAsk.type === "checkMail") {
         
-                //TODO: implement user DB to automatically generate e-mail here, in case user didn't registered it
-        
-                sendCodeMail(interaction.user, "569874");
-        
-                return channel.send({
-                    content: `**${stepData.name}**\n${stepData.description}`,
-                    components: [
-                        new ActionRowBuilder().addComponents(
-                            new ButtonBuilder()
-                                .setCustomId(`launch_${stepData.toAsk.id}`)
-                                .setLabel(`Saisir le code reçu par e-mail`)
-                                .setStyle(ButtonStyle.Primary)
-                                .setDisabled(false),
-                            new ButtonBuilder()
-                                .setCustomId(`dopass_${stepData.toAsk.id}`)
-                                .setLabel(`Passer`)
-                                .setStyle(ButtonStyle.Secondary)
-                                .setDisabled(false)
-                        )
-                    ]
+                FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id).then(async (form) => {
+                    const verificationCode = await form.generateVerificationCode();
+
+                    const fields = await form.getFields();
+
+                    const name = fields.answers.find((x) => x.id === "name").value;
+                    const surname = fields.answers.find((x) => x.id === "surname").value;
+                    let mail = fields.answers.find((x) => x.id === "mail");
+
+                    if (mail) {
+                        mail = mail.value;
+                    } else {
+                        mail = `${surname.replaceAll(" ", "-").toLowerCase()}.${name.replaceAll(" ", "-").toLowerCase()}@isen.yncrea.fr`;
+                    }
+
+                    console.log(name, surname, mail);
+                    
+                    
+                    sendCodeMail({name: name, surname: surname, mail: mail, tag: interaction.user.tag}, verificationCode);
+
+                    channel.send({
+                        content: `**${stepData.name}**\nJe vous ai envoyé un mail à l'adresse __${mail}__\n${stepData.description}`,
+                        components: [
+                            new ActionRowBuilder().addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`launch_${stepData.toAsk.id}`)
+                                    .setLabel(`Saisir le code reçu par e-mail`)
+                                    .setStyle(ButtonStyle.Primary)
+                                    .setDisabled(false),
+                                new ButtonBuilder()
+                                    .setCustomId(`dopass_${stepData.toAsk.id}`)
+                                    .setLabel(`Passer`)
+                                    .setStyle(ButtonStyle.Secondary)
+                                    .setDisabled(false)
+                            )
+                        ]
+                    });
                 });
+        
+                return;
             } else if (stepData.toAsk.type === "adminValidate") {
                 return channel.send({
                     content: `**${stepData.name}**\nSalut monsieur l'administrateur tu peux vérifier stp ? Merci !`
@@ -274,8 +296,12 @@ function searchStepFromName(name) {
     return null;
 }
 
-function checkCodeMail(user, code) {
-    if (code === "569874") {
+async function checkCodeMail(interaction, code) {
+
+    const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id)
+    const verificationCode = await form.getVerificationCode();
+
+    if (code === verificationCode) {
         return true;
     }
 
@@ -442,31 +468,33 @@ module.exports = {
         const step = searchStepFromName(interaction.message.content.split("\n")[0].slice(2, -2));
 
         if (interaction.customId.includes("checkMail")) {
-            if (checkCodeMail(interaction.user, Object.values(data)[0])) {
-                interaction.update({
-                    content: `**${step.name}**\n✅ Votre adresse e-mail a bien été vérifiée. Merci.`,
-                    components: []
-                });
-                responseFromWelcomeProcess(step.step, interaction);
-            } else {
-                interaction.update({
-                    content: `**${step.name}**\n❌ Vous venez de rentrer le mauvais code. Veuillez réessayer, ou cliquer sur Passer pour procéder à une vérification manuelle.`,
-                    components: [
-                        new ActionRowBuilder().addComponents(
-                            new ButtonBuilder()
-                                .setCustomId(`launch_${interaction.customId}`)
-                                .setLabel(`Ressaisir le code reçu par e-mail`)
-                                .setStyle(ButtonStyle.Primary)
-                                .setDisabled(false),
-                            new ButtonBuilder()
-                                .setCustomId(`dopass_${interaction.customId}`)
-                                .setLabel(`Passer`)
-                                .setStyle(ButtonStyle.Secondary)
-                                .setDisabled(false)
-                        )
-                    ]
-                });
-            }
+            checkCodeMail(interaction, Object.values(data)[0]).then((result) => {
+                if (result) {
+                    interaction.update({
+                        content: `**${step.name}**\n✅ Votre adresse e-mail a bien été vérifiée. Merci.`,
+                        components: []
+                    });
+                    responseFromWelcomeProcess(step.step, interaction);
+                } else {
+                    interaction.update({
+                        content: `**${step.name}**\n❌ Vous venez de rentrer le mauvais code. Veuillez réessayer, ou cliquer sur Passer pour procéder à une vérification manuelle.`,
+                        components: [
+                            new ActionRowBuilder().addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`launch_${interaction.customId}`)
+                                    .setLabel(`Ressaisir le code reçu par e-mail`)
+                                    .setStyle(ButtonStyle.Primary)
+                                    .setDisabled(false),
+                                new ButtonBuilder()
+                                    .setCustomId(`dopass_${interaction.customId}`)
+                                    .setLabel(`Passer`)
+                                    .setStyle(ButtonStyle.Secondary)
+                                    .setDisabled(false)
+                            )
+                        ]
+                    });
+                }
+            });
         } else {
             if (!interaction.message.editedAt) {
                 responseFromWelcomeProcess(step.step, interaction);
