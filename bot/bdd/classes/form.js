@@ -7,38 +7,37 @@ class Form
     async getChannelID()
     {
         const connection = global.sqlConnection;
-        const channel_id = await connection(
+        const [row] = await connection(
             "SELECT channel_id FROM form WHERE form_id = ?", [this.form_id]
         );
-        return [channel_id];
+        return row.channel_id;
     }
 
     async getStatus()
     {
         const connection = global.sqlConnection;
-        const [status] = await connection(
+        const [row] = await connection(
             "SELECT status FROM form WHERE form_id = ?", [this.form_id]
         );
-        return status;
+        return row.status;
     }
 
     async getVerificationCode(){
         const connection = global.sqlConnection;
-        const [verification_code] = await connection(
+        const [row] = await connection(
             "SELECT verification_code FROM form WHERE form_id = ?", [this.form_id]
         );
-        return verification_code;
+        return row.verification_code;
     }
 
     async getFields()
     {
-        console.log(this.form_id);
         const connection = global.sqlConnection;
-        const [fields] = await connection(
+        const [row] = await connection(
             "SELECT fields FROM form WHERE form_id = ?", [this.form_id]
         );
 
-        return fields;
+        return row.fields;
     }
 
     async setChannelID(channel_id)
