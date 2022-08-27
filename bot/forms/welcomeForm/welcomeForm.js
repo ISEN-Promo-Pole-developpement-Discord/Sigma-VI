@@ -4,6 +4,8 @@ const welcomeProcess = require("./welcomeProcess.json");
 const generalNodes = require("./../generalNodes.json");
 const db = require("../../bdd/utilsDB");
 const { sendCodeMail } = require("../sendMail.js");
+const { FormsManager } = require("../../bdd/classes/formsManager.js");
+const { Form } = require("../../bdd/classes/form.js");
 
 function searchNode(id, currentNode) {
     let result;
@@ -90,6 +92,17 @@ function responseFromWelcomeProcess(currentStep, interaction) {
         }
     }
 
+    let channel = undefined;
+
+    if (currentStep === -1) {
+        channel = interaction.channel;
+        //channel = createThread();
+
+        FormsManager.addForm({user_id: interaction.user.id, guild_id: interaction.guild.id, channel_id: channel.id, status: 1, fields: JSON.stringify({answers:[{id: interaction.customId.split("_").at(-2), value: interaction.customId.split("_").at(-1)}]})});
+    } else {
+        channel = interaction.channel;
+    }
+
     currentStep++;
     const stepData = welcomeProcess.tasks[currentStep];
 
@@ -127,7 +140,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
     }
 
     if (stepData.toAsk.type === "Modal") {
-        return interaction.channel.send({
+        return channel.send({
             content: `**${stepData.name}**\n${stepData.description}`,
             components: [
                 new ActionRowBuilder().addComponents(
@@ -149,7 +162,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
             return new SelectMenuOptionBuilder(option);
         });
         
-        return interaction.channel.send({
+        return channel.send({
             content: `**${stepData.name}**\n${stepData.description}`,
             components: [
                 new ActionRowBuilder().addComponents(
@@ -167,28 +180,28 @@ function responseFromWelcomeProcess(currentStep, interaction) {
         const userState = 0;
         switch(userState) {
             case 0:
-                return interaction.channel.send({
+                return channel.send({
                     content: `**${stepData.name}**\n${stepData.description}`,
                     components: getWelcomeSelectMenusFromJSON("welcomeForm_menu_EtudiantISEN")
                 });
             case 1:
-                return interaction.channel.send({
+                return channel.send({
                     content: `**${stepData.name}**\n${stepData.description}`,
                     components: getWelcomeSelectMenusFromJSON("welcomeForm_menu_ProfISEN")
                 });
             case 2:
-                return interaction.channel.send({
+                return channel.send({
                     content: `**${stepData.name}**\n${stepData.description}`,
                     components: getWelcomeSelectMenusFromJSON("welcomeForm_menu_AdministrationISEN")
                 });
             case 3:
-                return interaction.channel.send({
+                return channel.send({
                     content: `**${stepData.name}**\n${stepData.description}`,
                     components: getWelcomeSelectMenusFromJSON("welcomeForm_menu_Invité")
                 });
         }
     } else if (stepData.toAsk.type === "RowButtons") {
-        return interaction.channel.send({
+        return channel.send({
             content: `**${stepData.name}**\n${stepData.description}`,
             components: [
                 new ActionRowBuilder().addComponents(stepData.toAsk.buttons.map(button => {
@@ -225,7 +238,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
 
         sendCodeMail(interaction.user, "569874");
 
-        return interaction.channel.send({
+        return channel.send({
             content: `**${stepData.name}**\n${stepData.description}`,
             components: [
                 new ActionRowBuilder().addComponents(
@@ -243,12 +256,12 @@ function responseFromWelcomeProcess(currentStep, interaction) {
             ]
         });
     } else if (stepData.toAsk.type === "adminValidate") {
-        return interaction.channel.send({
+        return channel.send({
             content: `**${stepData.name}**\nSalut monsieur l'administrateur tu peux vérifier stp ? Merci !`
         });
     }
 
-    return interaction.channel.send("Fin du formulaire.");
+    return channel.send("Fin du formulaire.");
 }
 
 function searchStepFromName(name) {
@@ -267,6 +280,22 @@ function checkCodeMail(user, code) {
     }
 
     return false;
+}
+
+async function registerAnswer(form, id, value) {
+    let fields = await form.getFields();
+
+    if (fields.answers.map((x) => {return x.id}).includes(id)) {
+        for (answer of fields.answers) {
+            if (answer.id === id) {
+                answer.value = value;
+            }
+        }
+    } else {
+        fields.answers.push({id: id, value: value});
+    }
+
+    await form.setFields(JSON.stringify(fields));
 }
 
 module.exports = {
@@ -442,6 +471,12 @@ module.exports = {
             if (!interaction.message.editedAt) {
                 responseFromWelcomeProcess(step.step, interaction);
             }
+
+            FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id).then(async (form) => {
+                for (key of Object.keys(data)) {
+                    await registerAnswer(form, key.split("_").at(-1), data[key]);
+                }
+            });
     
             interaction.update({
                 content: `**${step.name}**\nVous avez répondu :\n${Object.values(data).join("\n")}\nVous pouvez modifier le formulaire en cliquant sur le bouton Modifier ci-dessous`,
