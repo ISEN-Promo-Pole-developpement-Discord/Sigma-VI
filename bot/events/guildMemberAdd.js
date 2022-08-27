@@ -33,7 +33,7 @@ module.exports = {
             //     for (const form_id of userForms) await FormsManager.deleteForm(form_id);
             // }
             // TODO: Need to make this function returns the channel obj to get its id (or fetch it)
-            const channel = createChannel(member.guild, member.user);
+            const channel = createChannel(member.guild,member.user,`welcome : ${member.user}`,`Welcome`);
 
             let USER = await UsersManager.getUser(member.id);
             if(USER === null)
