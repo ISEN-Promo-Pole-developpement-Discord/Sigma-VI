@@ -21,3 +21,5 @@ class AssociationsManager
         return await this.getAssociations(association.name);
     }
 }
+
+module.exports = {AssociationsManager};
