@@ -143,6 +143,18 @@ function objectUpdateGetChangesFields(oldObject, newObject) {
         objectHerited = Object.getPrototypeOf(objectHerited);
     };
 
+    //filter out unmodified fields
+    for (let i = 0; i < fields.length; i++) {
+        if (fields[i].name.includes("updated")) {
+            const rightSide = fields[i].value.split(" -> ")[1];
+            const leftSide = fields[i].value.split(" -> ")[0];
+            if (rightSide === leftSide) {
+                fields.splice(i, 1);
+                i--;
+            }
+        }
+    }
+
     if (oldObject.permissions) {
         let updatedPermissions = null;
         if (!oldObject.permissions.equals(newObject.permissions)) {
@@ -171,8 +183,16 @@ function objectUpdateGetChangesFields(oldObject, newObject) {
         let updatedRoles = null;
         if (!oldObject.roles.cache.equals(newObject.roles.cache)) {
             updatedRoles = new Array();
-            const oldRoles = oldObject.roles.cache.values();
-            const newRoles = newObject.roles.cache.values();
+
+            var oldRoles = [];
+            for(let role of oldObject.roles.cache.values())
+                oldRoles.push(role.name);
+
+            var newRoles = [];
+            for(let role of newObject.roles.cache.values())
+                newRoles.push(role.name);
+
+
             for (let i = 0; i < newRoles.length; i++) {
                 if (!oldRoles.includes(newRoles[i])) {
                     updatedRoles = updatedRoles.concat({ value: newRoles[i], added: true });
