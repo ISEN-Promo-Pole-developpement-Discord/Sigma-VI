@@ -194,16 +194,10 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
             embedShematic.title = `${newObject.displayName} joined`;
             embedShematic.thumbnail = {url: newObject.displayAvatarURL()};
             embedShematic.fields = embedShematic.fields.concat(objectClassDataToFields(newObject.user));
-            for(let i = 0; i < embedShematic.fields.length; i++) {
-                if(embedShematic.fields.map(x => {return x.name}).slice(i+1).includes(embedShematic.fields[i].name
-                    || embedShematic.fields[i].name === "User" || embedShematic.fields[i].name === "DisplayName" || embedShematic.fields[i].name === "Avatar")) {
-                    embedShematic.fields.splice(i, 1);
-                    i--;
-                }
-            }
 
+            const createMemberBlackList = ["User", "DisplayName", "Avatar", "Preview"];
             embedShematic.fields = embedShematic.fields.filter((value, index, arr) => {
-                return value.name !== "Preview";
+                return !createMemberBlackList.includes(value.name);
             });
         }
 
