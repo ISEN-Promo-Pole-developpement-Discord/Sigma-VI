@@ -228,8 +228,12 @@ function objectUpdateGetChangesFields(oldObject, newObject) {
 
 function removeDuplicates(fields) {
     let fieldsFiltered = [];
+    let fieldsFilteredNames = [];
     for (let i = 0; i < fields.length; i++) {
-        if (!fieldsFiltered.map(x => { return x.name }).includes(fields[i].name)) fieldsFiltered.push(fields[i]);
+        if (!fieldsFilteredNames.includes(fields[i].name)) {
+            fieldsFiltered.push(fields[i]);
+            fieldsFilteredNames.push(fields[i].name);
+        }
     }
     return fieldsFiltered;
 }

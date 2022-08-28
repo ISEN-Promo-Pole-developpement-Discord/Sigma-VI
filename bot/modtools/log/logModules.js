@@ -74,6 +74,8 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
 
     embedShematic.timestamp = new Date();
     embedShematic.fields = objectUpdateGetChangesFields(oldObject, newObject);
+    embedShematic.fields = removeDuplicates(embedShematic.fields);
+
     embedShematic.color = "#642eda";
     const embed = newEmbed(embedShematic);
     try{
@@ -162,6 +164,8 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
         return !deleteBlackList.includes(value.name);
     });
     
+    embedShematic.fields = removeDuplicates(embedShematic.fields);
+
     embedShematic.timestamp = new Date();
     embedShematic.color = "#FF0000";
 
@@ -248,6 +252,8 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         embedShematic.timestamp = new Date();
         embedShematic.color = "#00FF00";
 
+        embedShematic.fields = removeDuplicates(embedShematic.fields);
+
         const embed = newEmbed(embedShematic);
         try{
             logChannel.send({ embeds: [embed]});
@@ -256,6 +262,17 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         }
 }
 
+function removeDuplicates(fields) {
+    let fieldsFiltered = [];
+    let fieldsFilteredNames = [];
+    for (let i = 0; i < fields.length; i++) {
+        if (!fieldsFilteredNames.includes(fields[i].name)) {
+            fieldsFiltered.push(fields[i]);
+            fieldsFilteredNames.push(fields[i].name);
+        }
+    }
+    return fieldsFiltered;
+}
 
 module.exports = {
     logUpdate,
