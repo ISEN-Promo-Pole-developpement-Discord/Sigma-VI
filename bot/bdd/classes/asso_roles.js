@@ -11,7 +11,7 @@ class AssoRoles
         const [rows] = await connection(
             "SELECT status FROM asso_roles WHERE user_id = ? AND asso_id = ?", [this.user_id, this.asso_id]
         );
-        return rows[0].role;
+        return rows.status;
     }
 
     async setStatus(status)
