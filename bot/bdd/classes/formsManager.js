@@ -14,6 +14,18 @@ class FormsManager
             return new Form(data[0].form_id);
     }
 
+    static async getFormById(form_id)
+    {
+        const connection = global.sqlConnection;
+        const query = "SELECT * FROM form WHERE form_id = ?";
+        const values = [form_id];
+        const data = await connection(query, values);
+
+        if (data.length === 0) return null;
+        else
+            return new Form(data[0].form_id);
+    }
+
     static async searchForms(user_id, guild_id)
     {
         const connection = global.sqlConnection;
@@ -27,7 +39,7 @@ class FormsManager
         {
             let formArray = [];
             for (const value of data) {
-                formArray.push(await FormsManager.getForm(value.form_id));
+                formArray.push(await FormsManager.getFormById(value.form_id));
             }
             return formArray;
         }
@@ -40,7 +52,7 @@ class FormsManager
         const values = [form.user_id, form.guild_id, form.channel_id, form.status, form.fields];
         await connection(query, values);
 
-        return await this.getForm(form.user_id, form.guild_id);
+        return await this.getForm(form.user_id, form.guild_id, form.channel_id);
     }
 
     static async deleteForm(form_id)
