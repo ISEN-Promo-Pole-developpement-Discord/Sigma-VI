@@ -23,6 +23,13 @@ class GuildsManager
 
         return new Guild(guild.id);
     }
+
+    static async deleteGuild(guild_id)
+    {
+        const connection = global.sqlConnection;
+        const query = "DELETE FROM guild WHERE guild_id = ?";
+        await connection(query, guild_id);
+    }
 }
 
 module.exports = { GuildsManager };
