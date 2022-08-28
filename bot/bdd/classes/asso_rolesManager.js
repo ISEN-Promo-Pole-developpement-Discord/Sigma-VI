@@ -1,4 +1,4 @@
-const AssoRoles = require('./asso_roles');
+const {AssoRoles} = require('./asso_roles');
 
 class AssoRolesManager
 {
@@ -16,8 +16,8 @@ class AssoRolesManager
     static async addAssoRoles(assoRoles)
     {
         const connection = global.sqlConnection;
-        const query = "INSERT INTO asso_roles (user_id, asso_id, role) VALUES (?, ?, ?)";
-        const values = [assoRoles.user_id, assoRoles.asso_id, assoRoles.role];
+        const query = "INSERT INTO asso_roles (user_id, asso_id, status) VALUES (?, ?, ?)";
+        const values = [assoRoles.user_id, assoRoles.asso_id, assoRoles.status];
         await connection(query, values);
         return new AssoRoles(assoRoles.user_id, assoRoles.asso_id);
     }
@@ -30,3 +30,5 @@ class AssoRolesManager
         await connection(query, values);
     }
 }
+
+module.exports = {AssoRolesManager};
