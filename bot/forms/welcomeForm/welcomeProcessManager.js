@@ -102,7 +102,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
 
                 console.log(channel);
 
-                await FormsManager.addForm({user_id: interaction.user.id, guild_id: interaction.guild.id, channel_id: channel.id, status: 1, fields: JSON.stringify({answers:[{id: interaction.customId.split("_").at(-2), value: interaction.customId.split("_").at(-1)}]})});
+                await FormsManager.addForm({user_id: interaction.user.id, guild_id: interaction.guild.id, channel_id: channel.id, status: 1, fields: {answers:[{id: interaction.customId.split("_").at(-2), value: interaction.customId.split("_").at(-1)}]}});
             } else {
                 channel = interaction.channel;
             }
