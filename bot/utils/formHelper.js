@@ -1,5 +1,21 @@
-const { ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder } = require("discord.js");
+const { ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const generalNodes = require("../forms/generalNodes.json");
+
+function getButtonsFromJSON(json) {
+    let buttons = new Array();
+    for (const value of Object.values(json)) {
+        buttons.push(new ButtonBuilder()
+            .setLabel(value.menu.label)
+            .setEmoji(value.menu.emoji)
+            .setCustomId(value.menu.value)
+            .setStyle(ButtonStyle.Primary)
+        );
+    }
+
+    const actionRow = [new ActionRowBuilder({components: buttons})];
+
+    return actionRow;
+}
 
 function searchNode(id, currentNode) {
     let result;
@@ -70,5 +86,6 @@ module.exports = {
             return null;
         }
         
-    }
+    },
+    getButtonsFromJSON
 }

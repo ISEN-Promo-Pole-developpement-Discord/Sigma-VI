@@ -1,16 +1,35 @@
+global.config = require("../config.json");
 
-async function assignRoles(user, guild, roles)
+  async function assignRoles(member, guild, roles)
 {
-    if (roles.length === 0) return;
-    for (const role of roles)
+    await guild.roles.fetch();
+    var rolesPending = [];
+
+    for (let role of roles)
     {
-        if (guild.roles.cache.find(r => r.name === role))
-            await guild.members.cache.get(user.id).roles.add(guild.roles.cache.find(r => r.name === role));
+        var targetRoleString = role.toLowerCase().replace(/ /g, "");
+        var roleFound = false;
+        for(let guildRole of guild.roles.cache.values())
+        {
+            var guildRoleString = guildRole.name.toLowerCase().replace(/ /g, "");
+            if (guildRoleString === targetRoleString)
+            {
+                if(global.debug) console.log("> Role found: " + guildRole.name);
+                rolesPending.push(member.roles.add(guildRole));
+                roleFound = true;
+            }
+        }
+        if (!roleFound)
+        {
+            if(global.debug) console.log("> Role not found: " + role);
+        }
     }
+    await Promise.all(rolesPending);
 }
 
-async function assignValidationRole(user, guild, roleName)
+async function assignVerifiedRole(user, guild)
 {
+    let roleName = global.config.verifiedRoleName;
     if (guild.roles.cache.find(r => r.name === roleName))
     {
         if (global.debug) console.log("> Role found");
@@ -19,10 +38,10 @@ async function assignValidationRole(user, guild, roleName)
     else
     {
         if (global.debug) console.log("> Role not found");
-        let testRole = await guild.roles.create()
-            .then(console.log("> Role created"))
+        let verifiedRole = await guild.roles.create()
+            .then(console.log("> Verified Role created"))
             .catch(console.error);
-        await testRole.edit(
+        await verifiedRole.edit(
             {
                 name: roleName,
                 color: "#ffffff",
@@ -34,5 +53,5 @@ async function assignValidationRole(user, guild, roleName)
 
 module.exports = {
     assignRoles,
-    assignValidatedRole,
+    assignVerifiedRole,
 }
