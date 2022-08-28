@@ -49,7 +49,7 @@ class FormsManager
     {
         const connection = global.sqlConnection;
         const query = "INSERT INTO form (user_id, guild_id, channel_id, status, fields, verification_code) VALUES (?, ?, ?, ?, ?, null)";
-        const values = [form.user_id, form.guild_id, form.channel_id, form.status, form.fields];
+        const values = [form.user_id, form.guild_id, form.channel_id, form.status, JSON.stringify(form.fields)];
         await connection(query, values);
 
         return await this.getForm(form.user_id, form.guild_id, form.channel_id);
