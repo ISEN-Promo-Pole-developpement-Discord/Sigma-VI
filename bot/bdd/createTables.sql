@@ -2,7 +2,8 @@ create table if not exists `association`
 (
     `asso_id` SMALLINT not null auto_increment primary key,
     `name` varchar(64) character set utf8 not null,
-    `description` varchar(512) character set utf8
+    `description` varchar(512) character set utf8,
+    `icon` varchar(10)
 );
 
 create table if not exists `guild`
