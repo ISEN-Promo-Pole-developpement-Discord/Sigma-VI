@@ -1,3 +1,4 @@
+global.config = require("../config.json");
 
 async function assignRoles(user, guild, roles)
 {
@@ -9,8 +10,9 @@ async function assignRoles(user, guild, roles)
     }
 }
 
-async function assignValidationRole(user, guild, roleName)
+async function assignVerifiedRole(user, guild)
 {
+    let roleName = global.config.verifiedRoleName;
     if (guild.roles.cache.find(r => r.name === roleName))
     {
         if (global.debug) console.log("> Role found");
@@ -34,5 +36,5 @@ async function assignValidationRole(user, guild, roleName)
 
 module.exports = {
     assignRoles,
-    assignValidatedRole,
+    assignVerifiedRole,
 }
