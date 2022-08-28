@@ -13,10 +13,10 @@ class Delegate
         return rows[0].class;
     }
 
-    async setClass(class)
+    async setClass(class_name)
     {
         const connection = global.sqlConnection;
-        await connection(`UPDATE delegates SET class = ? WHERE user_id = ?`, [class, this.user_id]);
+        await connection(`UPDATE delegates SET class = ? WHERE user_id = ?`, [class_name, this.user_id]);
     }
 }
 
