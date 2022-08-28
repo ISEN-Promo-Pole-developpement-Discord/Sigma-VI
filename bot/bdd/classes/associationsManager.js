@@ -20,6 +20,13 @@ class AssociationsManager
         await connection(query, values);
         return await this.getAssociations(association.name);
     }
+
+    static async deleteAssociation(asso_id)
+    {
+        const connection = global.sqlConnection;
+        const query = "DELETE FROM association WHERE asso_id = ?";
+        await connection(query, asso_id);
+    }
 }
 
 module.exports = {AssociationsManager};
