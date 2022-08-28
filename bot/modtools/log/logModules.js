@@ -195,7 +195,7 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
             embedShematic.thumbnail = {url: newObject.displayAvatarURL()};
             embedShematic.fields = embedShematic.fields.concat(objectClassDataToFields(newObject.user));
 
-            const createMemberBlackList = ["User", "DisplayName", "Avatar", "Preview"];
+            const createMemberBlackList = ["DisplayName", "Avatar", "Preview"];
             embedShematic.fields = embedShematic.fields.filter((value, index, arr) => {
                 return !createMemberBlackList.includes(value.name);
             });

@@ -4,6 +4,7 @@ const welcomeFormData = require("./welcomeForm.json");
 const welcomeProcess = require("./welcomeProcess.json");
 const { searchNode, getSelectMenusFromJSON } = require("../../utils/formHelper.js");
 const { FormsManager } = require("../../bdd/classes/formsManager.js");
+const { createThread } = require("../../utils/channelManager.js");
 
 async function isSkipped(interaction, stepData) {
     if (stepData.condition) {
@@ -63,27 +64,29 @@ function responseFromWelcomeProcess(currentStep, interaction) {
         }
     }
 
-    let channel = undefined;
-
-    if (currentStep === -1) {
-        channel = interaction.channel;
-        //channel = createThread();
-
-        FormsManager.addForm({user_id: interaction.user.id, guild_id: interaction.guild.id, channel_id: channel.id, status: 1, fields: JSON.stringify({answers:[{id: interaction.customId.split("_").at(-2), value: interaction.customId.split("_").at(-1)}]})});
-    } else {
-        channel = interaction.channel;
-    }
-
     currentStep++;
     const stepData = welcomeProcess.tasks[currentStep];
 
     if(stepData) {
-        isSkipped(interaction, stepData).then((skipped => {
+        isSkipped(interaction, stepData).then(async (skipped) => {
+            let channel = undefined;
+
+            if (currentStep === 0) {
+                channel = await createThread(interaction.channel, `${interaction.user.username}`, interaction.message);
+
+                console.log(channel);
+
+                await FormsManager.addForm({user_id: interaction.user.id, guild_id: interaction.guild.id, channel_id: channel.id, status: 1, fields: JSON.stringify({answers:[{id: interaction.customId.split("_").at(-2), value: interaction.customId.split("_").at(-1)}]})});
+            } else {
+                channel = interaction.channel;
+            }
+
+
             if (skipped === true) {
                 return responseFromWelcomeProcess(currentStep, interaction);
             } else {
                 if (stepData.toAsk.type === "Modal") {
-                    return channel.send({
+                    return await channel.send({
                         content: `**${stepData.name}**\n${stepData.description}`,
                         components: [
                             new ActionRowBuilder().addComponents(
@@ -105,7 +108,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                         return new SelectMenuOptionBuilder(option);
                     });
                     
-                    return channel.send({
+                    return await channel.send({
                         content: `**${stepData.name}**\n${stepData.description}`,
                         components: [
                             new ActionRowBuilder().addComponents(
@@ -120,20 +123,19 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     });
                 } else if (stepData.toAsk.type === "welcomeMenus") {
                     
-                    FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id).then(async (form) => {
-                        const fields = await form.getFields();
-                        const profileAnswer = fields.answers.find((x) => x.id === "generalProfile");
-    
-                        channel.send({
-                            content: `**${stepData.name}**\n${stepData.description}`,
-                            components: getSelectMenusFromJSON("welcomeForm", `welcomeForm_generalProfile_${profileAnswer.value}`, welcomeFormData)
-                        });
-                        //return `welcomeForm_${profileAnswer.id}_${profileAnswer.value}`;
+                    const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id)
+                    const fields = await form.getFields();
+                    const profileAnswer = fields.answers.find((x) => x.id === "generalProfile");
+
+                    channel.send({
+                        content: `**${stepData.name}**\n${stepData.description}`,
+                        components: getSelectMenusFromJSON("welcomeForm", `welcomeForm_generalProfile_${profileAnswer.value}`, welcomeFormData)
                     });
+                    //return `welcomeForm_${profileAnswer.id}_${profileAnswer.value}`;
     
                     return;
                 } else if (stepData.toAsk.type === "RowButtons") {
-                    return channel.send({
+                    return await channel.send({
                         content: `**${stepData.name}**\n${stepData.description}`,
                         components: [
                             new ActionRowBuilder().addComponents(stepData.toAsk.buttons.map(button => {
@@ -166,55 +168,54 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     });
                 } else if (stepData.toAsk.type === "checkMail") {
             
-                    FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id).then(async (form) => {
-                        const verificationCode = await form.generateVerificationCode();
-    
-                        const fields = await form.getFields();
-    
-                        const name = fields.answers.find((x) => x.id === "name").value;
-                        const surname = fields.answers.find((x) => x.id === "surname").value;
-                        let mail = fields.answers.find((x) => x.id === "mail");
-    
-                        if (mail) {
-                            mail = mail.value;
-                        } else {
-                            mail = `${surname.replaceAll(" ", "-").toLowerCase()}.${name.replaceAll(" ", "-").toLowerCase()}@isen.yncrea.fr`;
-                        }
-                        
-                        
-                        sendCodeMail({name: name, surname: surname, mail: mail, tag: interaction.user.tag}, verificationCode);
-    
-                        channel.send({
-                            content: `**${stepData.name}**\nJe vous ai envoyé un mail à l'adresse __${mail}__\n${stepData.description}`,
-                            components: [
-                                new ActionRowBuilder().addComponents(
-                                    new ButtonBuilder()
-                                        .setCustomId(`launch_${stepData.toAsk.id}`)
-                                        .setLabel(`Saisir le code reçu par e-mail`)
-                                        .setStyle(ButtonStyle.Primary)
-                                        .setDisabled(false),
-                                    new ButtonBuilder()
-                                        .setCustomId(`dopass_${stepData.toAsk.id}`)
-                                        .setLabel(`Passer`)
-                                        .setStyle(ButtonStyle.Secondary)
-                                        .setDisabled(false)
-                                )
-                            ]
-                        });
+                    const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id)
+                    const verificationCode = await form.generateVerificationCode();
+
+                    const fields = await form.getFields();
+
+                    const name = fields.answers.find((x) => x.id === "name").value;
+                    const surname = fields.answers.find((x) => x.id === "surname").value;
+                    let mail = fields.answers.find((x) => x.id === "mail");
+
+                    if (mail) {
+                        mail = mail.value;
+                    } else {
+                        mail = `${surname.replaceAll(" ", "-").toLowerCase()}.${name.replaceAll(" ", "-").toLowerCase()}@isen.yncrea.fr`;
+                    }
+                    
+                    
+                    await sendCodeMail({name: name, surname: surname, mail: mail, tag: interaction.user.tag}, verificationCode);
+
+                    await channel.send({
+                        content: `**${stepData.name}**\nJe vous ai envoyé un mail à l'adresse __${mail}__\n${stepData.description}`,
+                        components: [
+                            new ActionRowBuilder().addComponents(
+                                new ButtonBuilder()
+                                    .setCustomId(`launch_${stepData.toAsk.id}`)
+                                    .setLabel(`Saisir le code reçu par e-mail`)
+                                    .setStyle(ButtonStyle.Primary)
+                                    .setDisabled(false),
+                                new ButtonBuilder()
+                                    .setCustomId(`dopass_${stepData.toAsk.id}`)
+                                    .setLabel(`Passer`)
+                                    .setStyle(ButtonStyle.Secondary)
+                                    .setDisabled(false)
+                            )
+                        ]
                     });
             
                     return;
                 } else if (stepData.toAsk.type === "adminValidate") {
-                    return channel.send({
+                    return await channel.send({
                         content: `**${stepData.name}**\nSalut monsieur l'administrateur tu peux vérifier stp ? Merci !`
                     });
                 }
             
-                return channel.send("Fin du formulaire.");
+                return await channel.send("Fin du formulaire.");
             }
-        }));
+        });
     } else {
-        return channel.send("Fin du formulaire.");
+        return interaction.channel.send("Fin du formulaire.");
     }
 }
 module.exports = {
