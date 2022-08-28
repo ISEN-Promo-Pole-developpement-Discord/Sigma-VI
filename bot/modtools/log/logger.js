@@ -169,7 +169,7 @@ function objectUpdateGetChangesFields(oldObject, newObject) {
 
     if (oldObject.roles) {
         let updatedRoles = null;
-        if (!oldObject.roles.equals(newObject.roles)) {
+        if (!oldObject.roles.cache.equals(newObject.roles.cache)) {
             updatedRoles = new Array();
             const oldRoles = oldObject.roles.cache.values();
             const newRoles = newObject.roles.cache.values();
