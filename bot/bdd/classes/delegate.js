@@ -10,7 +10,7 @@ class Delegate
         const [rows] = await connection(
             "SELECT class FROM delegates WHERE user_id = ?", [this.user_id]
         );
-        return rows[0].class;
+        return rows.class;
     }
 
     async setClass(class_name)
