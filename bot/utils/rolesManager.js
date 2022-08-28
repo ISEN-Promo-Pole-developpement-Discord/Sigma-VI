@@ -21,10 +21,10 @@ async function assignVerifiedRole(user, guild)
     else
     {
         if (global.debug) console.log("> Role not found");
-        let testRole = await guild.roles.create()
+        let verifiedRole = await guild.roles.create()
             .then(console.log("> Role created"))
             .catch(console.error);
-        await testRole.edit(
+        await verifiedRole.edit(
             {
                 name: roleName,
                 color: "#ffffff",
