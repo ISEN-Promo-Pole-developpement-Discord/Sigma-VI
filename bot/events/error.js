@@ -8,5 +8,7 @@ module.exports = {
          * @event error
          * @returns {Promise<void>}
          */
+
+        console.error("Event ERROR :", error);
     }
 }
