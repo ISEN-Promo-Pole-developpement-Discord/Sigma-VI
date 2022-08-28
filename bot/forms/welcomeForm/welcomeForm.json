@@ -11,26 +11,26 @@
                 {
                     "label": "CIN",
                     "description": "Cycle Informatique et Numérique",
-                    "value": "welcomeForm_menu_CIN",
+                    "value": "welcomeForm_filiere_CIN",
                     "emoji": "💻"
                 },
             "promotions":[
                 {
                     "label": "CIN1",
                     "description": "Première année de Cycle Informatique et Numérique",
-                    "value": "welcomeForm_promotions_CIN1",
+                    "value": "welcomeForm_promotion_CIN1",
                     "emoji": "1️⃣"
                 },
                 {
                     "label": "CIN2",
                     "description": "Deuxième année de Cycle Informatique et Numérique",
-                    "value": "welcomeForm_promotions_CIN2",
+                    "value": "welcomeForm_promotion_CIN2",
                     "emoji": "2️⃣"
                 },
                 {
                     "label": "CIN3",
                     "description": "Troisième année de Cycle Informatique et Numérique",
-                    "value": "welcomeForm_promotions_CIN3",
+                    "value": "welcomeForm_promotion_CIN3",
                     "emoji": "3️⃣"
                 }
             ],
@@ -41,26 +41,26 @@
                 {
                     "label": "BIOST",
                     "description": "Cycle Biologie Sciences et Technologies",
-                    "value": "welcomeForm_menu_BIOST",
+                    "value": "welcomeForm_filiere_BIOST",
                     "emoji": "🔬"
                 },
             "promotions":[
                 {
                     "label": "BIOST1",
                     "description": "Première année de Biologie Sciences et Technologies",
-                    "value": "welcomeForm_promotions_BIOST1",
+                    "value": "welcomeForm_promotion_BIOST1",
                     "emoji": "1️⃣"
                 },
                 {
                     "label": "BIOST2",
                     "description": "Deuxième année de Biologie Sciences et Technologies",
-                    "value": "welcomeForm_promotions_BIOST2",
+                    "value": "welcomeForm_promotion_BIOST2",
                     "emoji": "2️⃣"
                 },
                 {
                     "label": "BIOST3",
                     "description": "Troisième année de Biologie Sciences et Technologies",
-                    "value": "welcomeForm_promotions_BIOST3",
+                    "value": "welcomeForm_promotion_BIOST3",
                     "emoji": "3️⃣"
                 }
             ],
@@ -72,26 +72,26 @@
                 {
                     "label": "CSI",
                     "description": "Cycle Prépa CSI",
-                    "value": "welcomeForm_menu_CSI",
+                    "value": "welcomeForm_filiere_CSI",
                     "emoji": "📐"
                 },
             "promotions":[
                 {
                     "label": "CSI1",
                     "description": "Première année de Prépa CSI",
-                    "value": "welcomeForm_promotions_CSI1",
+                    "value": "welcomeForm_promotion_CSI1",
                     "emoji": "1️⃣"
                 },
                 {
                     "label": "CSI2",
                     "description": "Deuxième année de Prépa CSI",
-                    "value": "welcomeForm_promotions_CSI2",
+                    "value": "welcomeForm_promotion_CSI2",
                     "emoji": "2️⃣"
                 },
                 {
                     "label": "CSI3",
                     "description": "Troisième année de Prépa CSI",
-                    "value": "welcomeForm_promotions_CSI3",
+                    "value": "welcomeForm_promotion_CSI3",
                     "emoji": "3️⃣"
                 }
             ],
@@ -102,26 +102,26 @@
                 {
                     "label": "IT2I",
                     "description": "Cycle IT2I",
-                    "value": "welcomeForm_menu_IT2I",
+                    "value": "welcomeForm_filiere_IT2I",
                     "emoji": "👷🏽"
                 },
             "promotions":[
                 {
                     "label": "IT2I1",
                     "description": "Première année de Cycle IT2I : Bac+3",
-                    "value": "welcomeForm_promotions_IT2I1",
+                    "value": "welcomeForm_promotion_IT2I1",
                     "emoji": "1️⃣"
                 },
                 {
                     "label": "IT2I2",
                     "description": "Deuxième année de Cycle IT2I : Bac+4",
-                    "value": "welcomeForm_promotions_IT2I2",
+                    "value": "welcomeForm_promotion_IT2I2",
                     "emoji": "2️⃣"
                 },
                 {
                     "label": "IT2I3",
                     "description": "Troisième année de Cycle IT2I : Bac+5",
-                    "value": "welcomeForm_promotions_IT2I3",
+                    "value": "welcomeForm_promotion_IT2I3",
                     "emoji": "3️⃣"
                 }
             ],
@@ -129,49 +129,49 @@
                 {
                     "label": "Cyber Sécurité",
                     "description": "Option Cyber Sécurité",
-                    "value": "welcomeForm_options_Cyber%20Sécurité",
+                    "value": "welcomeForm_option_Cyber%20Sécurité",
                     "emoji": "🛡️"
                 },
                 {
                     "label": "Systèmes Embarqués",
                     "description": "Option Systèmes Embarqués",
-                    "value": "welcomeForm_options_Systèmes%20Embarqués",
+                    "value": "welcomeForm_option_Systèmes%20Embarqués",
                     "emoji": "📳"
                 },
                 {
                     "label": "Robotique Mobile",
                     "description": "Option Robotique Mobile",
-                    "value": "welcomeForm_options_Robotique%20Mobile",
+                    "value": "welcomeForm_option_Robotique%20Mobile",
                     "emoji": "🤖"
                 },
                 {
                     "label": "IoT",
                     "description": "Option Objets Connectés IoT",
-                    "value": "welcomeForm_options_IoT",
+                    "value": "welcomeForm_option_IoT",
                     "emoji": "🌐"
                 },
                 {
                     "label": "Smart Energy",
                     "description": "Option Smart Energy",
-                    "value": "welcomeForm_options_Smart%20Energy",
+                    "value": "welcomeForm_option_Smart%20Energy",
                     "emoji": "⚡"
                 },
                 {
                     "label": "Big Data",
                     "description": "Option Développement Logiciel (Big Data)",
-                    "value": "welcomeForm_options_Big%20data",
+                    "value": "welcomeForm_option_Big%20data",
                     "emoji": "🖥️"
                 },
                 {
                     "label": "E-Santé",
                     "description": "Option E-Santé",
-                    "value": "welcomeForm_options_E-Santé",
+                    "value": "welcomeForm_option_E-Santé",
                     "emoji": "🏥"
                 },
                 {
                     "label": "Ingénieur d'affaires",
                     "description": "Option Ingénierie des Affaires",
-                    "value": "welcomeForm_options_Ingénieur%20d'affaires",
+                    "value": "welcomeForm_option_Ingénieur%20d'affaires",
                     "emoji": "👨‍⚖️"
                 }
             ],
@@ -184,20 +184,20 @@
                 {
                     "label": "Master",
                     "description": "Cycle Master",
-                    "value": "welcomeForm_menu_Master",
+                    "value": "welcomeForm_filiere_Master",
                     "emoji": "☄️"
                 },
             "promotions":[
                 {
                     "label": "M1",
                     "description": "Première année de Cycle Master",
-                    "value": "welcomeForm_promotions_M1",
+                    "value": "welcomeForm_promotion_M1",
                     "emoji": "1️⃣"
                 },
                 {
                     "label": "M2",
                     "description": "Deuxième année de Cycle Master",
-                    "value": "welcomeForm_promotions_M2",
+                    "value": "welcomeForm_promotion_M2",
                     "emoji": "2️⃣"
                 }
             ],
@@ -205,49 +205,49 @@
                 {
                     "label": "Cyber Sécurité",
                     "description": "Option Cyber Sécurité",
-                    "value": "welcomeForm_options_Cyber%20Sécurité",
+                    "value": "welcomeForm_option_Cyber%20Sécurité",
                     "emoji": "🛡️"
                 },
                 {
                     "label": "Systèmes Embarqués",
                     "description": "Option Systèmes Embarqués",
-                    "value": "welcomeForm_options_Systèmes%20Embarqués",
+                    "value": "welcomeForm_option_Systèmes%20Embarqués",
                     "emoji": "📳"
                 },
                 {
                     "label": "Robotique Mobile",
                     "description": "Option Robotique Mobile",
-                    "value": "welcomeForm_options_Robotique%20Mobile",
+                    "value": "welcomeForm_option_Robotique%20Mobile",
                     "emoji": "🤖"
                 },
                 {
                     "label": "IoT",
                     "description": "Option Objets Connectés IoT",
-                    "value": "welcomeForm_options_IoT",
+                    "value": "welcomeForm_option_IoT",
                     "emoji": "🌐"
                 },
                 {
                     "label": "Smart Energy",
                     "description": "Option Smart Energy",
-                    "value": "welcomeForm_options_Smart%20Energy",
+                    "value": "welcomeForm_option_Smart%20Energy",
                     "emoji": "⚡"
                 },
                 {
                     "label": "Big Data",
                     "description": "Option Développement Logiciel (Big Data)",
-                    "value": "welcomeForm_options_Big%20data",
+                    "value": "welcomeForm_option_Big%20data",
                     "emoji": "🖥️"
                 },
                 {
                     "label": "E-Santé",
                     "description": "Option E-Santé",
-                    "value": "welcomeForm_options_E-Santé",
+                    "value": "welcomeForm_option_E-Santé",
                     "emoji": "🏥"
                 },
                 {
                     "label": "Ingénieur d'affaires",
                     "description": "Option Ingénierie des Affaires",
-                    "value": "welcomeForm_options_Ingénieur%20d'affaires",
+                    "value": "welcomeForm_option_Ingénieur%20d'affaires",
                     "emoji": "👨‍⚖️"
                 }
             ],
@@ -258,7 +258,7 @@
                 {
                     "label": "U3",
                     "description": "Troisième année en provenance de DUT",
-                    "value": "welcomeForm_menu_U3",
+                    "value": "welcomeForm_filiere_U3",
                     "emoji": "💡"
                 },
             "LV2":true 
@@ -268,7 +268,7 @@
                 {
                     "label": "X3",
                     "description": "Troisième année en provenance de prépa Externe",
-                    "value": "welcomeForm_menu_X3",
+                    "value": "welcomeForm_filiere_X3",
                     "emoji": "📚"
                 },
             "LV2":true 
@@ -278,7 +278,7 @@
                 {
                     "label": "Prépa Rebond",
                     "description": "Vous êtes en classe prépa Rebond",
-                    "value": "welcomeForm_menu_PrepaRebond",
+                    "value": "welcomeForm_filiere_PrepaRebond",
                     "emoji": "🎯"
                 },
             "LV2":false
@@ -288,26 +288,26 @@
                 {
                     "label": "Gaming e-Makers",
                     "description": "Bachelor Gaming e-Makers",
-                    "value": "welcomeForm_menu_Gaming",
+                    "value": "welcomeForm_filiere_Gaming",
                     "emoji": "🎮"
                 },
             "promotions":[
                 {
                     "label": "1ère année",
                     "description": "Première année du bachelor Gaming e-Makers",
-                    "value": "welcomeForm_promotions_Gaming1",
+                    "value": "welcomeForm_promotion_Gaming1",
                     "emoji": "1️⃣"
                 },
                 {
                     "label": "2ème année",
                     "description": "Deuxième année du bachelor Gaming e-Makers",
-                    "value": "welcomeForm_promotions_Gaming2",
+                    "value": "welcomeForm_promotion_Gaming2",
                     "emoji": "2️⃣"
                 },
                 {
                     "label": "3ème année",
                     "description": "Troisième année du bachelor Gaming e-Makers",
-                    "value": "welcomeForm_promotions_Gaming3",
+                    "value": "welcomeForm_promotion_Gaming3",
                     "emoji": "3️⃣"
                 }
             ],
@@ -318,26 +318,26 @@
                 {
                     "label": "GreenTech",
                     "description": "Bachelor GreenTech",
-                    "value": "welcomeForm_menu_Greentech",
+                    "value": "welcomeForm_filiere_Greentech",
                     "emoji": "🍃"
                 },
             "promotions":[
                 {
                     "label": "1ère année",
                     "description": "Première année du bachelor GreenTech",
-                    "value": "welcomeForm_promotions_Greentech1",
+                    "value": "welcomeForm_promotion_Greentech1",
                     "emoji": "1️⃣"
                 },
                 {
                     "label": "2ème année",
                     "description": "Deuxième année du bachelor GreenTech",
-                    "value": "welcomeForm_promotions_Greentech2",
+                    "value": "welcomeForm_promotion_Greentech2",
                     "emoji": "2️⃣"
                 },
                 {
                     "label": "3ème année",
                     "description": "Troisième année du bachelor GreenTech",
-                    "value": "welcomeForm_promotions_Greentech3",
+                    "value": "welcomeForm_promotion_Greentech3",
                     "emoji": "3️⃣"
                 }
             ],
@@ -357,25 +357,25 @@
             {
                 "label": "Lycéen",
                 "description": "Vous êtes actuellement au lycée",
-                "value": "welcomeForm_profil_lycéen",
+                "value": "welcomeForm_profile_lycéen",
                 "emoji": "✏️"
             },
             {
                 "label": "Entrepreneur",
                 "description": "Vous êtes un entrepreneur",
-                "value": "welcomeForm_profil_entrepreneur",
+                "value": "welcomeForm_profile_entrepreneur",
                 "emoji": "👨‍💼"
             },
             {
                 "label": "Étudiant",
                 "description": "Vous êtes en école/formation supérieure",
-                "value": "welcomeForm_profil_etudiant",
+                "value": "welcomeForm_profile_etudiant",
                 "emoji": "👨‍🎓"
             },
             {
                 "label": "Autre",
                 "description": "Votre profil ne correspond à aucun des choix",
-                "value": "welcomeForm_profil_autres",
+                "value": "welcomeForm_profile_autres",
                 "emoji": "👤"
             }
         ]
