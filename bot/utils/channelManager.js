@@ -1,5 +1,5 @@
 const { ChannelType, WelcomeChannel, GuildScheduledEvent } = require("discord.js");
-const { getButtonsFromJSON } = require('../forms/formManager.js');
+const { getButtonsFromJSON } = require('./formHelper.js');
 const welcomeFormData = require('../forms/welcomeForm/welcomeForm.json');
 
 //fonction à supprimer(je pense) après le test 
@@ -20,7 +20,7 @@ async function createChannel(guild,user,NewChannel,Ntryparent) {
         type: ChannelType.GuildText,
         } 
        ).then(channel => {
-        channel.send({ content :(`bienvenue sur  le serveur : ${guild}`),components: getButtonsFromJSON(welcomeFormData, null)});
+        channel.send({ content :(`bienvenue sur  le serveur : ${guild}`),components: getButtonsFromJSON(welcomeFormData)});
         if(Ntryparent){
           guild.channels.fetch()
           .then( channels => channels.forEach((entry,snowflake) => {
@@ -39,7 +39,7 @@ async function createChannel(guild,user,NewChannel,Ntryparent) {
       NewChannel.messages.fetch().then(
         messages => {
           if(messages.size === 0 ){
-            NewChannel.send({ content :(`bienvenue sur  le serveur : ${guild}`),components: getButtonsFromJSON(welcomeFormData, null)});
+            NewChannel.send({ content :(`bienvenue sur  le serveur : ${guild}`),components: getButtonsFromJSON(welcomeFormData)});
           }
         }
       )
