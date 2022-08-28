@@ -10,7 +10,7 @@ class Guild
         const [rows] = await connection(
             "SELECT config FROM guild WHERE guild_id = ?", [this.guild_id]
         );
-        return rows[0].config;
+        return rows.config;
     }
 
     // SETTERS
