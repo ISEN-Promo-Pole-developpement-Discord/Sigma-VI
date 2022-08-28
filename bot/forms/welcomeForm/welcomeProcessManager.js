@@ -47,6 +47,32 @@ async function isSkipped(interaction, stepData) {
     return false;
 }
 
+async function submitForm(interaction) {
+    const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id);
+
+    await form.setStatus(3);
+
+    const fields = await form.getFields();
+    const name = fields.answers.find(x => x.id === "name").value;
+    const surname = fields.answers.find(x => x.id === "surname").value;
+
+    let displayedName;
+
+    if (name.includes(" ")) {
+        displayedName = `${name.split(" ").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`
+    } else if (name.includes("-")) {
+        displayedName = `${name.split("-").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`
+    } else {
+        displayedName = `${name.charAt(0).toUpperCase()}`
+    }
+
+    console.log(`${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()} ${displayedName}.`);
+
+    await interaction.member.setNickname(`${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()} ${displayedName}.`);
+
+
+}
+
 
 function responseFromWelcomeProcess(currentStep, interaction) {
     if (welcomeProcess.tasks[currentStep]) {
@@ -211,11 +237,11 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     });
                 }
             
-                return await channel.send("Fin du formulaire.");
+                return await submitForm(interaction);
             }
         });
     } else {
-        return interaction.channel.send("Fin du formulaire.");
+        return submitForm(interaction);
     }
 }
 module.exports = {
