@@ -11,7 +11,7 @@ class Association
         const [rows] = await connection(
             "SELECT name FROM association WHERE asso_id = ?", [this.asso_id]
         );
-        return rows[0].name;
+        return rows.name;
     }
 
     async getDescription() {
@@ -19,7 +19,7 @@ class Association
         const [rows] = await connection(
             "SELECT description FROM association WHERE asso_id = ?", [this.asso_id]
         );
-        return rows[0].description;
+        return rows.description;
     }
 
     async getIcon()
@@ -28,7 +28,7 @@ class Association
         const [rows] = await connection(
             "SELECT icon FROM association WHERE asso_id = ?", [this.asso_id]
         );
-        return rows[0].icon;
+        return rows.icon;
     }
 
     // SETTERS
