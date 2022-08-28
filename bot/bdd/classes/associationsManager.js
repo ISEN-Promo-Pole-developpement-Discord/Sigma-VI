@@ -1,4 +1,4 @@
-const Association = require('./association');
+const {Association} = require('./association.js');
 
 class AssociationsManager
 {
