@@ -36,7 +36,7 @@ class Form
         const [row] = await connection(
             "SELECT fields FROM form WHERE form_id = ?", [this.form_id]
         );
-
+        
         return row.fields;
     }
 
@@ -67,7 +67,8 @@ class Form
     async setFields(fields)
     {
         const connection = global.sqlConnection;
-        await connection(`UPDATE form SET fields = ? WHERE form_id = ?`, [fields, this.form_id]);
+        var fields_json = JSON.stringify(fields);
+        await connection(`UPDATE form SET fields = ? WHERE form_id = ?`, [fields_json, this.form_id]);
     }
 }
 
