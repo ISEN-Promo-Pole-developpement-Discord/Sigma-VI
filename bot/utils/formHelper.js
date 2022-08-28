@@ -44,32 +44,43 @@ module.exports = {
                 .setMinValues(1)
                 .setMaxValues(1);
             for (const [subKey, subValue] of Object.entries(valueOfResponse)) {
+                if(subValue.menu){
+                    subMenu.setPlaceholder(`${subValue.menu.value.split("_").at(-2).charAt(0).toUpperCase() + subValue.menu.value.split("_").at(-2).slice(1).toLowerCase()}`);
+                    subMenu.setCustomId(`${formName}_${subValue.menu.value.split("_").at(-2)}`);
+                }
                 if(subValue.menu) {
                     subMenu.addOptions(new SelectMenuOptionBuilder(subValue.menu));
                 } else if (subValue.length) {
-                    for (menuOption of subValue) {
-                        subMenu.addOptions(new SelectMenuOptionBuilder(menuOption));
-                    }
+                    const subMenuArray = new SelectMenuBuilder()
+                        .setMinValues(1)
+                        .setMaxValues(1);
+
+                    subMenuArray.setPlaceholder(`${subValue[0].value.split("_").at(-2).charAt(0).toUpperCase() + subValue[0].value.split("_").at(-2).slice(1).toLowerCase()}`);
+                    subMenuArray.setCustomId(`${formName}_${subValue[0].value.split("_").at(-2)}`);
+                    
+                    for (menuOption of subValue)
+                        subMenuArray.addOptions(new SelectMenuOptionBuilder(menuOption));
+                    menus.push(subMenuArray);
                 }
                 if (Object.keys(generalNodes).includes(subKey)) {
                     if (subValue) {
-                        const generalMenu = new SelectMenuBuilder()
+                        const subMenuGeneral = new SelectMenuBuilder()
                             .setMinValues(1)
                             .setMaxValues(1);
                     
-                        for (const generalValue of Object.values(generalNodes[subKey])) {
-                            generalMenu.addOptions(new SelectMenuOptionBuilder(generalValue));
+                        for (const value of Object.values(generalNodes[subKey])) {
+                            subMenuGeneral.addOptions(new SelectMenuOptionBuilder(value));
                         }
-                        generalMenu.setPlaceholder(subKey);
-                        generalMenu.setCustomId(`${formName}_${subKey}`);
-                        menus.push(generalMenu);
+                        
+                        subMenuGeneral.setPlaceholder(subKey);
+                        subMenuGeneral.setCustomId(`${formName}_${subKey}`);
+
+                        menus.push(subMenuGeneral);
                     }
                 }
             }
 
             if(subMenu.options.length !== 0) {
-                subMenu.setPlaceholder(id.split("_").at(-1));
-                subMenu.setCustomId(`${id}-subMenu`);
                 menus.push(subMenu);
             }
         }
