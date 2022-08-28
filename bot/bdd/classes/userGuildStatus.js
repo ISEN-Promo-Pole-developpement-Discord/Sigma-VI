@@ -13,14 +13,14 @@ class UserGuildStatus
         const [rows] = await connection(
             "SELECT status FROM user_guild_status WHERE user_id = ? AND guild_id = ?", [this.user_id, this.guild_id]
         );
-        return rows[0].status;
+        return rows.status;
     }
 
     async getFormID()
     {
         const connection = global.sqlConnection;
         const [rows] = await connection("SELECT form_id FROM user_guild_status WHERE user_id = ? AND guild_id = ?", [this.user_id, this.guild_id]);
-        return rows[0].form_id;
+        return rows.form_id;
     }
 
     // SETTERS
