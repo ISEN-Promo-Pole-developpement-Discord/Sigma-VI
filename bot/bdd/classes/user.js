@@ -9,27 +9,27 @@ class User
     {
         const connection = global.sqlConnection;
         const [rows] = await connection(
-            "SELECT name FROM user WHERE id = ?", [this.id]
+            "SELECT name FROM user WHERE user_id = ?", [this.id]
         );
-        return rows[0].name;
+        return rows.name;
     }
 
     async getSurname()
     {
         const connection = global.sqlConnection;
         const [rows] = await connection(
-            "SELECT surname FROM user WHERE id = ?", [this.id]
+            "SELECT surname FROM user WHERE user_id = ?", [this.id]
         );
-        return rows[0].surname;
+        return rows.surname;
     }
 
     async getEmail()
     {
         const connection = global.sqlConnection;
         const [rows] = await connection(
-            "SELECT email FROM user WHERE id = ?", [this.id]
+            "SELECT email FROM user WHERE user_id = ?", [this.id]
         );
-        return rows[0].email;
+        return rows.email;
     }
     
     async getIcalURL(){
@@ -43,27 +43,27 @@ class User
     {
         const connection = global.sqlConnection;
         const [rows] = await connection(
-            "SELECT password FROM user WHERE id = ?", [this.id]
+            "SELECT password FROM user WHERE user_id = ?", [this.id]
         );
-        return rows[0].password;
+        return rows.password;
     }
 
     async getStatus()
     {
         const connection = global.sqlConnection;
         const [rows] = await connection(
-            "SELECT email FROM user WHERE id = ?", [this.id]
+            "SELECT status FROM user WHERE user_id = ?", [this.id]
         );
-        return rows[0].status;
+        return rows.status;
     }
 
     async getData()
     {
         const connection = global.sqlConnection;
         const [rows] = await connection(
-            "SELECT email FROM user WHERE id = ?", [this.id]
+            "SELECT user_data FROM user WHERE user_id = ?", [this.id]
         );
-        return rows[0].user_data;
+        return rows.user_data;
     }
 
     // SETTERS
