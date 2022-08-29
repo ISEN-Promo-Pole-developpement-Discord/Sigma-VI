@@ -142,8 +142,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
             let channel = undefined;
 
             if (currentStep === 0) {
-                channel = await createThread(interaction.channel, `${interaction.user.username}`, interaction.message);
-
+                channel = await createThread(interaction.channel, `Welcome ${interaction.user.username}`, null, [interaction.user]);
                 let fields = {}
                 fields[interaction.customId.split("_").at(-2)] = interaction.customId.split("_").at(-1);
 
