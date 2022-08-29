@@ -88,7 +88,6 @@ function handleWelcomeButtonClick(interaction) {
     } 
     
     else if (interaction.message.content.split("\n").length === 1){
-        interaction.update(interaction.message.content);
         responseFromWelcomeProcess(-1, interaction);
     } else {
         const step = searchStepFromName(interaction.message.content.split("\n")[0].slice(2, -2));

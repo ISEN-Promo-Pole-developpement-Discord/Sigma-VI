@@ -143,6 +143,21 @@ function responseFromWelcomeProcess(currentStep, interaction) {
 
             if (currentStep === 0) {
                 channel = await createThread(interaction.channel, `Welcome ${interaction.user.username}`, null, [interaction.user]);
+
+                interaction.reply({
+                    content: `Je vous ais créé un canal personnalisé pour remplir le formulaire de bienvenue.\n⬇️ Vous pouvez y accéder en cliquant sur le bouton ci-dessous ⬇️`,
+                    components: [
+                        new ActionRowBuilder().addComponents(
+                            new ButtonBuilder()
+                                .setLabel(`↪️ Commencer le formulaire`)
+                                .setStyle(ButtonStyle.Link)
+                                .setURL(channel.url)
+                                .setDisabled(false)
+                        )
+                    ],
+                    ephemeral: true
+                })
+
                 let fields = {}
                 fields[interaction.customId.split("_").at(-2)] = interaction.customId.split("_").at(-1);
 
