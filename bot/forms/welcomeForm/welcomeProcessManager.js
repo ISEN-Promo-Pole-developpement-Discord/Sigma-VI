@@ -5,6 +5,8 @@ const welcomeProcess = require("./welcomeProcess.json");
 const { searchNode, getSelectMenusFromJSON } = require("../../utils/formHelper.js");
 const { FormsManager } = require("../../bdd/classes/formsManager.js");
 const { createThread } = require("../../utils/channelManager.js");
+const { assignRoles, assignVerifiedRole } = require("../../utils/rolesManager.js");
+const { UsersManager } = require("../../bdd/classes/usersManager.js");
 
 async function isSkipped(interaction, stepData) {
     if (stepData.condition) {
@@ -66,11 +68,44 @@ async function submitForm(interaction) {
         displayedName = `${name.charAt(0).toUpperCase()}`
     }
 
-    console.log(`${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()} ${displayedName}.`);
-
     await interaction.member.setNickname(`${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()} ${displayedName}.`);
 
+    //await assignVerifiedRole(interaction.user, interaction.guild);
 
+    await assignRoles(interaction.member, interaction.guild, Object.values(fields));
+    let userStatus;
+    switch (fields.generalProfile) {
+        case "EtudiantISEN":
+            userStatus = 0;
+            break;
+        case "ProfISEN":
+            userStatus = 1;
+            break;
+        case "AdministrationISEN":
+            userStatus = 2;
+            break;
+        case "Invité":
+            userStatus = 3;
+            break;
+        default:
+            userStatus = -1;
+    }
+    const userDB = await UsersManager.getUser(interaction.user.id);
+    await userDB.setName(name);
+    await userDB.setSurname(surname);
+    await userDB.setEmail(fields.mail);
+    await userDB.setStatus(userStatus);
+    let userData = {}
+    for (const id of Object.keys(fields)) {
+        if (id !== "name" && id !== "surname" && id !== "mail" && id !== "generalProfile"){
+            userData[id] = fields[id];
+        }
+    }
+    await userDB.setData(userData);
+
+    await interaction.channel.delete();
+
+    await FormsManager.deleteForm(form.form_id)
 }
 
 
@@ -158,7 +193,6 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                         content: `**${stepData.name}**\n${stepData.description}`,
                         components: getSelectMenusFromJSON("welcomeForm", `welcomeForm_generalProfile_${profileAnswer}`, welcomeFormData)
                     });
-                    //return `welcomeForm_${profileAnswer.id}_${profileAnswer.value}`;
     
                     return;
                 } else if (stepData.toAsk.type === "RowButtons") {
