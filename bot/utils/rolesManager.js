@@ -7,21 +7,23 @@ global.config = require("../config.json");
 
     for (let role of roles)
     {
-        var targetRoleString = role.toLowerCase().replace(/ /g, "");
-        var roleFound = false;
-        for(let guildRole of guild.roles.cache.values())
-        {
-            var guildRoleString = guildRole.name.toLowerCase().replace(/ /g, "");
-            if (guildRoleString === targetRoleString)
+        if (typeof role === "string") {
+            var targetRoleString = role.toLowerCase().replace(/ /g, "");
+            var roleFound = false;
+            for(let guildRole of guild.roles.cache.values())
             {
-                if(global.debug) console.log("> Role found: " + guildRole.name);
-                rolesPending.push(member.roles.add(guildRole));
-                roleFound = true;
+                var guildRoleString = guildRole.name.toLowerCase().replace(/ /g, "");
+                if (guildRoleString === targetRoleString)
+                {
+                    if(global.debug) console.log("> Role found: " + guildRole.name);
+                    rolesPending.push(member.roles.add(guildRole));
+                    roleFound = true;
+                }
             }
-        }
-        if (!roleFound)
-        {
-            if(global.debug) console.log("> Role not found: " + role);
+            if (!roleFound)
+            {
+                if(global.debug) console.log("> Role not found: " + role);
+            }
         }
     }
     await Promise.all(rolesPending);
