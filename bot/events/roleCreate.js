@@ -1,4 +1,5 @@
 const {logCreate} = require('../modtools/log/logModules.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
 
 module.exports = {
     name: "roleCreate",
@@ -14,7 +15,7 @@ module.exports = {
         // FIXME - Update of a role provoke a role creation logs spam (in every case except one)
         // FIXME - Update of a role is considered as a role creation (in logs)
        
-        getActionAuthor(oldGuild.guild, oldGuild, "role").then(userAuthor => {
+        getActionAuthor(role.guild, role, "role").then(userAuthor => {
             logCreate(
                 role.guild,
                 "role",
