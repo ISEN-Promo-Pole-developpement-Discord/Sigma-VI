@@ -1,3 +1,5 @@
+const {logDelete} = require('../modtools/log/logModules.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
 module.exports = {
     name: "messageDelete",
     once: false,
@@ -8,5 +10,15 @@ module.exports = {
          * @event messageDelete
          * @returns {Promise<void>}
          */
+         getActionAuthor(message.guild, message, "name").then(userAuthor => {
+         logDelete(
+            message.guild,
+            "Message",
+            null,
+            null,
+            message,
+            "user",
+        );
+     });
     }
 }
