@@ -51,15 +51,15 @@ module.exports = {
         if (message.content.split(` `)[0].toLowerCase() === `sigmacreatethread`) {
             if (message.content.split(` `)[1]) {
                 console.log(`\nmessage channel omg : ${message.channel}\n`);
-                createThread(message.channel, message.content.split(` `)[1], message);
+                createThread(message.channel, message.content.split(` `)[1],message,message.author);   
             }
-            createThread(message.channel, message.content.split(` `)[1], null);
+
         }
 
         if(message.content.split(` `)[0].toLowerCase() === 'sigmaterminatorchannel') {
             console.log(message.content.split(` `)[1]);
             terminatorChannels(message.guild,message.content.split(` `)[1]);
-            }
+            }    
         
         if (message.author.bot) return;
         if (!message.content) return;

@@ -31,9 +31,7 @@ async function createChannel(guild,user,NewChannel,Ntryparent) {
         )
         }
       })
-       
       }
-
   else{
       console.log(`aohoahoa`);
       NewChannel.messages.fetch().then(
@@ -110,30 +108,19 @@ function clearChannel(channel) {
   } 
 } 
 
-async function createThread(channel,ThreadName,message){
-  console.log(1);
+  async function createThread(channel,ThreadName,message,userlist){
   if(channel) {
-    console.log(`\n\n\nCreation of a thread : ${ThreadName}\n\n\n`)
     if(ThreadName){
       const thread = await channel.threads.create({
-        name : `Welcome : ${ThreadName}`,
-        //startMessage :{components: getButtonsFromJSON(welcomeFormData, null)},
+        name : ThreadName ,
         startMessage: message,
       });
-      cannard();
+      for (let i = 0; i < userlist.length; i++) {
+        thread.members.add(userlist[i]);
+      }
       return thread;
     }
-  
   }
-}
-/*
-*function cannard,
-* @
-* @ 
-* console.log(cannard) => function for test
-*/
-function cannard(){
-  console.log('cannard');
 }
 
 
@@ -144,5 +131,4 @@ module.exports = {
     clearChannel,
     createThread,
     terminatorChannels,
-    cannard,
 }
