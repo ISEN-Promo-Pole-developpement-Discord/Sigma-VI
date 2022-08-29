@@ -1,4 +1,5 @@
 const {logUpdate} = require('../modtools/log/logModules.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
 
 module.exports = {
     name: "roleUpdate",
@@ -12,7 +13,7 @@ module.exports = {
          * @returns {Promise<void>}
         */
 
-        getActionAuthor(oldGuild.guild, oldGuild, "role").then(userAuthor => {
+        getActionAuthor(oldRole.guild, newRole, "role").then(userAuthor => {
             logUpdate(
                 oldRole.guild,
                 "Role",
