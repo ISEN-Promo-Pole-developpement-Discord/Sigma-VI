@@ -129,19 +129,19 @@
                 {
                     "label": "Cyber Sécurité",
                     "description": "Option Cyber Sécurité",
-                    "value": "welcomeForm_option_Cyber%20Sécurité",
+                    "value": "welcomeForm_option_CyberSécurité",
                     "emoji": "🛡️"
                 },
                 {
                     "label": "Systèmes Embarqués",
                     "description": "Option Systèmes Embarqués",
-                    "value": "welcomeForm_option_Systèmes%20Embarqués",
+                    "value": "welcomeForm_option_SystèmesEmbarqués",
                     "emoji": "📳"
                 },
                 {
                     "label": "Robotique Mobile",
                     "description": "Option Robotique Mobile",
-                    "value": "welcomeForm_option_Robotique%20Mobile",
+                    "value": "welcomeForm_option_RobotiqueMobile",
                     "emoji": "🤖"
                 },
                 {
@@ -153,13 +153,13 @@
                 {
                     "label": "Smart Energy",
                     "description": "Option Smart Energy",
-                    "value": "welcomeForm_option_Smart%20Energy",
+                    "value": "welcomeForm_option_SmartEnergy",
                     "emoji": "⚡"
                 },
                 {
                     "label": "Big Data",
                     "description": "Option Développement Logiciel (Big Data)",
-                    "value": "welcomeForm_option_Big%20data",
+                    "value": "welcomeForm_option_Bigdata",
                     "emoji": "🖥️"
                 },
                 {
@@ -171,7 +171,7 @@
                 {
                     "label": "Ingénieur d'affaires",
                     "description": "Option Ingénierie des Affaires",
-                    "value": "welcomeForm_option_Ingénieur%20d'affaires",
+                    "value": "welcomeForm_option_Ingénieurd'affaires",
                     "emoji": "👨‍⚖️"
                 }
             ],
@@ -205,19 +205,19 @@
                 {
                     "label": "Cyber Sécurité",
                     "description": "Option Cyber Sécurité",
-                    "value": "welcomeForm_option_Cyber%20Sécurité",
+                    "value": "welcomeForm_option_CyberSécurité",
                     "emoji": "🛡️"
                 },
                 {
                     "label": "Systèmes Embarqués",
                     "description": "Option Systèmes Embarqués",
-                    "value": "welcomeForm_option_Systèmes%20Embarqués",
+                    "value": "welcomeForm_option_SystèmesEmbarqués",
                     "emoji": "📳"
                 },
                 {
                     "label": "Robotique Mobile",
                     "description": "Option Robotique Mobile",
-                    "value": "welcomeForm_option_Robotique%20Mobile",
+                    "value": "welcomeForm_option_RobotiqueMobile",
                     "emoji": "🤖"
                 },
                 {
@@ -229,13 +229,13 @@
                 {
                     "label": "Smart Energy",
                     "description": "Option Smart Energy",
-                    "value": "welcomeForm_option_Smart%20Energy",
+                    "value": "welcomeForm_option_SmartEnergy",
                     "emoji": "⚡"
                 },
                 {
                     "label": "Big Data",
                     "description": "Option Développement Logiciel (Big Data)",
-                    "value": "welcomeForm_option_Big%20data",
+                    "value": "welcomeForm_option_Bigdata",
                     "emoji": "🖥️"
                 },
                 {
@@ -247,7 +247,7 @@
                 {
                     "label": "Ingénieur d'affaires",
                     "description": "Option Ingénierie des Affaires",
-                    "value": "welcomeForm_option_Ingénieur%20d'affaires",
+                    "value": "welcomeForm_option_Ingénieurd'affaires",
                     "emoji": "👨‍⚖️"
                 }
             ],
