@@ -3,37 +3,37 @@
         {
             "label": "Espagnol",
             "emoji": "🇪🇸",
-            "value": "welcomeForm_LV2_ES",
+            "value": "welcomeForm_LV2_espagnol",
             "description": "Si eliges español"
         },
         {
             "label": "Italien",
             "emoji": "🇮🇹",
-            "value": "welcomeForm_LV2_IT",
+            "value": "welcomeForm_LV2_italien",
             "description": "Se hai scelto l'italiano"
         },
         {
             "label": "Allemand",
             "emoji": "🇩🇪",
-            "value": "welcomeForm_LV2_DE",
+            "value": "welcomeForm_LV2_allemand",
             "description": "Wenn Sie Deutsch gewählt haben"
         },
         {
             "label": "Russe",
             "emoji": "🇷🇺",
-            "value": "welcomeForm_LV2_RU",
+            "value": "welcomeForm_LV2_russe",
             "description": "Если вы выбрали русский"
         },
         {
             "label": "Japonais",
             "emoji": "🇯🇵",
-            "value": "welcomeForm_LV2_JP",
+            "value": "welcomeForm_LV2_japonais",
             "description": "日本語を選んだ場合"
         },
         {
             "label": "Chinois",
             "emoji": "🇨🇳",
-            "value": "welcomeForm_LV2_CN",
+            "value": "welcomeForm_LV2_chinois",
             "description": "如果你选择了中式"
         },
         {
