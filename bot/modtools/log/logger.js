@@ -109,6 +109,14 @@ function objectClassDataToFields(object) {
             fields[i].value += "...";
         }
     }
+    
+    //filter false values
+    for (let i = 0; i < fields.length; i++) {
+        if (fields[i].value === "false") {
+            fields.splice(i, 1);
+            i--;
+        }
+    }
 
     return removeDuplicates(fields);
 }
@@ -152,6 +160,14 @@ function objectUpdateGetChangesFields(oldObject, newObject) {
                 fields.splice(i, 1);
                 i--;
             }
+        }
+    }
+
+    //filter false values
+    for (let i = 0; i < fields.length; i++) {
+        if (fields[i].value === "false") {
+            fields.splice(i, 1);
+            i--;
         }
     }
 
@@ -228,11 +244,11 @@ function objectUpdateGetChangesFields(oldObject, newObject) {
 
 function removeDuplicates(fields) {
     let fieldsFiltered = [];
-    let fieldsFilteredNames = [];
+    let fieldsFilteredValues = [];
     for (let i = 0; i < fields.length; i++) {
-        if (!fieldsFilteredNames.includes(fields[i].name)) {
+        if (!fieldsFilteredValues.includes(fields[i].value)) {
             fieldsFiltered.push(fields[i]);
-            fieldsFilteredNames.push(fields[i].name);
+            fieldsFilteredValues.push(fields[i].value);
         }
     }
     return fieldsFiltered;

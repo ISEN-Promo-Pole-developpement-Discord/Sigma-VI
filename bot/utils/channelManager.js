@@ -109,11 +109,12 @@ function clearChannel(channel) {
 } 
 
   async function createThread(channel,ThreadName,message,userlist){
-  if(channel) {
+   if(channel) {
     if(ThreadName){
       const thread = await channel.threads.create({
         name : ThreadName ,
         startMessage: message,
+        type : ChannelType.GuildPrivateThread,
       });
       for (let i = 0; i < userlist.length; i++) {
         thread.members.add(userlist[i]);
