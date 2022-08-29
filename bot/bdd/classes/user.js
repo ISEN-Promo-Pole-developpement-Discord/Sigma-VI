@@ -100,7 +100,8 @@ class User
     async setData(data)
     {
         const connection = global.sqlConnection;
-        await connection(`UPDATE user SET user_data = ? WHERE user_id = ?`, [data, this.id]);
+        const dataJSON = JSON.stringify(data);
+        await connection(`UPDATE user SET user_data = ? WHERE user_id = ?`, [dataJSON, this.id]);
     }
 }
 
