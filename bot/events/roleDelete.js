@@ -1,5 +1,5 @@
 const {logDelete} = require('../modtools/log/logModules.js');
-
+const {getActionAuthor} = require('../modtools/log/logger.js');
 module.exports = {
     name: "roleDelete",
     once: false,
@@ -11,7 +11,7 @@ module.exports = {
          * @returns {Promise<void>}
         */
 
-         getActionAuthor(oldGuild.guild, oldGuild, "role").then(userAuthor => {
+         getActionAuthor(role.guild, role, "role").then(userAuthor => {
             logDelete(
                 role.guild,
                 "Role",
