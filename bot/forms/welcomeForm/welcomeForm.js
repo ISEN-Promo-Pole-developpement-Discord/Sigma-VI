@@ -28,15 +28,7 @@ async function checkCodeMail(interaction, code) {
 async function registerAnswer(form, id, value) {
     let fields = await form.getFields();
 
-    if (fields.answers.map((x) => {return x.id}).includes(id)) {
-        for (answer of fields.answers) {
-            if (answer.id === id) {
-                answer.value = value;
-            }
-        }
-    } else {
-        fields.answers.push({id: id, value: value});
-    }
+    fields[id] = value;
 
     await form.setFields(fields);
 }
@@ -119,13 +111,8 @@ async function handleWelcomeFormMenuResponse(interaction) {
         console.log(">> form not found");
         return;
     }
-    const formAnswers = (await form.getFields()).answers;
-    var formCompletedFields = new Array();
-    for(const answer of formAnswers) {
-        formCompletedFields.push(answer.id);
-    }
-
-    console.log(formCompletedFields);
+    const formAnswers = await form.getFields();
+    var formCompletedFields = Object.keys(formAnswers);
 
     registerAnswer(form, id, value);
 
@@ -172,15 +159,14 @@ function handleWelcomeFormResponse(interaction) {
 
                 const fields = await form.getFields();
 
-                const name = fields.answers.find((x) => x.id === "name").value;
-                const surname = fields.answers.find((x) => x.id === "surname").value;
-                let mail = fields.answers.find((x) => x.id === "mail");
+                const name = fields.name;
+                const surname = fields.surname;
+                let mail = fields.mail;
                 
-                if (mail) {
-                    mail = mail.value;
-                } else {
+                if (!mail) {
                     mail = `${surname.replaceAll(" ", "-").toLowerCase()}.${name.replaceAll(" ", "-").toLowerCase()}@isen.yncrea.fr`;
                 }
+                
                 await registerAnswer(form, "mail", mail);
                 await registerAnswer(form, "mailValidated", true);
                 responseFromWelcomeProcess(step.step, interaction);

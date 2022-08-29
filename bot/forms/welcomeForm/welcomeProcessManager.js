@@ -10,31 +10,31 @@ async function isSkipped(interaction, stepData) {
     if (stepData.condition) {
         const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id);
         const fields = await form.getFields();
-        const answer = fields.answers.find((x) => x.id === stepData.condition.value);
+        const answer = fields[stepData.condition.value];
         if (answer) {
             switch (stepData.condition.type) {
                 case "valueExists":
-                    if (typeof(answer.value) === undefined) {
+                    if (typeof(answer) === undefined) {
                         return true;
                     }
                     return false;
                 case "valueIsTrue":
-                    if (answer.value == false) {
+                    if (answer == false) {
                         return true;
                     }
                     return false;
                 case "valueIsFalse":
-                    if (answer.value == true) {
+                    if (answer == true) {
                         return true;
                     }
                     return false;
                 case "valueIncludes":
-                    if (answer.value.includes(stepData.condition.valueSearched)) {
+                    if (answer.includes(stepData.condition.valueSearched)) {
                         return true;
                     }
                     return false;
                 case "valueIs":
-                    if (answer.value != stepData.condition.valueSearched) {
+                    if (answer != stepData.condition.valueSearched) {
                         return true;
                     }
                     return false;
@@ -53,8 +53,8 @@ async function submitForm(interaction) {
     await form.setStatus(3);
 
     const fields = await form.getFields();
-    const name = fields.answers.find(x => x.id === "name").value;
-    const surname = fields.answers.find(x => x.id === "surname").value;
+    const name = fields.name;
+    const surname = fields.surname;
 
     let displayedName;
 
@@ -100,9 +100,10 @@ function responseFromWelcomeProcess(currentStep, interaction) {
             if (currentStep === 0) {
                 channel = await createThread(interaction.channel, `${interaction.user.username}`, interaction.message);
 
-                console.log(channel);
+                let fields = {}
+                fields[interaction.customId.split("_").at(-2)] = interaction.customId.split("_").at(-1);
 
-                await FormsManager.addForm({user_id: interaction.user.id, guild_id: interaction.guild.id, channel_id: channel.id, status: 1, fields: {answers:[{id: interaction.customId.split("_").at(-2), value: interaction.customId.split("_").at(-1)}]}});
+                await FormsManager.addForm({user_id: interaction.user.id, guild_id: interaction.guild.id, channel_id: channel.id, status: 1, fields: fields});
             } else {
                 channel = interaction.channel;
             }
@@ -151,11 +152,11 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     
                     const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id)
                     const fields = await form.getFields();
-                    const profileAnswer = fields.answers.find((x) => x.id === "generalProfile");
+                    const profileAnswer = fields.generalProfile;
 
                     channel.send({
                         content: `**${stepData.name}**\n${stepData.description}`,
-                        components: getSelectMenusFromJSON("welcomeForm", `welcomeForm_generalProfile_${profileAnswer.value}`, welcomeFormData)
+                        components: getSelectMenusFromJSON("welcomeForm", `welcomeForm_generalProfile_${profileAnswer}`, welcomeFormData)
                     });
                     //return `welcomeForm_${profileAnswer.id}_${profileAnswer.value}`;
     
@@ -199,13 +200,11 @@ function responseFromWelcomeProcess(currentStep, interaction) {
 
                     const fields = await form.getFields();
 
-                    const name = fields.answers.find((x) => x.id === "name").value;
-                    const surname = fields.answers.find((x) => x.id === "surname").value;
-                    let mail = fields.answers.find((x) => x.id === "mail");
+                    const name = fields.name;
+                    const surname = fields.surname;
+                    let mail = fields.mail;
 
-                    if (mail) {
-                        mail = mail.value;
-                    } else {
+                    if (!mail) {
                         mail = `${surname.replaceAll(" ", "-").toLowerCase()}.${name.replaceAll(" ", "-").toLowerCase()}@isen.yncrea.fr`;
                     }
                     
