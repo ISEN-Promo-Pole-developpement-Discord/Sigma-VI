@@ -7,6 +7,7 @@ const { FormsManager } = require("../../bdd/classes/formsManager.js");
 const { createThread } = require("../../utils/channelManager.js");
 const { assignRoles, assignVerifiedRole } = require("../../utils/rolesManager.js");
 const { UsersManager } = require("../../bdd/classes/usersManager.js");
+const { logCreate } = require("../../modtools/log/logModules.js");
 
 async function isSkipped(interaction, stepData) {
     if (stepData.condition) {
@@ -102,6 +103,14 @@ async function submitForm(interaction) {
         }
     }
     await userDB.setData(userData);
+
+    logCreate(
+        interaction.guild,
+        "Form",
+        null,
+        fields,
+        "io"
+    );
 
     await interaction.channel.delete();
 
