@@ -1,6 +1,6 @@
 const config = require("../config-core.json");
 
-  async function assignRoles(member, guild, roles)
+  async function manageRoles(member, guild, roles, typeOfAction)
 {
     await guild.roles.fetch();
     var rolesPending = [];
@@ -16,7 +16,22 @@ const config = require("../config-core.json");
                 if (guildRoleString === targetRoleString)
                 {
                     if(global.debug) console.log("> Role found: " + guildRole.name);
-                    rolesPending.push(member.roles.add(guildRole));
+                    // typeOfAction === 0 => add role
+                    if (!typeOfAction)
+                    {
+                        if (!(member.roles.cache.some(r => r.name === guildRole.name))) {
+                            rolesPending.push(member.roles.add(guildRole));
+                        } else
+                            if(global.debug) console.log("> Role already assigned");
+                    }
+                    // typeOfAction === 1 => remove role
+                    else
+                    {
+                        if (member.roles.cache.some(r => r.name === guildRole.name)) {
+                            rolesPending.push(member.roles.remove(guildRole));
+                        } else
+                            if(global.debug) console.log("> Role already removed");
+                    }
                     roleFound = true;
                 }
             }
@@ -54,6 +69,6 @@ async function assignVerifiedRole(user, guild)
 }
 
 module.exports = {
-    assignRoles,
+    manageRoles,
     assignVerifiedRole,
 }
