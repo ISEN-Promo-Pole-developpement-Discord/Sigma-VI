@@ -4,8 +4,6 @@ const { initBdd } = require("./bdd/utilsDB");
 const fs = require("node:fs");
 const path = require("node:path");
 const {loadModulesCommands} = require("./requests/modules/modulesManager.js");
-const { GuildsManager } = require("./bdd/classes/guildsManager.js");
-const { UsersManager } = require("./bdd/classes/usersManager.js");
 global.config = require('./config.json');
 global.config.core = require('./config-core.json');
 
@@ -59,21 +57,6 @@ const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".js"
     await client.login(global.config.token);
     global.client = client;
     global.client.commands = new Collection();
-
-    console.log("> Chargement des serveurs...");
-    client.guilds.cache.forEach(
-        async (guild) => {
-            let currentGuild = await GuildsManager.getGuild(guild.id);
-            if (currentGuild === null) {
-                await GuildsManager.addGuild({id: guild.id, config: "{}" });
-            }
-
-            const membersList = client.guilds.cache.get(guild.id);
-            membersList.members.cache.forEach( async (member) => {
-                if (await UsersManager.getUser(member.id) === null)
-                    await UsersManager.addUser({id: member.id, name: null, surname: null, email: null, password: null, status: -1, data: "{}" });
-            });
-        });
 
     if(global.config.core.modules === true) {
         console.log("> Chargement des modules...");
