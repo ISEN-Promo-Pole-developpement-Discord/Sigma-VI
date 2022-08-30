@@ -4,7 +4,7 @@ const welcomeFormData = require("./welcomeForm.json");
 const welcomeProcess = require("./welcomeProcess.json");
 const { searchNode, getSelectMenusFromJSON } = require("../../utils/formHelper.js");
 const { FormsManager } = require("../../bdd/classes/formsManager.js");
-const { createThread } = require("../../utils/channelManager.js");
+const { createThread, deleteSystemMessages } = require("../../utils/channelManager.js");
 const { assignRoles, assignVerifiedRole } = require("../../utils/rolesManager.js");
 const { UsersManager } = require("../../bdd/classes/usersManager.js");
 const { logCreate } = require("../../modtools/log/logModules.js");
@@ -167,6 +167,9 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                 fields[interaction.customId.split("_").at(-2)] = interaction.customId.split("_").at(-1);
 
                 await FormsManager.addForm({user_id: interaction.user.id, guild_id: interaction.guild.id, channel_id: channel.id, status: 1, fields: fields});
+
+                deleteSystemMessages(channel);
+                deleteSystemMessages(interaction.channel);
             } else {
                 channel = interaction.channel;
             }

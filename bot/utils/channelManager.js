@@ -4,26 +4,30 @@ const welcomeFormData = require('../forms/welcomeForm/welcomeForm.json');
 
 //fonction à supprimer(je pense) après le test 
 async function createChannel(guild,user,NewChannel,Ntryparent) {
-  await guild.channels.fetch()
-  .then( channels => channels.forEach((entry,snowflake) => {
+  const channels = await guild.channels.fetch();
+  let channel;
+
+  channels.forEach((entry,snowflake) => {
       if(entry.name===NewChannel){
           NewChannel=entry;
           console.log(`NewChannel find : ${NewChannel}`);
       }
     }
   )
-  )
+
   if(typeof(NewChannel)===`string`){
-  guild.channels.create(
-        {
-         name: NewChannel,
-        type: ChannelType.GuildText,
-        } 
-       ).then(channel => {
+  channel = guild.channels.create(
+                  {
+                  name: NewChannel,
+                  type: ChannelType.GuildText,
+                  } 
+                );
+
         channel.send({
           content: `**Bienvenue sur le serveur discord de l'ISEN Méditerranée !**\nSigma, à votre service. Avant de nous rejoindre, j'ai quelques questions à vous poser.\n\n***Pour commencer, sélectionnez un profil ici :arrow_heading_down:***`,
           components: getButtonsFromJSON(welcomeFormData)
         });
+
         if(Ntryparent){
           guild.channels.fetch()
           .then( channels => channels.forEach((entry,snowflake) => {
@@ -33,11 +37,10 @@ async function createChannel(guild,user,NewChannel,Ntryparent) {
         }}})
         )
         }
-      })
       }
   else{
-      NewChannel.messages.fetch().then(
-        messages => {
+    channel = NewChannel;
+      const messages = await NewChannel.messages.fetch()
           if(messages.size === 0 ){
             NewChannel.send({
               content: `**Bienvenue sur le serveur discord de l'ISEN Méditerranée !**\nSigma, à votre service. Avant de nous rejoindre, j'ai quelques questions à vous poser.\n\n***Pour commencer, sélectionnez un profil ici :arrow_heading_down:***`,
@@ -45,9 +48,8 @@ async function createChannel(guild,user,NewChannel,Ntryparent) {
             });
           }
         }
-      )
-    }
-    }
+    return channel;
+}
 
 function deleteChannel(guild,channel) {
   if(channel){
@@ -137,6 +139,19 @@ function clearChannel(channel) {
   }
 }
 
+async function deleteSystemMessages(channel) {
+  let messagesPending = [];
+  const messages = await channel.messages.fetch();
+  messages.forEach((msg, snowflake) => {
+    console.log(msg);
+    if (msg.system) {
+      messagesPending.push(msg.delete());
+    }
+  });
+
+  await Promise.all(messagesPending);
+}
+
 
 module.exports = {
     createChannel,
@@ -145,4 +160,5 @@ module.exports = {
     clearChannel,
     createThread,
     terminatorChannels,
+    deleteSystemMessages
 }

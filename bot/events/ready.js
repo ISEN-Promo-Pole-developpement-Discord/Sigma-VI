@@ -1,4 +1,4 @@
-const { createChannel } = require("../utils/channelManager.js");
+const { createChannel, deleteSystemMessages } = require("../utils/channelManager.js");
 const { GuildsManager } = require("../bdd/classes/guildsManager.js");
 
 module.exports = {
@@ -19,7 +19,7 @@ module.exports = {
                 const guildDB = await GuildsManager.getGuild(guild.id);
 
                 if (guildDB) {
-                    createChannel(guild,null,"welcome","Welcome");
+                    createChannel(guild,null,"welcome","Welcome").then((channel => { deleteSystemMessages(channel); }));
                 }
             });
         });
