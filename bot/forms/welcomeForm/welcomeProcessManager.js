@@ -290,23 +290,13 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                                     .setCustomId(`launch_${stepData.toAsk.id}`)
                                     .setLabel(`Saisir le code reçu par e-mail`)
                                     .setStyle(ButtonStyle.Primary)
-                                    .setDisabled(false),
-                                new ButtonBuilder()
-                                    .setCustomId(`dopass_${stepData.toAsk.id}`)
-                                    .setLabel(`Passer`)
-                                    .setStyle(ButtonStyle.Secondary)
                                     .setDisabled(false)
                             )
                         ]
                     });
             
                     return;
-                } else if (stepData.toAsk.type === "adminValidate") {
-                    return await channel.send({
-                        content: `**${stepData.name}**\nSalut monsieur l'administrateur tu peux vérifier stp ? Merci !`
-                    });
                 }
-            
                 return await submitForm(interaction);
             }
         });

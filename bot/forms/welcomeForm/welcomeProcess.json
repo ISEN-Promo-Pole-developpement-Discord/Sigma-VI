@@ -124,18 +124,6 @@
                     }
                 ]
             }
-        },
-        {
-            "step": 6,
-            "name": "Vérification par un administrateur",
-            "condition": {
-                "type": "valueIsFalse",
-                "value": "mailValidated"
-            },
-            "toAsk": {
-                "id": "welcomeForm_adminValidate",
-                "type": "adminValidate"
-            }
         }
     ]
 }
