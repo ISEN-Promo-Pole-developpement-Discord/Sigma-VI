@@ -173,18 +173,13 @@ function handleWelcomeFormResponse(interaction) {
                 responseFromWelcomeProcess(step.step, interaction);
             } else {
                 interaction.update({
-                    content: `**${step.name}**\n❌ Vous venez de rentrer le mauvais code. Veuillez réessayer, ou cliquer sur Passer pour procéder à une vérification manuelle.`,
+                    content: `**${step.name}**\n❌ Vous venez de rentrer le mauvais code. Veuillez réessayer.`,
                     components: [
                         new ActionRowBuilder().addComponents(
                             new ButtonBuilder()
                                 .setCustomId(`launch_${interaction.customId}`)
                                 .setLabel(`Ressaisir le code reçu par e-mail`)
                                 .setStyle(ButtonStyle.Primary)
-                                .setDisabled(false),
-                            new ButtonBuilder()
-                                .setCustomId(`dopass_${interaction.customId}`)
-                                .setLabel(`Passer`)
-                                .setStyle(ButtonStyle.Secondary)
                                 .setDisabled(false)
                         )
                     ]
