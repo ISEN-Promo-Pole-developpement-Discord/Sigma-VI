@@ -10,13 +10,5 @@ module.exports = {
          * @param {Array<Reaction>} reactions
          * @returns {Promise<void>}
          */
-         logDelete(
-            message.guild,
-            "messageRactionRemove",
-            null,
-            null,
-            message,
-            "admin",
-         )
     }
 }
