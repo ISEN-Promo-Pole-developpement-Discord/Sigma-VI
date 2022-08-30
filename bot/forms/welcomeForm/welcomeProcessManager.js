@@ -78,7 +78,18 @@ async function submitForm(interaction) {
 
     await assignVerifiedRole(interaction.user, interaction.guild);
 
-    await manageRoles(interaction.member, interaction.guild, Object.values(fields));
+    let rolesFilter = []
+    for (const task of welcomeProcess.tasks) {
+        if (task.toAsk.type.toLowerCase().includes("modal")) {
+            for (const field of task.toAsk.fields) {
+                rolesFilter.push(field.id.split("_").at(-1));
+            }
+        }
+    }
+
+    const rolesToAssign = Object.keys(fields).filter(x => !rolesFilter.includes(x));
+
+    await manageRoles(interaction.member, interaction.guild, rolesToAssign.map((x) => { return fields[x]; }));
     let userStatus;
     switch (fields.profilGeneral) {
         case "EtudiantISEN":
