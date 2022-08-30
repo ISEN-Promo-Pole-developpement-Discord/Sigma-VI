@@ -219,8 +219,22 @@ function responseFromWelcomeProcess(currentStep, interaction) {
     
                     return;
                 } else if (stepData.toAsk.type === "RowButtons") {
+                    let desc = stepData.description;
+                    if (stepData.name === "Confirmation") {
+                        const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id)
+                        const fields = await form.getFields();
+
+                        let resumeString = new Array();
+                        for (key of Object.keys(fields)) {
+                            if (key !== "mailValidated") {
+                                resumeString.push(`${key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()} : ${fields[key]}`)
+                            }
+                        }
+
+                        desc = `Voici un résumé du formulaire :\n${resumeString.join("\n")}\n\n${stepData.description}`
+                    }
                     return await channel.send({
-                        content: `**${stepData.name}**\n${stepData.description}`,
+                        content: `**${stepData.name}**\n${desc}`,
                         components: [
                             new ActionRowBuilder().addComponents(stepData.toAsk.buttons.map(button => {
                                 let style = null;
