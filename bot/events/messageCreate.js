@@ -1,4 +1,3 @@
-const { deleteChannel, createChannel, fetchChannels, clearChannel, createThread, terminatorChannels } = require('../utils/channelManager.js');
 const { launchRequestProcessing } = require('../requests/requestManager.js');
 
 module.exports = {
