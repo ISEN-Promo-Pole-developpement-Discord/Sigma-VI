@@ -300,7 +300,12 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     let mail = fields.mail;
 
                     if (!mail) {
-                        mail = `${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}.${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}@isen.yncrea.fr`;
+                        mail = `${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}.${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}`;
+                        if (fields.profilGeneral !== "EtudiantISEN") {
+                            mail = `${mail}@yncrea.fr`;
+                        } else {
+                            mail = `${mail}@isen.yncrea.fr`;
+                        }
                     }
                     
                     
