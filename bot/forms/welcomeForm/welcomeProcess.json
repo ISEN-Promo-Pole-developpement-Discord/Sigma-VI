@@ -111,7 +111,12 @@
         {
             "step": 5,
             "name": "Vérification de l'adresse e-mail",
-            "description": "Je vous invite donc à regarder votre boîte mail et trouver le **message envoyé par no-reply@sigma-bot.fr**\n**Attention, le mail peut se trouver dans vos spams !**\nUne fois le mail trouvé, ouvrez le et renseignez la suite de 6 chiffres indiquée.\n*Si vous ne trouvez pas le mail, vous pouvez cliquer sur Passer, ce qui demandera une vérification manuelle d'un modérateur.*",
+            "description": "Je vous invite donc à regarder votre boîte mail et trouver le **message envoyé par no-reply@sigma-bot.fr**\n**Attention, le mail peut se trouver dans vos spams !**\nUne fois le mail trouvé, ouvrez le et renseignez la suite de 6 chiffres indiquée.\n*Si vous ne trouvez pas le mail, vous pouvez demander l'aide d'un modérateur en écrivant ci-dessous dans la zone de texte prévue à cet effet.*",
+            "condition": {
+                "type": "valueNotIncludes",
+                "value": "profilGeneral",
+                "valueSearched": "ISEN"
+            },
             "toAsk": {
                 "id": "welcomeForm_checkMail",
                 "type": "checkMail",

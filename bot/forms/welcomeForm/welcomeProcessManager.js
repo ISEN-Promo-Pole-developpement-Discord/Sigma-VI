@@ -36,6 +36,11 @@ async function isSkipped(interaction, stepData) {
                         return true;
                     }
                     return false;
+                case "valueNotIncludes":
+                    if (!answer.includes(stepData.condition.valueSearched)) {
+                        return true;
+                    }
+                    return false;
                 case "valueIs":
                     if (answer != stepData.condition.valueSearched) {
                         return true;
@@ -212,10 +217,15 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     const fields = await form.getFields();
                     const profileAnswer = fields.profilGeneral;
 
-                    channel.send({
-                        content: `**${stepData.name}**\n${stepData.description}`,
-                        components: getSelectMenusFromJSON("welcomeForm", `welcomeForm_profilGeneral_${profileAnswer}`, welcomeFormData)
-                    });
+                    const next = searchNode(interaction.values[0], welcomeFormData);
+                    if (next) {
+                        channel.send({
+                            content: `**${stepData.name}**\n${stepData.description}`,
+                            components: getSelectMenusFromJSON("welcomeForm", `welcomeForm_profilGeneral_${profileAnswer}`, welcomeFormData)
+                        });
+                    } else {
+                        return responseFromWelcomeProcess(currentStep, interaction);
+                    }
     
                     return;
                 } else if (stepData.toAsk.type === "RowButtons") {
@@ -276,7 +286,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     let mail = fields.mail;
 
                     if (!mail) {
-                        mail = `${surname.replaceAll(" ", "-").toLowerCase()}.${name.replaceAll(" ", "-").toLowerCase()}@isen.yncrea.fr`;
+                        mail = `${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}.${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}@isen.yncrea.fr`;
                     }
                     
                     

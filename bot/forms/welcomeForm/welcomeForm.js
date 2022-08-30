@@ -165,7 +165,7 @@ function handleWelcomeFormResponse(interaction) {
                 let mail = fields.mail;
                 
                 if (!mail) {
-                    mail = `${surname.replaceAll(" ", "-").toLowerCase()}.${name.replaceAll(" ", "-").toLowerCase()}@isen.yncrea.fr`;
+                    mail = `${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}.${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}@isen.yncrea.fr`;
                 }
                 
                 await registerAnswer(form, "mail", mail);
