@@ -8,6 +8,7 @@ async function createChannel(guild,user,NewChannel,Ntryparent) {
   .then( channels => channels.forEach((entry,snowflake) => {
       if(entry.name===NewChannel){
           NewChannel=entry;
+          console.log(`NewChannel find : ${NewChannel}`);
       }
     }
   )
@@ -19,7 +20,10 @@ async function createChannel(guild,user,NewChannel,Ntryparent) {
         type: ChannelType.GuildText,
         } 
        ).then(channel => {
-        channel.send({ content :(`bienvenue sur  le serveur : ${guild}`),components: getButtonsFromJSON(welcomeFormData)});
+        channel.send({
+          content: `**Bienvenue sur le serveur discord de l'ISEN Méditerranée !**\nSigma, à votre service. Avant de nous rejoindre, j'ai quelques questions à vous poser.\n\n***Pour commencer, sélectionnez un profil ici :arrow_heading_down:***`,
+          components: getButtonsFromJSON(welcomeFormData)
+        });
         if(Ntryparent){
           guild.channels.fetch()
           .then( channels => channels.forEach((entry,snowflake) => {
@@ -35,7 +39,10 @@ async function createChannel(guild,user,NewChannel,Ntryparent) {
       NewChannel.messages.fetch().then(
         messages => {
           if(messages.size === 0 ){
-            NewChannel.send({ content :(`bienvenue sur  le serveur : ${guild}`),components: getButtonsFromJSON(welcomeFormData)});
+            NewChannel.send({
+              content: `**Bienvenue sur le serveur discord de l'ISEN Méditerranée !**\nSigma, à votre service. Avant de nous rejoindre, j'ai quelques questions à vous poser.\n\n***Pour commencer, sélectionnez un profil ici :arrow_heading_down:***`,
+              components: getButtonsFromJSON(welcomeFormData)
+            });
           }
         }
       )
