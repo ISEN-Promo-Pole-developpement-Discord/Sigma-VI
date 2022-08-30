@@ -36,6 +36,11 @@ async function isSkipped(interaction, stepData) {
                         return true;
                     }
                     return false;
+                case "valueNotIncludes":
+                    if (!answer.includes(stepData.condition.valueSearched)) {
+                        return true;
+                    }
+                    return false;
                 case "valueIs":
                     if (answer != stepData.condition.valueSearched) {
                         return true;
