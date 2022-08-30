@@ -13,7 +13,7 @@ module.exports = {
          * @returns {Promise<void>}
          */
 
-         getActionAuthor(oldGuild.guild, oldGuild, "invite").then(userAuthor => {
+         getActionAuthor(oldGuild, newGuild, "GuildUpdate").then(userAuthor => {
          logUpdate(
             oldGuild,   
             "GuildUpdate",
