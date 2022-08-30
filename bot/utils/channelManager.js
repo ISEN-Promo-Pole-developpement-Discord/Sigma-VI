@@ -143,9 +143,10 @@ async function deleteSystemMessages(channel) {
   let messagesPending = [];
   const messages = await channel.messages.fetch();
   messages.forEach((msg, snowflake) => {
-    console.log(msg);
     if (msg.system) {
-      messagesPending.push(msg.delete());
+      if (msg.deletable) {
+        messagesPending.push(msg.delete());
+      }
     }
   });
 
