@@ -2,7 +2,7 @@ const { ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder, ButtonBuil
 const { sendCodeMail } = require("../sendMail.js");
 const welcomeFormData = require("./welcomeForm.json");
 const welcomeProcess = require("./welcomeProcess.json");
-const { searchNode, getSelectMenusFromJSON } = require("../../utils/formHelper.js");
+const { getSelectMenusFromJSON } = require("../../utils/formHelper.js");
 const { FormsManager } = require("../../bdd/classes/formsManager.js");
 const { createThread, deleteSystemMessages } = require("../../utils/channelManager.js");
 const { manageRoles, assignVerifiedRole } = require("../../utils/rolesManager.js");
@@ -78,7 +78,18 @@ async function submitForm(interaction) {
 
     await assignVerifiedRole(interaction.user, interaction.guild);
 
-    await manageRoles(interaction.member, interaction.guild, Object.values(fields));
+    let rolesFilter = []
+    for (const task of welcomeProcess.tasks) {
+        if (task.toAsk.type.toLowerCase().includes("modal")) {
+            for (const field of task.toAsk.fields) {
+                rolesFilter.push(field.id.split("_").at(-1));
+            }
+        }
+    }
+
+    const rolesToAssign = Object.keys(fields).filter(x => !rolesFilter.includes(x));
+
+    await manageRoles(interaction.member, interaction.guild, rolesToAssign.map((x) => { return fields[x]; }));
     let userStatus;
     switch (fields.profilGeneral) {
         case "EtudiantISEN":
@@ -127,12 +138,12 @@ function responseFromWelcomeProcess(currentStep, interaction) {
     if (welcomeProcess.tasks[currentStep]) {
         if (welcomeProcess.tasks[currentStep].toAsk.type === "welcomeMenus") {
             if (interaction.message.components.length === 1) {
-                const next = searchNode(interaction.values[0], welcomeFormData);
+                const next = getSelectMenusFromJSON("welcomeForm", interaction.values[0], welcomeFormData);
                 if (next) {
                     const stepData = welcomeProcess.tasks[currentStep];
                     return interaction.channel.send({
                         content: `**${stepData.name}**\nVous avez encore des informations à remplir ci-dessous.`,
-                        components: getSelectMenusFromJSON("welcomeForm", interaction.values[0], welcomeFormData)
+                        components: next
                     });
                 }
             }
@@ -220,11 +231,11 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     const fields = await form.getFields();
                     const profileAnswer = fields.profilGeneral;
 
-                    const next = searchNode(`welcomeForm_profilGeneral_${profileAnswer}`, welcomeFormData);
+                    const next = getSelectMenusFromJSON("welcomeForm", `welcomeForm_profilGeneral_${profileAnswer}`, welcomeFormData);
                     if (next) {
                         channel.send({
                             content: `**${stepData.name}**\n${stepData.description}`,
-                            components: getSelectMenusFromJSON("welcomeForm", `welcomeForm_profilGeneral_${profileAnswer}`, welcomeFormData)
+                            components: next
                         });
                     } else {
                         return responseFromWelcomeProcess(currentStep, interaction);

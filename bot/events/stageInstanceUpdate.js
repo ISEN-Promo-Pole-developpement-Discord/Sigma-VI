@@ -1,4 +1,4 @@
-const {logCreate} = require('../modtools/log/logModules.js');
+const {logCreate, logUpdate} = require('../modtools/log/logModules.js');
 const {getActionAuthor} = require('../modtools/log/logger.js');
 
 module.exports = {
@@ -12,13 +12,14 @@ module.exports = {
          * @event stageInstanceUpdate
          * @returns {Promise<void>}
             */
-         getActionAuthor(oldStageInstance.guild, oldStageInstance, "invite").then(userAuthor => {
-            logCreate(
-                invite.guild,
-                "invite",
+         getActionAuthor(oldStageInstance.guild, oldStageInstance, "stageInstance").then(userAuthor => {
+            logUpdate(
+                newStageInstance.guild,
+                "Stage Instance",
                 userAuthor,
                 null,
-                invite,
+                oldStageInstance,
+                newStageInstance,
                 "admin",
             );
         }
