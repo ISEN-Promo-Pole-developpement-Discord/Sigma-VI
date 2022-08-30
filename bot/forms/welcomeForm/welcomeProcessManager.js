@@ -123,7 +123,7 @@ async function submitForm(interaction) {
     logCreate(
         interaction.guild,
         "Form",
-        null,
+        interaction.user,
         fields,
         "io"
     );
