@@ -4,5 +4,6 @@
     "logUserChannelName": "log-user",
     "welcomeCategoryName": "Welcome",
     "welcomeChannelName": "welcome",
-    "debug": true
+    "debug": true,
+    "verifiedRoleName": "✔"
 }

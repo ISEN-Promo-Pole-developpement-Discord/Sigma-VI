@@ -1,4 +1,4 @@
-global.config = require("../config.json");
+const config = require("../config-core.json");
 
   async function assignRoles(member, guild, roles)
 {
@@ -31,7 +31,7 @@ global.config = require("../config.json");
 
 async function assignVerifiedRole(user, guild)
 {
-    let roleName = global.config.verifiedRoleName;
+    let roleName = config.verifiedRoleName;
     if (guild.roles.cache.find(r => r.name === roleName))
     {
         if (global.debug) console.log("> Role found");
@@ -48,7 +48,7 @@ async function assignVerifiedRole(user, guild)
                 name: roleName,
                 color: "#ffffff",
             });
-
+        
         await guild.members.cache.get(user.id).roles.add(guild.roles.cache.find(r => r.name === roleName));
     }
 }

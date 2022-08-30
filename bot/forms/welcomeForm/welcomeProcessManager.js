@@ -71,7 +71,7 @@ async function submitForm(interaction) {
 
     await interaction.member.setNickname(`${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()} ${displayedName}.`);
 
-    //await assignVerifiedRole(interaction.user, interaction.guild);
+    await assignVerifiedRole(interaction.user, interaction.guild);
 
     await assignRoles(interaction.member, interaction.guild, Object.values(fields));
     let userStatus;
