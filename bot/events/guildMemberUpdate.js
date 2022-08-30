@@ -1,4 +1,6 @@
+const { GuildMember } = require('discord.js');
 const {logUpdate} = require('../modtools/log/logModules.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
 
 module.exports = {
     name: "guildMemberUpdate",
@@ -10,15 +12,16 @@ module.exports = {
          * @param {GuildMember} newMember The member after the update
          * @event guildMemberUpdate
          */
-    
+    //getActionAuthor(newMember.guild, newMember, "member").then(userAuthor => {
     logUpdate(
         newMember.guild,
         "GuildMember",
+        oldMember.user,
         null,
-        newMember,
         oldMember,
         newMember,
         "admin",
-    );
+        );
+        //});
     }
 }
