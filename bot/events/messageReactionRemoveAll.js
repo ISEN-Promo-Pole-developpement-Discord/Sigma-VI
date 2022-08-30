@@ -10,7 +10,6 @@ module.exports = {
          * @param {Array<Reaction>} reactions
          * @returns {Promise<void>}
          */
-        console.log("message Reaction remove")
          logDelete(
             message.guild,
             "messageRactionRemove",

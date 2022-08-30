@@ -8,6 +8,6 @@ module.exports = {
          * @returns {Promise<void>}
          * @see https://discord.js.org/#/docs/main/stable/typedef/RateLimitData
          */
-        console.log("RATELIMIT : ", rateLimitData);
+        console.log("# RATELIMIT : ", rateLimitData);
     }
 }

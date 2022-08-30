@@ -103,7 +103,6 @@ function getDateByString(string, reference = null){
 
 function getStartDate(string){
     const relativeIdentifier = includeRelativeIdentifier(string);
-    console.log(">> relativeIdentifier", relativeIdentifier);
     if(relativeIdentifier !== false){
         var msInDay = 1000 * 60 * 60 * 24;
         var date = new Date(today.getTime() + (msInDay * relativeIdentifier));
@@ -111,23 +110,18 @@ function getStartDate(string){
     }
 
     const fullDate = getFullDate(string);
-    console.log(">> fullDate", fullDate);
     if(fullDate){
         const weekRelative = getWeekRelative(string, fullDate);
-        console.log("!!", weekRelative, fullDate);
         if(weekRelative) return weekRelative;
         else return fullDate;
     }
     const weekDayRelative = getWeekDayRelative(string);
-    console.log(">> weekDayRelative", weekDayRelative);
     if(weekDayRelative !== false) return weekDayRelative;
 
     const weekRelative = getWeekRelative(string);
-    console.log(">> weekRelative", weekRelative);
     if(weekRelative !== false) return weekRelative;
 
     const weekDay = includeWeekDay(string);
-    console.log(">> weekDay", weekDay);
     if(weekDay !== false) return getWeekDayRelative("next "+weekDays[weekDay][0]);
 
     return null;
@@ -165,7 +159,6 @@ function getWeekDayRelative(string, reference = null){
         var date = new Date(reference.getTime());
         do{
             date = new Date(date.getFullYear(), date.getMonth(), date.getDate()+n);
-            console.log(">", date);
         }while((date.getDay()-1 < 0 ? 6 : date.getDay()-1) != weekDay);
         date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         return date;
@@ -174,9 +167,7 @@ function getWeekDayRelative(string, reference = null){
 }
 
 function getWeekRelative(string, reference = null){
-    console.log("?", reference);
     if(reference === null) reference = today;
-    console.log("?", reference);
     
     if(includeWeek(string)){
         var weekArgurment = includeWeekArgument(string);
@@ -209,10 +200,8 @@ function getFullDate(string){
     }
 
     const monthDay = includeMonthDay(string);
-    console.log(">> md", monthDay);
     if(monthDay === false) return false;
     var month = includeMonth(string);
-    console.log(">> month", month);
     if(month === false){
         if(monthDay < today.getDate())
             return new Date(today.getFullYear(), today.getMonth()+1, monthDay+1);

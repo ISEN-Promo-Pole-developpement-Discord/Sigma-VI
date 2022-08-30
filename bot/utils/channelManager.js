@@ -8,7 +8,6 @@ async function createChannel(guild,user,NewChannel,Ntryparent) {
   .then( channels => channels.forEach((entry,snowflake) => {
       if(entry.name===NewChannel){
           NewChannel=entry;
-          console.log(`NewChannel find ${NewChannel}`);
       }
     }
   )
@@ -33,7 +32,6 @@ async function createChannel(guild,user,NewChannel,Ntryparent) {
       })
       }
   else{
-      console.log(`aohoahoa`);
       NewChannel.messages.fetch().then(
         messages => {
           if(messages.size === 0 ){

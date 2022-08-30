@@ -37,13 +37,10 @@ async function getActionAuthor(guild, object) {
 
 async function getLastMessagePinned(guild, channel) {
     let message = null;
-    console.log(`\n object :  ${channel} \n`);
-    console.log(`\n type : ${typeof channel}\n\n\n`);
     let object = channel.messages.fetchPinned()
         .then(ObjMessage => {
             for (let i = 1; i <= ObjMessage.size; i++) {
                 keyz = ObjMessage.prototype.keys();
-                console.log(typeof keyz)
             }
         }
         ).catch(console.error);

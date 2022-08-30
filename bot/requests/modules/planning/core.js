@@ -44,7 +44,6 @@ async function coreProcess(author, dates = [], search = null, target = null){
     
     if(search != null){
         if(eventFromSearch != null){
-            console.log(`${renderEvent(eventFromSearch)}`);
             embed.setTitle(`Événement trouvé`);
             embed.setDescription(`${renderEvent(eventFromSearch)}`);
             embed.setTimestamp(eventFromSearch.start);
@@ -52,11 +51,9 @@ async function coreProcess(author, dates = [], search = null, target = null){
             return "Aucun événement ne correspond à votre recherche.";
         }
     } else if(eventsFromDates.length == 1){
-        console.log(`${renderDay(eventsFromDates[0])}`);
         embed.setTitle(`Événements du ${eventsFromDates[0].date}`);
         embed.setDescription(`${renderDay(eventsFromDates[0])}`);
     } else {
-        console.log(`${renderEvents(eventsFromDates)}`);
         embed.setTitle(`Événements`);
         embed.setDescription(`${renderEvents(eventsFromDates)}`);
     }

@@ -15,10 +15,8 @@ module.exports = {
          */
 
         getWebhooks(channel).then(function(webhooks) {
-            console.log(webhooks);
 
             webhooks.forEach((webhook, snowflake) => {
-                console.log(webhook.name);
             });
         });
 

@@ -13,7 +13,6 @@ module.exports = {
          */
 
         //Commande SigmaDeleteChannel :
-        console.log(message.content)
         if (message.content.split(` `)[0].toLowerCase() === 'sigmadeletechannel') {
             message.guild.channels.fetch()
                 .then(channels => channels.forEach((entry, snowflake) => {
@@ -29,7 +28,6 @@ module.exports = {
         }
         //Commande SigmaCreateChannel :  
         if (message.content.split(` `)[0].toLowerCase() === 'sigmacreatechannel') {
-            console.log(`\n omg un nouveau channel`)
                 createChannel(message.guild, message.author, message.content.split(` `)[1],message.content.split(` `)[2]);
             }
         //Commande SigmaFetchChannel :
@@ -50,14 +48,12 @@ module.exports = {
 
         if (message.content.split(` `)[0].toLowerCase() === `sigmacreatethread`) {
             if (message.content.split(` `)[1]) {
-                console.log(`\nmessage channel omg : ${message.channel}\n`);
                 createThread(message.channel, message.content.split(` `)[1],message,message.author);   
             }
 
         }
 
         if(message.content.split(` `)[0].toLowerCase() === 'sigmaterminatorchannel') {
-            console.log(message.content.split(` `)[1]);
             terminatorChannels(message.guild,message.content.split(` `)[1]);
             }    
         
