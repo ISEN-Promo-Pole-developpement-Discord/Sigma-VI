@@ -14,6 +14,8 @@ module.exports = {
 
         if (message.author.bot) return;
         if (!message.content) return;
-        launchRequestProcessing(message, global.client);
+        if(global.config.core.modules === true){
+            launchRequestProcessing(message, global.client);
+        }
     }
 }

@@ -6,6 +6,7 @@ const path = require("node:path");
 const {loadModulesCommands} = require("./requests/modules/modulesManager.js");
 const { GuildsManager } = require("./bdd/classes/guildsManager.js");
 global.config = require('./config.json');
+global.config.core = require('./config-core.json');
 
 // Create a new Discord client
 const clientIntents = [
@@ -65,11 +66,9 @@ const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".js"
             await GuildsManager.addGuild({id: guild.id, config: "{}" });
         }
     });
-
-    console.log("> Chargement des modules...");
-    guilds = await client.guilds.fetch();
-    // for (const guild of guilds) {
-    //     loadModulesCommands(guild[0]);
-    // }
-    loadModulesCommands();
+    if(global.config.core.modules === true) {
+        console.log("> Chargement des modules...");
+        guilds = await client.guilds.fetch();
+        loadModulesCommands();
+    }
 })();
