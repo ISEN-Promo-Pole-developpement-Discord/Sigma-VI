@@ -1,4 +1,4 @@
-const {logCreate} = require('../modtools/log/logModules.js');
+const {logCreate, logDelete} = require('../modtools/log/logModules.js');
 const {getActionAuthor} = require('../modtools/log/logger.js');
 
 module.exports = {
@@ -10,12 +10,13 @@ module.exports = {
          * @param {StageInstance} stageInstance The stage instance that got deleted
          * @returns {Promise<void>}
             */
-         getActionAuthor(invite.guild, invite, "invite").then(userAuthor => {
-            logCreate(
-                invite.guild,
-                "invite",
+         getActionAuthor(stageInstance.guild, stageInstance, "StageInstance").then(userAuthor => {
+            logDelete(
+                stageInstance.guild,
+                "Stage Instance",
                 userAuthor,
-                invite,
+                null,
+                stageInstance,
                 "admin",
             );
         }
