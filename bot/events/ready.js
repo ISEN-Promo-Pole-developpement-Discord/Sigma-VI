@@ -30,11 +30,19 @@ module.exports = {
                 if (global.debug) console.log("> Chargement des utilisateurs...");
                 const membersList = client.guilds.cache.get(guild.id);
                 membersList.members.cache.forEach( async (member) => {
-                    if (await UsersManager.getUser(member.id) === null)
-                        await UsersManager.addUser({id: member.id, name: null, surname: null, email: null, password: null, status: -1, data: "{}" });
-                });
+                    if (await UsersManager.getUser(member.id) === null  && !member.user.bot) {
+                        await UsersManager.addUser({
+                            id: member.id,
+                            name: null,
+                            surname: null,
+                            email: null,
+                            password: null,
+                            status: -1,
+                            data: "{}"
+                        });
+                    }});
+                if (global.debug) console.log("> Chargements finis.");
             });
-            if (global.debug) console.log("> Chargements finis.");
         });
     }
 }
