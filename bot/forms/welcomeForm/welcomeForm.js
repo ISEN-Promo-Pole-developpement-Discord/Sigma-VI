@@ -1,5 +1,6 @@
 const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ButtonBuilder, ButtonStyle } = require("discord.js");
 const welcomeProcess = require("./welcomeProcess.json");
+const welcomeFormData = require("./welcomeForm.json");
 const { FormsManager } = require("../../bdd/classes/formsManager.js");
 const { responseFromWelcomeProcess } = require("./welcomeProcessManager.js");
 
@@ -34,6 +35,7 @@ async function registerAnswer(form, id, value) {
 }
 
 function handleWelcomeButtonClick(interaction) {
+
     if (interaction.customId.includes("launch") || interaction.customId.includes("modify")) {
         for (const task of welcomeProcess.tasks) {
             if (task.toAsk.id) {
@@ -87,7 +89,7 @@ function handleWelcomeButtonClick(interaction) {
         }
     } 
     
-    else if (interaction.message.content.split("\n").length === 1){
+    else if (Object.values(welcomeFormData).map((x) => {return x.menu.value}).includes(interaction.customId)){
         responseFromWelcomeProcess(-1, interaction);
     } else {
         const step = searchStepFromName(interaction.message.content.split("\n")[0].slice(2, -2));
