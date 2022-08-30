@@ -160,8 +160,8 @@ function handleWelcomeFormResponse(interaction) {
 
                 const fields = await form.getFields();
 
-                const name = fields.name;
-                const surname = fields.surname;
+                const name = fields.nom;
+                const surname = fields.prenom;
                 let mail = fields.mail;
                 
                 if (!mail) {

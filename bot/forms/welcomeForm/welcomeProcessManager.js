@@ -56,8 +56,8 @@ async function submitForm(interaction) {
     await form.setStatus(3);
 
     const fields = await form.getFields();
-    const name = fields.name;
-    const surname = fields.surname;
+    const name = fields.nom;
+    const surname = fields.prenom;
 
     let displayedName;
 
@@ -75,7 +75,7 @@ async function submitForm(interaction) {
 
     await assignRoles(interaction.member, interaction.guild, Object.values(fields));
     let userStatus;
-    switch (fields.generalProfile) {
+    switch (fields.profilGeneral) {
         case "EtudiantISEN":
             userStatus = 0;
             break;
@@ -98,7 +98,7 @@ async function submitForm(interaction) {
     await userDB.setStatus(userStatus);
     let userData = {}
     for (const id of Object.keys(fields)) {
-        if (id !== "name" && id !== "surname" && id !== "mail" && id !== "generalProfile"){
+        if (id !== "nom" && id !== "prenom" && id !== "mail" && id !== "profilGeneral"){
             userData[id] = fields[id];
         }
     }
@@ -210,11 +210,11 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     
                     const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id)
                     const fields = await form.getFields();
-                    const profileAnswer = fields.generalProfile;
+                    const profileAnswer = fields.profilGeneral;
 
                     channel.send({
                         content: `**${stepData.name}**\n${stepData.description}`,
-                        components: getSelectMenusFromJSON("welcomeForm", `welcomeForm_generalProfile_${profileAnswer}`, welcomeFormData)
+                        components: getSelectMenusFromJSON("welcomeForm", `welcomeForm_profilGeneral_${profileAnswer}`, welcomeFormData)
                     });
     
                     return;
@@ -257,8 +257,8 @@ function responseFromWelcomeProcess(currentStep, interaction) {
 
                     const fields = await form.getFields();
 
-                    const name = fields.name;
-                    const surname = fields.surname;
+                    const name = fields.nom;
+                    const surname = fields.prenom;
                     let mail = fields.mail;
 
                     if (!mail) {
