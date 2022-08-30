@@ -4,8 +4,8 @@ const welcomeFormData = require("./welcomeForm.json");
 const welcomeProcess = require("./welcomeProcess.json");
 const { searchNode, getSelectMenusFromJSON } = require("../../utils/formHelper.js");
 const { FormsManager } = require("../../bdd/classes/formsManager.js");
-const { createThread } = require("../../utils/channelManager.js");
-const { assignRoles, assignVerifiedRole } = require("../../utils/rolesManager.js");
+const { createThread, deleteSystemMessages } = require("../../utils/channelManager.js");
+const { manageRoles, assignVerifiedRole } = require("../../utils/rolesManager.js");
 const { UsersManager } = require("../../bdd/classes/usersManager.js");
 const { logCreate } = require("../../modtools/log/logModules.js");
 
@@ -78,7 +78,7 @@ async function submitForm(interaction) {
 
     await assignVerifiedRole(interaction.user, interaction.guild);
 
-    await assignRoles(interaction.member, interaction.guild, Object.values(fields));
+    await manageRoles(interaction.member, interaction.guild, Object.values(fields));
     let userStatus;
     switch (fields.profilGeneral) {
         case "EtudiantISEN":
@@ -167,6 +167,9 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                 fields[interaction.customId.split("_").at(-2)] = interaction.customId.split("_").at(-1);
 
                 await FormsManager.addForm({user_id: interaction.user.id, guild_id: interaction.guild.id, channel_id: channel.id, status: 1, fields: fields});
+
+                deleteSystemMessages(channel);
+                deleteSystemMessages(interaction.channel);
             } else {
                 channel = interaction.channel;
             }
@@ -217,7 +220,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     const fields = await form.getFields();
                     const profileAnswer = fields.profilGeneral;
 
-                    const next = searchNode(interaction.values[0], welcomeFormData);
+                    const next = searchNode(`welcomeForm_profilGeneral_${profileAnswer}`, welcomeFormData);
                     if (next) {
                         channel.send({
                             content: `**${stepData.name}**\n${stepData.description}`,
