@@ -8,6 +8,6 @@ module.exports = {
          * @event ready
          * @returns {Promise<void>}
          */
-        console.log(`Le bot ${client.user.tag} est lancé.`);
+        console.log(`Le bot "${client.user.tag}" est lancé.`);
     }
 }

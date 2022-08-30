@@ -12,12 +12,7 @@ module.exports = {
          * @param {Channel} newChannel The new channel
          * @event channelUpdate
          */
-        /*
-        oldChannel.permissionOverwrites.cache.forEach((snowflake, permOverwrites) => {
-            console.log(snowflake);
-            console.log(permOverwrites);
-          });
-          */
+        
           getActionAuthor(newChannel.guild, newChannel, "Channel").then(userAuthor => {
           logUpdate(
             oldChannel.guild,
