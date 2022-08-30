@@ -11,12 +11,12 @@
                 "title": "Renseigner son identité",
                 "fields": [
                     {
-                        "id": "welcomeForm_surname",
+                        "id": "welcomeForm_prenom",
                         "type": "TextInput",
                         "label": "Prénom"
                     },
                     {
-                        "id": "welcomeForm_name",
+                        "id": "welcomeForm_nom",
                         "type": "TextInput",
                         "label": "Nom"
                     }
@@ -28,26 +28,26 @@
             "name": "Sexe",
             "description": "Cliquez sur le menu déroulant ci-dessous pour choisir votre sexe.",
             "toAsk": {
-                "id": "welcomeForm_sex",
+                "id": "welcomeForm_sexe",
                 "type": "SelectMenu",
                 "label": "Veuillez choisir votre sexe",
                 "options": [
                     {
                         "label": "Homme",
                         "description": "Vous êtes un homme",
-                        "value": "welcomeForm_sex_H",
+                        "value": "welcomeForm_sexe_Homme",
                         "emoji": "♂️"
                     },
                     {
                         "label": "Femme",
                         "description": "Vous êtes une femme",
-                        "value": "welcomeForm_sex_F",
+                        "value": "welcomeForm_sexe_Femme",
                         "emoji": "♀️"
                     },
                     {
                         "label": "Autre",
                         "description": "Vous n'êtes ni un homme ni une femme",
-                        "value": "welcomeForm_sex_other",
+                        "value": "welcomeForm_sexe_Autre",
                         "emoji": "⬜"
                     }
                 ]
@@ -59,7 +59,7 @@
             "description": "Nous avons également besoin de votre e-mail.",
             "condition": {
                 "type": "valueIncludes",
-                "value": "generalProfile",
+                "value": "profilGeneral",
                 "valueSearched": "ISEN"
             },
             "toAsk": {
