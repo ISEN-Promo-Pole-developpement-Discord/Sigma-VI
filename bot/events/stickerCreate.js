@@ -10,7 +10,7 @@ module.exports = {
          * @param {Sticker} sticker The sticker that got created
          * @returns {Promise<void>}
             */
-         getActionAuthor(invite.guild, invite, "invite").then(userAuthor => {
+         getActionAuthor(sticker.guild, sticker, "sticker").then(userAuthor => {
          logCreate(
             sticker.guild,
             "Sticker",
