@@ -1,4 +1,4 @@
-const { ChannelType, WelcomeChannel, GuildScheduledEvent } = require("discord.js");
+const { ChannelType, WelcomeChannel, GuildScheduledEvent, GuildPremiumTier } = require("discord.js");
 const { getButtonsFromJSON } = require('./formHelper.js');
 const welcomeFormData = require('../forms/welcomeForm/welcomeForm.json');
 
@@ -115,11 +115,19 @@ function clearChannel(channel) {
 
   async function createThread(channel,ThreadName,message,userlist){
    if(channel) {
+    const tier = channel.guild.premiumTier;
+
+    let channelType;
+    if (tier >= GuildPremiumTier.Tier2) {
+      channelType = ChannelType.GuildPrivateThread;
+    } else {
+      channelType = ChannelType.GuildPublicThread;
+    }
     if(ThreadName){
       const thread = await channel.threads.create({
         name : ThreadName ,
         startMessage: message,
-        type : ChannelType.GuildPrivateThread,
+        type : channelType,
       });
       for (let i = 0; i < userlist.length; i++) {
         thread.members.add(userlist[i]);
