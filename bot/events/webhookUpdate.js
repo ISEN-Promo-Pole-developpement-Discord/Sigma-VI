@@ -13,22 +13,5 @@ module.exports = {
          * @param {Channel} channel The channel the webhook got updated in
          * @returns {Promise<void>}
          */
-
-        getWebhooks(channel).then(function(webhooks) {
-
-            webhooks.forEach((webhook, snowflake) => {
-            });
-        });
-
-        logUpdate(
-            channel.guild,
-            "Webhook",
-            null,
-            null,
-            channel,
-            channel,
-            "admin"
-        );
-
     }
 }
