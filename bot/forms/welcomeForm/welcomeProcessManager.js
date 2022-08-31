@@ -64,17 +64,7 @@ async function submitForm(interaction) {
     const name = fields.nom;
     const surname = fields.prenom;
 
-    let displayedName;
 
-    if (name.includes(" ")) {
-        displayedName = `${name.split(" ").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`
-    } else if (name.includes("-")) {
-        displayedName = `${name.split("-").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`
-    } else {
-        displayedName = `${name.charAt(0).toUpperCase()}`
-    }
-
-    await interaction.member.setNickname(`${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()} ${displayedName}.`);
 
     await assignVerifiedRole(interaction.user, interaction.guild);
 
@@ -107,6 +97,21 @@ async function submitForm(interaction) {
         default:
             userStatus = -1;
     }
+
+    let displayedName;
+    if(userStatus == 0 || userStatus == 3) {
+        if (name.includes(" ")) {
+            displayedName = `${name.split(" ").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
+        } else if (name.includes("-")) {
+            displayedName = `${name.split("-").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
+        } else {
+            displayedName = `${name.charAt(0).toUpperCase()}`;
+        }
+        await interaction.member.setNickname(`${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()} ${displayedName}.`);
+    }else{
+        await interaction.member.setNickname(`${name.toUpperCase()} ${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()}`);
+    }
+    
     const userDB = await UsersManager.getUser(interaction.user.id);
     await userDB.setName(name);
     await userDB.setSurname(surname);
@@ -294,14 +299,36 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                                 
                                 return new ButtonBuilder()
                                     .setCustomId(button.id)
-                                    .setEmoji(button.emoji)
                                     .setLabel(button.label)
                                     .setStyle(style)
                             }))
                         ]
                     });
                 } else if (stepData.toAsk.type === "checkMail") {
-            
+                    const message = interaction.message;
+                    //update message in order to disable the buttons
+                    const components = message.components;
+                    let updatedComponents = [];
+                    for (let actionRow of components.values()) {
+                        let updatedActionRow = new ActionRowBuilder();
+                        for (let button of actionRow.components.values()) {
+                            updatedActionRow.addComponents(new ButtonBuilder()
+                                .setCustomId(button.customId)
+                                .setLabel(button.label)
+                                .setStyle(button.style)
+                                .setDisabled(true)
+                            );
+                        }
+                        updatedComponents.push(updatedActionRow);
+                    }
+
+                    await message.edit({
+                        content: message.content,
+                        components: updatedComponents,
+                        embeds: message.embeds
+                    });
+
+
                     const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id)
                     const verificationCode = await form.generateVerificationCode();
 
@@ -324,7 +351,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     await sendCodeMail({name: name, surname: surname, mail: mail, tag: interaction.user.tag}, verificationCode);
 
                     await channel.send({
-                        content: `**${stepData.name}**\nJe vous ai envoyé un mail à l'adresse __${mail}__\n${stepData.description}`,
+                        content: `**${stepData.name}**\n> Mail de vérification à l'adresse __${mail}__\n${stepData.description}`,
                         components: [
                             new ActionRowBuilder().addComponents(
                                 new ButtonBuilder()
