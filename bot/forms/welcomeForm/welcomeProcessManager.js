@@ -128,9 +128,7 @@ async function submitForm(interaction) {
         "io"
     );
 
-    await interaction.channel.delete();
-
-    await FormsManager.deleteForm(form.form_id)
+    form.delete();
 }
 
 
