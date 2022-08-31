@@ -64,3 +64,9 @@ create table if not exists `user_guild_status`
     `form_id` int,
     foreign key (`form_id`) references `form` (`form_id`) on delete cascade on update cascade
 );
+
+create table if not exists `reset`
+(
+    `user_id` varchar(30) not null,
+    primary key (`user_id`)
+);
