@@ -1,4 +1,4 @@
-const {getActionAuthor,getLastMessagePinned} = require('../modtools/log/logger.js');
+const {getLastMessagePinned} = require('../modtools/log/logger.js');
 const {logCreate} = require('../modtools/log/logModules.js');
 
 
@@ -15,7 +15,6 @@ module.exports = {
          */
          
          getLastMessagePinned(channel.guild,channel);
-         //getActionAuthor(channel.guild, channel, "Channel").then(userAuthor => {
             logCreate(
                channel.guild,
                "pinned",
@@ -23,6 +22,5 @@ module.exports = {
                channel,
                "admin",
            );
-           }//)
+           }
   }
-//}
