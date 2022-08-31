@@ -21,11 +21,10 @@ module.exports = {
                 guild = await guild.fetch();
                 const guildDB = await GuildsManager.getGuild(guild.id);
 
-                if (guildDB) {
-                    createChannel(guild,null,"welcome","Welcome").then((channel => { deleteSystemMessages(channel); }));
-                }
-                else
+                if (!guildDB) {
                     await GuildsManager.addGuild({id: guild.id, config: "{}" });
+                }
+                createChannel(guild,null,"bienvenue","Bienvenue").then((channel => { deleteSystemMessages(channel); }));
 
                 if (global.debug) console.log("> Chargement des utilisateurs...");
                 const membersList = client.guilds.cache.get(guild.id);
