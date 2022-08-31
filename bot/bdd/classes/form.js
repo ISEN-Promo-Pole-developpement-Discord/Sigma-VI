@@ -70,6 +70,16 @@ class Form
         var fields_json = JSON.stringify(fields);
         await connection(`UPDATE form SET fields = ? WHERE form_id = ?`, [fields_json, this.form_id]);
     }
+
+    async delete(){
+        const connection = global.sqlConnection;
+        const channel_id = await this.getChannelID();
+        let channel = global.client.channels.cache.get(channel_id);
+        if(channel){
+            await channel.delete();
+        }
+        await connection(`DELETE FROM form WHERE form_id = ?`, [this.form_id]);
+    }
 }
 
 module.exports = {Form};

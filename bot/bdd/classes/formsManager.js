@@ -57,9 +57,8 @@ class FormsManager
 
     static async deleteForm(form_id)
     {
-        const connection = global.sqlConnection;
-        const query = "DELETE FROM form WHERE form_id = ?";
-        await connection(query, form_id);
+        const form = await this.getFormById(form_id);
+        if(form) form.delete();
     }
 }
 
