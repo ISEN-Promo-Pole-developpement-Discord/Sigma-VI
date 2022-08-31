@@ -13,6 +13,17 @@ class AssoRolesManager
             return new AssoRoles(user_id, asso_id);
     }
 
+    static async getAssoRolesFromUser(user_id)
+    {
+        const connection = global.sqlConnection;
+        const rows = await connection(
+            "SELECT * FROM asso_roles WHERE user_id = ?", [user_id]
+        );
+        if (rows.length === 0) return null;
+        else
+            return rows;
+    }
+
     static async addAssoRoles(assoRoles)
     {
         const connection = global.sqlConnection;
