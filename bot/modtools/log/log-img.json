@@ -1,12 +1,33 @@
 {
     "create": {
-
-        "ban" : "medias/icons/logs/GuildBanAdd.png"
+        "ban" : "medias/icons/logs/GuildBanAdd.png",
+        "channel" : "medias/icons/logs/channelCreate.png",
+        "emoji" : "medias/icons/logs/emojiCreate.png",
+        "guildmember" : "medias/icons/logs/join.png",
+        "guildScheduled Event" : "medias/icons/logs/guildScheduledEventCreate.png",
+        "invite" : "medias/icons/logs/inviteCreate.png",
+        "sticker": "medias/icons/logs/emojiCreate.png",
+        "role" : "medias/icons/logs/roleCreate.png",
+        "stageinstance" : "medias/icons/logs/stageInstanceCreate.png",
+        "form" : "medias/icons/logs/validation.png"
     },
     "update":{
-
+        "guildmember" : "medias/icons/logs/guildMemberUpdate.png",
+        "guildScheduledEvent" : "medias/icons/logs/guildScheduledEventUpdate.png",
+        "guild" : "medias/icons/logs/guildUpdate.png",
+        "message" : "medias/icons/logs/messageUpdate.png",
+        "role" : "medias/icons/logs/roleUpdate.png",
+        "stageinstance" : "medias/icons/logs/stageInstanceUpdate.png"
     },
     "delete":{  
-        "ban" : "medias/icons/logs/GuildBanRemove.png"
+        "ban" : "medias/icons/logs/GuildBanRemove.png",
+        "channel" : "medias/icons/logs/channelDelete.png",
+        "emoji" : "medias/icons/logs/emojiDelete.png",
+        "guildmember" : "medias/icons/logs/leave.png",
+        "guildScheduled Event" : "medias/icons/logs/guildScheduledEventDelete.png",
+        "invite" : "medias/icons/logs/inviteDelete.png",
+        "sticker": "medias/icons/logs/emojiDelete.png",
+        "role" : "medias/icons/logs/roleDelete.png",
+        "stageinstance" : "medias/icons/logs/stageInstanceDelete.png"
     }
 }
