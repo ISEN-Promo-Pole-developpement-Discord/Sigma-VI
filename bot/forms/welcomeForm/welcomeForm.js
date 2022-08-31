@@ -67,7 +67,6 @@ function handleWelcomeButtonClick(interaction) {
     }
     else if (Object.values(welcomeFormData).map((x) => {return x.menu.value}).includes(interaction.customId)){
         (async () => {
-            await interaction.deferUpdate();
             responseFromWelcomeProcess(-1, interaction);
         })();
     } else if (interaction.customId.split("_").at(-1) === "retry") {
@@ -79,7 +78,6 @@ function handleWelcomeButtonClick(interaction) {
 
         if (!interaction.message.editedAt) {
             (async () => {
-                await interaction.deferUpdate();
                 responseFromWelcomeProcess(step.step, interaction);
             })();
         }
@@ -92,7 +90,6 @@ async function handleWelcomeFormMenuResponse(interaction) {
     const id = interaction.values[0].split("_").at(-2);
     const value = interaction.values[0].split("_").at(-1);
 
-    await interaction.deferUpdate();
 
     const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id);
     if(!form){
