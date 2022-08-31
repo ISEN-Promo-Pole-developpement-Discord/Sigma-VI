@@ -3,7 +3,7 @@
     "logIoChannelName": "log-io",
     "logUserChannelName": "log-user",
     "welcomeCategoryName": "Bienvenue",
-    "welcomeChannelName": "bievenue",
+    "welcomeChannelName": "bienvenue",
     "debug": true,
     "verifiedRoleName": "✔",
     "modules":false,
