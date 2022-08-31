@@ -12,16 +12,16 @@ module.exports = {
          * @param {GuildMember} newMember The member after the update
          * @event guildMemberUpdate
          */
-    //getActionAuthor(newMember.guild, newMember, "member").then(userAuthor => {
+    getActionAuthor(newMember.guild, newMember, "member").then(userAuthor => {
     logUpdate(
         newMember.guild,
         "GuildMember",
         oldMember.user,
-        null,
+        userAuthor,
         oldMember,
         newMember,
         "admin",
         );
-        //});
+        });
     }
 }

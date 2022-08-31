@@ -1,4 +1,5 @@
 const {logUpdate} = require('../modtools/log/logModules.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
 
 module.exports = {
     name: "guildScheduledEventUpdate",
@@ -11,16 +12,17 @@ module.exports = {
          * @event guildScheduledEventUpdate
          * @returns {Promise<void>}
          */
+         getActionAuthor(oldGuildScheduledEvent.guild, oldGuildScheduledEvent, "guildScheduled Event").then(userAuthor => {
          logUpdate(
             oldGuildScheduledEvent.guild,
             "GuildScheduled",
-            null,
+            userAuthor,
             null,
             oldGuildScheduledEvent,
             newGuildScheduledEvent,
             "admin",
         );
-    }
+    })}
 }
 
     

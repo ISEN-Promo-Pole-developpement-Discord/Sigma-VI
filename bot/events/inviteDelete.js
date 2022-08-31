@@ -15,7 +15,7 @@ module.exports = {
          logDelete(
             invite.guild,
             "Invite",
-            null,
+            invite.inviter,
             null,
             invite,
             "admin",

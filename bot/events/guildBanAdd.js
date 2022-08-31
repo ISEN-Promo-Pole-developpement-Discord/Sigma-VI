@@ -1,4 +1,5 @@
-const {logCreate, logDelete} = require('../modtools/log/logModules.js');
+const {logCreate} = require('../modtools/log/logModules.js');
+const {getActionAuthor} = require('../modtools/log/logger.js');
 
 module.exports = {
     name: "guildBanAdd",
@@ -10,12 +11,13 @@ module.exports = {
          * @event guildBanAdd
          * @returns {Promise<void>}
          */
+         getActionAuthor(ban.guild, ban, "ban").then(userAuthor => {
          logCreate(
             ban.guild,
             "Ban",
-            null,
+            userAuthor,
             ban.user,
             "admin"
             );
-    }
-}
+    })
+}}
