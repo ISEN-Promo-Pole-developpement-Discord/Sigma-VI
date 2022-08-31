@@ -30,7 +30,7 @@
             "toAsk": {
                 "id": "welcomeForm_sexe",
                 "type": "SelectMenu",
-                "label": "Veuillez choisir votre sexe",
+                "label": "Sélectionner son sexe",
                 "options": [
                     {
                         "label": "Homme",
@@ -55,8 +55,8 @@
         },
         {
             "step": 2,
-            "name": "E-Mail",
-            "description": "Nous avons également besoin de votre e-mail.",
+            "name": "Email",
+            "description": "Merci de renseigner votre email.",
             "condition": {
                 "type": "valueIncludes",
                 "value": "profilGeneral",
@@ -65,12 +65,12 @@
             "toAsk": {
                 "id": "welcomeForm_mailForm",
                 "type": "Modal",
-                "title": "Renseigner son e-mail",
+                "title": "Renseigner son email",
                 "fields": [
                     {
                         "id": "welcomeForm_mail",
                         "type": "TextInput",
-                        "label": "E-Mail"
+                        "label": "Email"
                     }
                 ]
             }
@@ -110,7 +110,7 @@
         },
         {
             "step": 5,
-            "name": "Vérification de l'adresse e-mail",
+            "name": "Vérification de l'adresse email",
             "description": "Je vous invite donc à regarder votre boîte mail et trouver le **message envoyé par no-reply@sigma-bot.fr**\n**Attention, le mail peut se trouver dans vos spams !**\nUne fois le mail trouvé, ouvrez le et renseignez la suite de 6 chiffres indiquée.\n*Si vous ne trouvez pas le mail, vous pouvez demander l'aide d'un modérateur en écrivant ci-dessous dans la zone de texte prévue à cet effet.*",
             "condition": {
                 "type": "valueNotIncludes",
@@ -120,12 +120,12 @@
             "toAsk": {
                 "id": "welcomeForm_checkMail",
                 "type": "checkMail",
-                "title": "Saisir le code reçu par e-mail",
+                "title": "Saisir le code reçu par email",
                 "fields": [
                     {
                         "id": "welcomeForm_mailCode",
                         "type": "TextInput",
-                        "label": "Code reçu par e-mail"
+                        "label": "Code reçu par email"
                     }
                 ]
             }
