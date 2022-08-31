@@ -1,0 +1,12 @@
+{
+    "create": {
+
+        "ban" : "medias/icons/logs/GuildBanAdd.png"
+    },
+    "update":{
+
+    },
+    "delete":{  
+        "ban" : "medias/icons/logs/GuildBanRemove.png"
+    }
+}
