@@ -4,7 +4,7 @@ const db = require("../bdd/utilsDB");
 const {UsersManager} = require("../bdd/classes/usersManager")
 const {UserGuildStatusManager} = require("../bdd/classes/userGuildStatusManager");
 const {FormsManager} = require("../bdd/classes/formsManager");
-
+const {ResetManager} = require("../bdd/classes/resetManager");
 module.exports = {
     name: "guildMemberAdd",
     once: false,
@@ -25,6 +25,8 @@ module.exports = {
             member,
             "io"
         );
+        
+        ResetManager.addUserToResetTable(member.user.id);
 
         if(!member.user.bot)
         {
