@@ -156,10 +156,10 @@ function responseFromWelcomeProcess(currentStep, interaction) {
             let channel = undefined;
 
             if (currentStep === 0) {
-                channel = await createThread(interaction.channel, `Welcome ${interaction.user.username}`, null, [interaction.user]);
+                channel = await createThread(interaction.channel, `Accueil ${interaction.user.username}`, null, [interaction.user]);
 
-                interaction.reply({
-                    content: `Je vous ais créé un canal personnalisé pour remplir le formulaire de bienvenue.\n⬇️ Vous pouvez y accéder en cliquant sur le bouton ci-dessous ⬇️`,
+                await interaction.reply({
+                    content: `Complétez votre inscription en cliquant sur le bouton ci-dessous en cliquant sur le bouton ci-dessous.`,
                     components: [
                         new ActionRowBuilder().addComponents(
                             new ButtonBuilder()
