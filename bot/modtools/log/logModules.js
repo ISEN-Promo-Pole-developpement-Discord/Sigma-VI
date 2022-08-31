@@ -78,11 +78,18 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
     embedShematic.fields = objectUpdateGetChangesFields(oldObject, newObject);
     embedShematic.fields = removeDuplicates(embedShematic.fields);
     
+    let img = null;
+    imgData = getIcon("delete", type, embedShematic.title);
+    if (imgData) {
+        img = imgData.attachment;
+        embedShematic.author = imgData.author;
+        embedShematic.title = "";
+    }
 
     embedShematic.color = "#642eda";
     const embed = newEmbed(embedShematic);
     try{
-        logChannel.send({ embeds: [embed]});
+        logChannel.send({ embeds: [embed], files: img ? [img] : []});
     } catch(e) {
         console.log(e);
     }
@@ -166,7 +173,15 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
     embedShematic.fields = embedShematic.fields.filter((value, index, arr) => {
         return !deleteBlackList.includes(value.name);
     });
-    
+
+    let img = null;
+    imgData = getIcon("delete", type, embedShematic.title);
+    if (imgData) {
+        img = imgData.attachment;
+        embedShematic.author = imgData.author;
+        embedShematic.title = "";
+    }
+
     embedShematic.fields = removeDuplicates(embedShematic.fields);
     
     embedShematic.timestamp = new Date();
@@ -174,7 +189,7 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
 
     const embed = newEmbed(embedShematic);
     try{
-        logChannel.send({ embeds: [embed]});
+        logChannel.send({ embeds: [embed], files: img ? [img] : []});
     } catch(e) {
         console.log(e);
     }
