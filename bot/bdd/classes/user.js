@@ -229,14 +229,14 @@ class User
         let userAssociationsRoles = await this.getAssociationsRoles();
 
         // LOAD ASSO CONFIG VARS
-        const { memberRoleName, managerRoleName, treasurerRoleName, vicePresidentRoleName, presidentRoleName } = associationsConfig.RolesName;
-        var roleRoleNameList = [memberRoleName, managerRoleName, treasurerRoleName, vicePresidentRoleName, presidentRoleName];
+        const { memberRoleName, managerRoleName, treasurerRoleName, secretaryRoleName, vicePresidentRoleName, presidentRoleName } = associationsConfig.RolesName;
+        var roleRoleNameList = [memberRoleName, managerRoleName, treasurerRoleName, secretaryRoleName, vicePresidentRoleName, presidentRoleName];
 
         let associations = await AssociationsManager.getAssociations();
         for(let association of associations){
             let userIsInAssociation = false;
             for(let assoRole of Object.values(userAssociationsRoles)){
-                if(assoRole.asso_id == association.id){
+                if(assoRole.asso_id === association.id){
                     userIsInAssociation = true;
                     break;
                 }
@@ -253,7 +253,9 @@ class User
             1: managerRoleName,
             2: treasurerRoleName,
             3: vicePresidentRoleName,
-            4: presidentRoleName
+            4: presidentRoleName,
+            5: treasurerRoleName
+            // TODO: Need to exchange president and secretary ids
         }
 
         let addRolesArray = [];
