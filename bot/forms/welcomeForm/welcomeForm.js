@@ -66,7 +66,10 @@ function handleWelcomeButtonClick(interaction) {
         }
     }
     else if (Object.values(welcomeFormData).map((x) => {return x.menu.value}).includes(interaction.customId)){
-        responseFromWelcomeProcess(-1, interaction);
+        (async () => {
+            await interaction.deferUpdate();
+            responseFromWelcomeProcess(-1, interaction);
+        })();
     } else if (interaction.customId.split("_").at(-1) === "retry") {
         FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id).then(async (form) => {
             await FormsManager.deleteForm(form.form_id);
@@ -88,6 +91,8 @@ async function handleWelcomeFormMenuResponse(interaction) {
     const step = searchStepFromName(interaction.message.content.split("\n")[0].slice(2, -2));
     const id = interaction.values[0].split("_").at(-2);
     const value = interaction.values[0].split("_").at(-1);
+
+    await interaction.deferUpdate();
 
     const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id);
     if(!form){
@@ -180,8 +185,6 @@ async function handleWelcomeFormMenuResponse(interaction) {
             responseFromWelcomeProcess(step.step, interaction);
         }
     }
-
-    await interaction.deferUpdate();
 }
 
 function handleWelcomeFormResponse(interaction) {
