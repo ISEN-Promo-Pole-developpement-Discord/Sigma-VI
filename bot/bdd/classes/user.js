@@ -63,7 +63,14 @@ class User
         const [rows] = await connection(
             "SELECT user_data FROM user WHERE user_id = ?", [this.id]
         );
-        return rows.user_data;
+        if(rows.user_data != null){
+            if(typeof rows.user_data === "string"){
+                return JSON.parse(rows.user_data);
+            }
+            else{
+                return rows.user_data;
+            }
+        }
     }
 
     // SETTERS
