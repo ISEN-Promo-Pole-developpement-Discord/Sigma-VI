@@ -15,7 +15,7 @@ async function createChannel(guild, user, NewChannel, Ntryparent) {
   )
 
   if (typeof (NewChannel) === `string`) {
-    channel = guild.channels.create(
+    channel = await guild.channels.create(
       {
         name: NewChannel,
         type: ChannelType.GuildText,

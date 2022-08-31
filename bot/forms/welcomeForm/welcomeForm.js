@@ -91,6 +91,12 @@ function handleWelcomeButtonClick(interaction) {
     
     else if (Object.values(welcomeFormData).map((x) => {return x.menu.value}).includes(interaction.customId)){
         responseFromWelcomeProcess(-1, interaction);
+    } else if (interaction.customId.split("_").at(-1) === "retry") {
+        FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id).then(async (form) => {
+            await interaction.channel.delete();
+
+            await FormsManager.deleteForm(form.form_id);
+        })
     } else {
         const step = searchStepFromName(interaction.message.content.split("\n")[0].slice(2, -2));
 
@@ -165,7 +171,12 @@ function handleWelcomeFormResponse(interaction) {
                 let mail = fields.mail;
                 
                 if (!mail) {
-                    mail = `${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}.${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}@isen.yncrea.fr`;
+                    mail = `${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}.${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}`;
+                    if (fields.profilGeneral !== "EtudiantISEN") {
+                        mail = `${mail}@yncrea.fr`;
+                    } else {
+                        mail = `${mail}@isen.yncrea.fr`;
+                    }
                 }
                 
                 await registerAnswer(form, "mail", mail);
