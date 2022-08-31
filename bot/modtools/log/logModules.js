@@ -47,6 +47,8 @@
 const { getGuildLogChannel, objectClassDataToFields, objectUpdateGetChangesFields} = require("./logger.js");
 const { newEmbed } = require("../../utils/createEmbed.js");
 const { ChannelType } = require("discord.js");
+const { AttachmentBuilder} = require('discord.js');
+const logImg = require('./log-img.json');
 
 function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,channel_log) {
     if(userAuthor && userAuthor.bot) return;    
@@ -186,6 +188,8 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
 }
 
 function logCreate(guild, type, userAuthor,newObject,channel_log) {
+    let img = null;
+    
     if(userAuthor && userAuthor.bot) return;
     let logChannel = getGuildLogChannel(guild, "default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
@@ -257,6 +261,13 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
             }
         }
 
+        imgData = getIcon("create", type, embedShematic.title);
+        console.log(imgData);
+        if (imgData) {
+            img = imgData.attachment;
+            embedShematic.author = imgData.author;
+            embedShematic.title = "";
+        }
         embedShematic.timestamp = new Date();
         embedShematic.color = "#00FF00";
 
@@ -272,7 +283,7 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         
         const embed = newEmbed(embedShematic);
         try{
-            logChannel.send({ embeds: [embed]});
+            logChannel.send({ embeds: [embed], files: img ? [img] : []});
         } catch(e) {
             console.log(e);
         }
@@ -288,6 +299,22 @@ function removeDuplicates(fields) {
         }
     }
     return fieldsFiltered;
+}
+
+function getIcon(type, event, eventString){
+    let icon = new Object();
+    icon.attachment = null;
+    icon.author = null;
+    if(logImg[type.toLowerCase()]){
+        typeImages = logImg[type.toLowerCase()];
+        if(typeImages[event.toLowerCase()]){
+            icon.attachment = new AttachmentBuilder(typeImages[event.toLowerCase()]);
+            let imageName = typeImages[event.toLowerCase()].split("/").pop();
+            icon.author = {name: eventString, icon_url: 'attachment://'+imageName};
+            return icon;
+        }
+    }
+    return null;
 }
 
 module.exports = {
