@@ -173,13 +173,6 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
     });
     
     embedShematic.fields = removeDuplicates(embedShematic.fields);
-
-    for(var field of embedShematic.fields){
-        if(field.name === "Author"){
-            const user = guild.members.cache.get(field.value);
-            if(user.bot) return;
-        }
-    }
     
     embedShematic.timestamp = new Date();
     embedShematic.color = "#FF0000";
