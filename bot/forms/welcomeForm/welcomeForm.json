@@ -147,7 +147,7 @@
                 {
                     "label": "IoT",
                     "description": "Option Objets Connectés IoT",
-                    "value": "welcomeForm_option_IoT",
+                    "value": "welcomeForm_option_ObjetsConnectésIoT",
                     "emoji": "🌐"
                 },
                 {
@@ -191,13 +191,13 @@
                 {
                     "label": "M1",
                     "description": "Première année de Cycle Master",
-                    "value": "welcomeForm_promotion_M1",
+                    "value": "welcomeForm_promotion_Master1",
                     "emoji": "1️⃣"
                 },
                 {
                     "label": "M2",
                     "description": "Deuxième année de Cycle Master",
-                    "value": "welcomeForm_promotion_M2",
+                    "value": "welcomeForm_promotion_Master2",
                     "emoji": "2️⃣"
                 }
             ],
@@ -223,7 +223,7 @@
                 {
                     "label": "IoT",
                     "description": "Option Objets Connectés IoT",
-                    "value": "welcomeForm_option_IoT",
+                    "value": "welcomeForm_option_ObjetsConnectésIoT",
                     "emoji": "🌐"
                 },
                 {
@@ -278,7 +278,7 @@
                 {
                     "label": "Prépa Rebond",
                     "description": "Vous êtes en classe prépa Rebond",
-                    "value": "welcomeForm_filiere_PrepaRebond",
+                    "value": "welcomeForm_filiere_PrépaRebond",
                     "emoji": "🎯"
                 },
             "LV2":false
@@ -357,25 +357,25 @@
             {
                 "label": "Lycéen",
                 "description": "Vous êtes actuellement au lycée",
-                "value": "welcomeForm_profil_lycéen",
+                "value": "welcomeForm_profil_Lycéen",
                 "emoji": "✏️"
             },
             {
-                "label": "Entrepreneur",
-                "description": "Vous êtes un entrepreneur",
-                "value": "welcomeForm_profil_entrepreneur",
-                "emoji": "👨‍💼"
+                "label": "Étudiant externe",
+                "description": "Vous êtes en école/formation supérieure",
+                "value": "welcomeForm_profil_EtudiantExterne",
+                "emoji": "👨‍🎓"
             },
             {
-                "label": "Étudiant",
-                "description": "Vous êtes en école/formation supérieure",
-                "value": "welcomeForm_profil_etudiant",
-                "emoji": "👨‍🎓"
+                "label": "Diplômés de l'ISEN",
+                "description": "Vous êtes un ancien étudiant diplômé de l'ISEN",
+                "value": "welcomeForm_profil_DiplomésISEN",
+                "emoji": "🎓"
             },
             {
                 "label": "Autre",
                 "description": "Votre profil ne correspond à aucun des choix",
-                "value": "welcomeForm_profil_autres",
+                "value": "welcomeForm_profil_Autres",
                 "emoji": "👤"
             }
         ]
@@ -383,16 +383,16 @@
 
     "ProfISEN":{
         "menu":{
-            "label": "Prof ISEN",
+            "label": "Professseur de l'ISEN Méditerranée",
             "description": "Grade pour les Professeurs de l'ISEN Méditerranée",
-            "value": "welcomeForm_profilGeneral_ProfISEN",
+            "value": "welcomeForm_profilGeneral_Professeur",
             "emoji": "👩🏼‍🏫"
         }
     },
 
     "AdministrationISEN":{
         "menu":{
-            "label": "Administration ISEN",
+            "label": "Membre de l'administration de l'ISEN Méditerranée",
             "description": "Grade pour l'administration de l'ISEN Méditerranée",
             "value": "welcomeForm_profilGeneral_AdministrationISEN",
             "emoji": "👩‍💼"
