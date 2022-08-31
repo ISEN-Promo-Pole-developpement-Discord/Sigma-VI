@@ -18,7 +18,12 @@ module.exports = {
         if (userStatus !== null)
             await userStatus.setStatus(4);
 
-        // const userForm = await FormsManager.getForm(member.id, member.guild.id);
+        const userForms = await FormsManager.searchForms(member.id, member.guild.id);
+        if (userForms !== null){
+            for(var userForm of userForms){
+                await userForm.delete();
+            }
+        }
         // if (userForm !== null)
         //     await FormsManager.deleteForm(userForm.form_id);
 
