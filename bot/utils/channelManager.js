@@ -1,4 +1,4 @@
-const { ChannelType, WelcomeChannel, GuildScheduledEvent, GuildPremiumTier } = require("discord.js");
+const { ChannelType, MessageType, WelcomeChannel, GuildScheduledEvent, GuildPremiumTier } = require("discord.js");
 const { getButtonsFromJSON } = require('./formHelper.js');
 const welcomeFormData = require('../forms/welcomeForm/welcomeForm.json');
 
@@ -68,7 +68,7 @@ async function createThread(channel, ThreadName, message, userlist) {
         type: channelType,
       });
       for (let i = 0; i < userlist.length; i++) {
-        thread.members.add(userlist[i]);
+        await thread.members.add(userlist[i]);
       }
       return thread;
     }
@@ -79,10 +79,8 @@ async function deleteSystemMessages(channel) {
   let messagesPending = [];
   const messages = await channel.messages.fetch();
   messages.forEach((msg, snowflake) => {
-    if (msg.system) {
-      if (msg.deletable) {
+    if (msg.type === MessageType.ThreadCreated){
         messagesPending.push(msg.delete());
-      }
     }
   });
 
