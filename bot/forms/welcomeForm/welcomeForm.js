@@ -75,8 +75,10 @@ function handleWelcomeButtonClick(interaction) {
         const step = searchStepFromName(interaction.message.content.split("\n")[0].slice(2, -2));
 
         if (!interaction.message.editedAt) {
-            interaction.deferUpdate();
-            responseFromWelcomeProcess(step.step, interaction);
+            (async () => {
+                await interaction.deferUpdate();
+                responseFromWelcomeProcess(step.step, interaction);
+            })();
         }
     }
 }
@@ -179,7 +181,7 @@ async function handleWelcomeFormMenuResponse(interaction) {
         }
     }
 
-    interaction.deferUpdate();
+    await interaction.deferUpdate();
 }
 
 function handleWelcomeFormResponse(interaction) {
