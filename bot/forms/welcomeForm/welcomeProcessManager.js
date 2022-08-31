@@ -1,4 +1,4 @@
-const { ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { ActionRowBuilder, SelectMenuBuilder, SelectMenuOptionBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder} = require("discord.js");
 const { sendCodeMail } = require("../sendMail.js");
 const welcomeFormData = require("./welcomeForm.json");
 const welcomeProcess = require("./welcomeProcess.json");
@@ -242,21 +242,35 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     return;
                 } else if (stepData.toAsk.type === "RowButtons") {
                     let desc = stepData.description;
+                    let embed = null;
                     if (stepData.name === "Confirmation") {
-                        const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id)
+                        const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id);
+
+                        const channel = await interaction.channel;
+
+                        await channel.bulkDelete(20);
+
                         const fields = await form.getFields();
 
-                        let resumeString = new Array();
+                        embed = new EmbedBuilder()
+                            .setTitle(`Formulaire de confirmation`)
+                            .setColor(0x00AE86)
+                            .setTimestamp()
+
                         for (key of Object.keys(fields)) {
                             if (key !== "mailValidated") {
-                                resumeString.push(`${key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()} : ${fields[key]}`)
+                                // key with first letter in upper case
+                                if(key === "profilGeneral") continue;
+                                upKey = key.charAt(0).toUpperCase() + key.slice(1);
+                                embed.addFields({name: upKey, value: fields[key]});
                             }
                         }
 
-                        desc = `Voici un résumé du formulaire :\n${resumeString.join("\n")}\n\n${stepData.description}`
+                        desc = `${stepData.description}`
                     }
                     return await channel.send({
                         content: `**${stepData.name}**\n${desc}`,
+                        embeds: embed ? [embed] : [],
                         components: [
                             new ActionRowBuilder().addComponents(stepData.toAsk.buttons.map(button => {
                                 let style = null;

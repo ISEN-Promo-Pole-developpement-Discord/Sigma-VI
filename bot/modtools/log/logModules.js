@@ -77,13 +77,6 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
     embedShematic.timestamp = new Date();
     embedShematic.fields = objectUpdateGetChangesFields(oldObject, newObject);
     embedShematic.fields = removeDuplicates(embedShematic.fields);
-
-    for(var field of embedShematic.fields){
-        if(field.name === "Author"){
-            const user = guild.members.cache.get(field.value);
-            if(user.bot) return;
-        }
-    }
     
 
     embedShematic.color = "#642eda";
@@ -272,14 +265,6 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         embedShematic.color = "#00FF00";
 
         embedShematic.fields = removeDuplicates(embedShematic.fields);
-
-        for(var field of embedShematic.fields){
-            if(field.name === "Author"){
-                const user = guild.members.cache.get(field.value);
-                if(user.bot) return;
-            }
-        }
-    
         
         const embed = newEmbed(embedShematic);
         try{
