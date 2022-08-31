@@ -13,8 +13,6 @@ module.exports = {
          * @event channelPinsUpdate
          * @returns {Promise<void>}
          */
-         
-         getLastMessagePinned(channel.guild,channel);
             logCreate(
                channel.guild,
                "pinned",
