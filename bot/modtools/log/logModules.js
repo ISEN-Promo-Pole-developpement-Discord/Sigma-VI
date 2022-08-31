@@ -270,7 +270,6 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         }
 
         imgData = getIcon("create", type, embedShematic.title);
-        console.log(imgData);
         if (imgData) {
             img = imgData.attachment;
             embedShematic.author = imgData.author;
