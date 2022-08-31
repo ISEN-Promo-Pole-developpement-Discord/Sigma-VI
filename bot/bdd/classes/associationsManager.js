@@ -9,7 +9,17 @@ class AssociationsManager
         const data = await connection(query, name);
         if (data.length === 0) return null;
         else
-            return new Association(data[0].asso_id);
+            return new Association(data.asso_id);
+    }
+
+    static async getAssociationsByID(asso_id)
+    {
+        const connection = global.sqlConnection;
+        const query = "SELECT * FROM association WHERE asso_id = ?";
+        const data = await connection(query, asso_id);
+        if (data.length === 0) return null;
+        else
+            return new Association(asso_id);
     }
 
     static async addAssociation(association)
@@ -29,4 +39,4 @@ class AssociationsManager
     }
 }
 
-module.exports = {AssociationsManager};
+module.exports = { AssociationsManager };
