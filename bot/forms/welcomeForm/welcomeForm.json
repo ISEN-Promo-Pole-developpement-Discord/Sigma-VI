@@ -375,7 +375,7 @@
             {
                 "label": "Autre",
                 "description": "Votre profil ne correspond à aucun des choix",
-                "value": "welcomeForm_profil_Autres",
+                "value": "welcomeForm_profil_Autre",
                 "emoji": "👤"
             }
         ]
@@ -385,7 +385,7 @@
         "menu":{
             "label": "Professseur de l'ISEN Méditerranée",
             "description": "Grade pour les Professeurs de l'ISEN Méditerranée",
-            "value": "welcomeForm_profilGeneral_Professeur",
+            "value": "welcomeForm_profilGeneral_ProfesseurISEN",
             "emoji": "👩🏼‍🏫"
         }
     },
