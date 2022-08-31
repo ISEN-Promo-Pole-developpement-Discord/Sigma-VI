@@ -66,10 +66,7 @@ function handleWelcomeButtonClick(interaction) {
         }
     }
     else if (Object.values(welcomeFormData).map((x) => {return x.menu.value}).includes(interaction.customId)){
-        (async () => {
-            await interaction.deferUpdate();
             responseFromWelcomeProcess(-1, interaction);
-        })();
     } else if (interaction.customId.split("_").at(-1) === "retry") {
         FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id).then(async (form) => {
             await FormsManager.deleteForm(form.form_id);
