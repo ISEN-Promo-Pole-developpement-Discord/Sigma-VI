@@ -12,7 +12,7 @@ module.exports = {
          */
          logCreate(
             ban.guild,
-            "ban",
+            "Ban",
             null,
             ban.user,
             "admin"

@@ -3,6 +3,7 @@ const welcomeProcess = require("./welcomeProcess.json");
 const welcomeFormData = require("./welcomeForm.json");
 const { FormsManager } = require("../../bdd/classes/formsManager.js");
 const { responseFromWelcomeProcess } = require("./welcomeProcessManager.js");
+const { getSelectMenusFromJSON } = require("../../utils/formHelper.js");
 
 function searchStepFromName(name) {
     for (const step of welcomeProcess.tasks) {
@@ -74,7 +75,7 @@ function handleWelcomeButtonClick(interaction) {
         const step = searchStepFromName(interaction.message.content.split("\n")[0].slice(2, -2));
 
         if (!interaction.message.editedAt) {
-            interaction.update(interaction.message.content);
+            interaction.deferUpdate();
             responseFromWelcomeProcess(step.step, interaction);
         }
     }
@@ -94,7 +95,7 @@ async function handleWelcomeFormMenuResponse(interaction) {
     const formAnswers = await form.getFields();
     var formCompletedFields = Object.keys(formAnswers);
 
-    registerAnswer(form, id, value);
+    await registerAnswer(form, id, value);
 
     var menuSelectorIds = new Array();
     for(const actionRow of interaction.message.components) {
@@ -108,6 +109,67 @@ async function handleWelcomeFormMenuResponse(interaction) {
         var menuSelectorFieldName = menuSelectorId.split("_").at(-1);
         if(!formCompletedFields.includes(menuSelectorFieldName)) {
             notCompletedMenuFields.push(menuSelectorFieldName);
+        }
+    }
+
+    if (step.toAsk.type === "welcomeMenus") {
+        if (formCompletedFields.includes(id)) {
+            const messages = await interaction.channel.messages.fetch();
+            let stepMessages = []
+            messages.forEach((msg, snowflake) => {
+                const msgStep = searchStepFromName(msg.content.split("\n")[0].slice(2, -2));
+                if (msgStep) {
+                    if (msgStep.toAsk.type === "welcomeMenus") {
+                        stepMessages.push(msg);
+                    }
+                }
+            });
+
+            stepMessages.sort((a, b) => a.createdTimestamp - b.createdTimestamp);
+
+            let msgUpdated = false;
+
+            for (let i=0;i<stepMessages.length;i++) {
+                if (stepMessages.length > 1) {
+                    if (msgUpdated) {
+                        await stepMessages[i].delete();
+                    }
+                    if (stepMessages[i].id === interaction.message.id) {
+                        if (stepMessages[i+1]) {
+                            if (interaction.message.components.length === 1) {
+                                let nextMenuSelectorIds = new Array();
+                                for(const actionRow of stepMessages[i+1].components) {
+                                    for(const selectMenu of actionRow.components) {
+                                        nextMenuSelectorIds.push(selectMenu.customId);
+                                    }
+                                }
+                                const newFormAnswers = await form.getFields();
+
+                                for (const nextMenuSelectorId of nextMenuSelectorIds) {
+                                    const nextMenuSelectorFieldName = nextMenuSelectorId.split("_").at(-1);
+                                    if (newFormAnswers[nextMenuSelectorFieldName]) {
+                                        delete newFormAnswers[nextMenuSelectorFieldName];
+                                    }
+                                }
+                                await form.setFields(newFormAnswers);
+
+                                const next = getSelectMenusFromJSON("welcomeForm", interaction.values[0], welcomeFormData);
+                                if (next) {
+                                    await stepMessages[i+1].edit({
+                                        content: `**${step.name}**\nVous avez encore des informations à remplir ci-dessous.`,
+                                        components: next
+                                    });
+                                    i++;
+                                } else {
+                                    await stepMessages[i+1].delete();
+                                    responseFromWelcomeProcess(step.step, interaction);
+                                }
+                                msgUpdated = true;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
