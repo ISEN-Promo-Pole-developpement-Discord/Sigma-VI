@@ -37,7 +37,14 @@ class Form
             "SELECT fields FROM form WHERE form_id = ?", [this.form_id]
         );
         
-        return row.fields;
+        if(row.fields != null){
+            if(typeof row.fields === "string"){
+                return JSON.parse(row.fields);
+            }
+            else{
+                return row.fields;
+            }
+        }
     }
 
     async setChannelID(channel_id)
