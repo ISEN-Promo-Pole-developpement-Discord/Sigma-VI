@@ -2,9 +2,10 @@
     "logAdminChannelName": "log-admin",
     "logIoChannelName": "log-io",
     "logUserChannelName": "log-user",
-    "welcomeCategoryName": "Welcome",
-    "welcomeChannelName": "welcome",
+    "welcomeCategoryName": "Bienvenue",
+    "welcomeChannelName": "bievenue",
     "debug": true,
     "verifiedRoleName": "✔",
-    "modules":false
+    "modules":false,
+    "mainGuildId": "874262950964256779"
 }
