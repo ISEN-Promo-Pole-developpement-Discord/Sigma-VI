@@ -63,38 +63,11 @@ function handleWelcomeButtonClick(interaction) {
                 }
             }
         }
-    } else if (interaction.customId.includes("dopass")) {
-        for (const task of welcomeProcess.tasks) {
-            if (task.toAsk.id) {
-                if (task.toAsk.id.includes(interaction.customId.slice(7))) {
-                    interaction.update({
-                        content: `**${task.name}**\nVous avez passé cette étape. Vous pouvez malgré tout toujours remplir le code en cliquant sur le bouton ci-dessous.`,
-                        components: [
-                            new ActionRowBuilder().addComponents(
-                                new ButtonBuilder()
-                                    .setCustomId(`launch_${interaction.customId}`)
-                                    .setLabel(`Saisir le code reçu par e-mail`)
-                                    .setCustomId(`launch_${task.toAsk.id}`)
-                                    .setStyle(ButtonStyle.Primary)
-                                    .setDisabled(false)
-                            )
-                        ]
-                    });
-                    
-                    responseFromWelcomeProcess(task.step, interaction);
-                    
-                    return;
-                }
-            }
-        }
-    } 
-    
+    }
     else if (Object.values(welcomeFormData).map((x) => {return x.menu.value}).includes(interaction.customId)){
         responseFromWelcomeProcess(-1, interaction);
     } else if (interaction.customId.split("_").at(-1) === "retry") {
         FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id).then(async (form) => {
-            await interaction.channel.delete();
-
             await FormsManager.deleteForm(form.form_id);
         })
     } else {
