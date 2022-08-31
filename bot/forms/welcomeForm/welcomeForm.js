@@ -164,6 +164,7 @@ async function handleWelcomeFormMenuResponse(interaction) {
                                     await stepMessages[i+1].delete();
                                     responseFromWelcomeProcess(step.step, interaction);
                                 }
+                                msgUpdated = true;
                             }
                         }
                     }
