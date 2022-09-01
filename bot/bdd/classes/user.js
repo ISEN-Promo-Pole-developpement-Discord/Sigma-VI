@@ -33,8 +33,8 @@ class User
     }
     
     async getIcalURL(){
-        const formatedName = userData.name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-");
-        const formatedSurname = userData.surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-");
+        const formatedName = userData.name.toLowerCase().normalize("NFD").replaceAll(/\p{Diacritic}/gu, "").replaceAll(" ","-");
+        const formatedSurname = userData.surname.toLowerCase().normalize("NFD").replaceAll(/\p{Diacritic}/gu, "").replaceAll(" ","-");
         const URL = `https://ent-toulon.isen.fr/webaurion/ICS/${formatedName}.${formatedSurname}.ics`;
         return url;
     }

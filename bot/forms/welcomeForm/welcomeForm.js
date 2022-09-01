@@ -209,7 +209,7 @@ function handleWelcomeFormResponse(interaction) {
                 let mail = fields.mail;
                 
                 if (!mail) {
-                    mail = `${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}.${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(" ","-")}`;
+                    mail = `${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}.${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}`;
                     if (fields.profilGeneral !== "EtudiantISEN") {
                         mail = `${mail}@yncrea.fr`;
                     } else {
