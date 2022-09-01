@@ -11,7 +11,7 @@ const { logCreate } = require("../../modtools/log/logModules.js");
 
 async function isSkipped(interaction, stepData) {
     if (stepData.condition) {
-        const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id);
+        const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id);
         const fields = await form.getFields();
         const answer = fields[stepData.condition.value];
         if (answer) {
@@ -56,7 +56,7 @@ async function isSkipped(interaction, stepData) {
 }
 
 async function submitForm(interaction) {
-    const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id);
+    const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id);
 
     await form.setStatus(3);
 
@@ -230,7 +230,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     });
                 } else if (stepData.toAsk.type === "welcomeMenus") {
                     
-                    const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id)
+                    const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id)
                     const fields = await form.getFields();
                     const profileAnswer = fields.profilGeneral;
 
@@ -249,7 +249,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     let desc = stepData.description;
                     let embed = null;
                     if (stepData.name === "Confirmation") {
-                        const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id);
+                        const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id);
 
                         const channel = await interaction.channel;
 
@@ -329,7 +329,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     });
 
 
-                    const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id)
+                    const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id)
                     const verificationCode = await form.generateVerificationCode();
 
                     const fields = await form.getFields();

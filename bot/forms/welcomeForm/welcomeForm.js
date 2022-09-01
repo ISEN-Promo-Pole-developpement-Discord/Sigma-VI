@@ -17,7 +17,7 @@ function searchStepFromName(name) {
 
 async function checkCodeMail(interaction, code) {
 
-    const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id)
+    const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id)
     const verificationCode = await form.getVerificationCode();
 
     if (code === verificationCode) {
@@ -68,7 +68,7 @@ function handleWelcomeButtonClick(interaction) {
     else if (Object.values(welcomeFormData).map((x) => {return x.menu.value}).includes(interaction.customId)){
             responseFromWelcomeProcess(-1, interaction);
     } else if (interaction.customId.split("_").at(-1) === "retry") {
-        FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id).then(async (form) => {
+        FormsManager.getForm(interaction.guild.id, interaction.channel.id).then(async (form) => {
             await FormsManager.deleteForm(form.form_id);
         })
     } else {
@@ -91,7 +91,7 @@ async function handleWelcomeFormMenuResponse(interaction) {
 
     await interaction.deferUpdate();
 
-    const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id);
+    const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id);
     if(!form){
         console.log(">> form not found");
         return;
@@ -199,7 +199,7 @@ function handleWelcomeFormResponse(interaction) {
                     content: `**${step.name}**\n✅ Votre adresse e-mail a bien été vérifiée. Merci.`,
                     components: []
                 });
-                const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id)
+                const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id)
 
                 const fields = await form.getFields();
 
@@ -232,7 +232,7 @@ function handleWelcomeFormResponse(interaction) {
                         )
                     ]
                 });
-                const form = await FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id)
+                const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id)
                 await registerAnswer(form, "mailValidated", false);
             }
         });
@@ -241,7 +241,7 @@ function handleWelcomeFormResponse(interaction) {
             responseFromWelcomeProcess(step.step, interaction);
         }
 
-        FormsManager.getForm(interaction.user.id, interaction.guild.id, interaction.channel.id).then(async (form) => {
+        FormsManager.getForm(interaction.guild.id, interaction.channel.id).then(async (form) => {
             for (key of Object.keys(data)) {
                 await registerAnswer(form, key.split("_").at(-1), data[key]);
             }

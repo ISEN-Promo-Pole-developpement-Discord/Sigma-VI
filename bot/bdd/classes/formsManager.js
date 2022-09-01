@@ -2,11 +2,11 @@ const {Form} = require("./form.js");
 
 class FormsManager
 {
-    static async getForm(user_id, guild_id, channel_id)
+    static async getForm(guild_id, channel_id)
     {
         const connection = global.sqlConnection;
-        const query = "SELECT * FROM form WHERE user_id = ? AND guild_id = ? AND channel_id = ?";
-        const values = [user_id, guild_id, channel_id];
+        const query = "SELECT * FROM form WHERE guild_id = ? AND channel_id = ?";
+        const values = [guild_id, channel_id];
         const data = await connection(query, values);
 
         if (data.length === 0) return null;
@@ -52,7 +52,7 @@ class FormsManager
         const values = [form.user_id, form.guild_id, form.channel_id, form.status, JSON.stringify(form.fields)];
         await connection(query, values);
 
-        return await this.getForm(form.user_id, form.guild_id, form.channel_id);
+        return await this.getForm(form.guild_id, form.channel_id);
     }
 
     static async deleteForm(form_id)
