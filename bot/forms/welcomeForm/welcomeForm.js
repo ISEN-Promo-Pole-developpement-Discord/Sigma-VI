@@ -17,7 +17,8 @@ function searchStepFromName(name) {
 
 async function checkCodeMail(interaction, code) {
 
-    const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id)
+    const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id);
+    if(!form) return false;
     const verificationCode = await form.getVerificationCode();
 
     if (code === verificationCode) {
