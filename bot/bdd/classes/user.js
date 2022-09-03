@@ -33,10 +33,15 @@ class User
     }
     
     async getIcalURL(){
-        const formatedName = userData.name.toLowerCase().normalize("NFD").replaceAll(/\p{Diacritic}/gu, "").replaceAll(" ","-");
-        const formatedSurname = userData.surname.toLowerCase().normalize("NFD").replaceAll(/\p{Diacritic}/gu, "").replaceAll(" ","-");
-        const URL = `https://ent-toulon.isen.fr/webaurion/ICS/${formatedName}.${formatedSurname}.ics`;
-        return url;
+        const name = await this.getName();
+        const surname = await this.getSurname();
+        if(name != null && surname != null){
+            const formatedName = name.toLowerCase().normalize("NFD").replaceAll(/\p{Diacritic}/gu, "").replaceAll(" ","-");
+            const formatedSurname = surname.toLowerCase().normalize("NFD").replaceAll(/\p{Diacritic}/gu, "").replaceAll(" ","-");
+            const URL = `https://ent-toulon.isen.fr/webaurion/ICS/${formatedName}.${formatedSurname}.ics`;
+            return URL;
+        }
+        return null;
     }
 
     async getPassword()
