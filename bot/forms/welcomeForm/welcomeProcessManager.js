@@ -180,7 +180,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                 let fields = {}
                 fields[interaction.customId.split("_").at(-2)] = interaction.customId.split("_").at(-1);
 
-                await FormsManager.addForm({user_id: interaction.user.id, guild_id: interaction.guild.id, channel_id: channel.id, status: 1, fields: fields});
+                FormsManager.addForm({user_id: interaction.user.id, guild_id: interaction.guild.id, channel_id: channel.id, status: 1, fields: fields});
 
                 deleteSystemMessages(channel);
                 deleteSystemMessages(interaction.channel);
