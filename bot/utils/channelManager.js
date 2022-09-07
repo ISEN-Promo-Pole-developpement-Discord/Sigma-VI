@@ -1,4 +1,4 @@
-const { ChannelType, MessageType, WelcomeChannel, GuildScheduledEvent, GuildPremiumTier } = require("discord.js");
+const { ChannelType, ActionRowBuilder, GuildPremiumTier, ButtonBuilder, ButtonStyle, MessageType} = require("discord.js");
 const { getButtonsFromJSON } = require('./formHelper.js');
 const welcomeFormData = require('../forms/welcomeForm/welcomeForm.json');
 
@@ -13,7 +13,32 @@ async function createChannel(guild, user, NewChannel, Ntryparent) {
     }
   }
   )
+  
+  var channelMessageContent;
 
+  if(guild.id === global.config.core.mainGuildId){
+    channelMessageContent = {
+      content: `**Bienvenue sur le serveur discord de l'ISEN Méditerranée !**\n*Sigma, à votre service.*\nAvant de nous rejoindre, j'ai quelques questions à vous poser.\n\n***Pour commencer, sélectionnez un profil ici :arrow_heading_down:***`,
+      components: getButtonsFromJSON(welcomeFormData)
+    };
+  }else{
+    var actionRow = new ActionRowBuilder()
+    .addComponents(
+      new ButtonBuilder()
+        .setCustomId('form_externalVerificationWelcome')
+        .setLabel('Connexion')
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setLabel('ISEN Méditerranée')
+        .setStyle(ButtonStyle.Link)
+        .setURL('https://discord.gg/vaMYaRd3ns')
+    );
+    channelMessageContent = {
+      content: `**Bienvenue sur le serveur discord "${guild.name}"**\n*Sigma, à votre service.*\n\n***Pour rejoindre le serveur, inscrivez-vous sur le serveur de l'ISEN méditérannée et connectez-vous.***`,
+      components: [actionRow]
+    };
+  }
+  
   if (typeof (NewChannel) === `string`) {
     channel = await guild.channels.create(
       {
@@ -21,10 +46,8 @@ async function createChannel(guild, user, NewChannel, Ntryparent) {
         type: ChannelType.GuildText,
       });
 
-    channel.send({
-      content: `**Bienvenue sur le serveur discord de l'ISEN Méditerranée !**\nSigma, à votre service. Avant de nous rejoindre, j'ai quelques questions à vous poser.\n\n***Pour commencer, sélectionnez un profil ici :arrow_heading_down:***`,
-      components: getButtonsFromJSON(welcomeFormData)
-    });
+
+    channel.send(channelMessageContent);
 
     if (Ntryparent) {
       guild.channels.fetch()
@@ -41,12 +64,7 @@ async function createChannel(guild, user, NewChannel, Ntryparent) {
   else {
     channel = NewChannel;
     const messages = await NewChannel.messages.fetch()
-    if (messages.size === 0) {
-      NewChannel.send({
-        content: `**Bienvenue sur le serveur discord de l'ISEN Méditerranée !**\nSigma, à votre service. Avant de nous rejoindre, j'ai quelques questions à vous poser.\n\n***Pour commencer, sélectionnez un profil ici :arrow_heading_down:***`,
-        components: getButtonsFromJSON(welcomeFormData)
-      });
-    }
+    if (messages.size === 0) NewChannel.send(channelMessageContent);
   }
   return channel;
 }
