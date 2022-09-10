@@ -25,6 +25,12 @@ const connection = mysql.createConnection({
 });
 
 async function promiseQuery(query, values = null) {
+    if(connection.state === "disconnected"){
+        connection.connect(function(err) {
+            if (err) throw err;
+            console.log("Connexion à la base de données MySQL rétablie.");
+        });
+    }
     return new Promise((resolve, reject) => {
         if(values === null) {
             connection.query(query, (err, results) => {
