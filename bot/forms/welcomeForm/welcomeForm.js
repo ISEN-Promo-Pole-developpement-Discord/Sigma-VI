@@ -94,7 +94,7 @@ async function handleWelcomeFormMenuResponse(interaction) {
 
     const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id);
     if(!form){
-        console.log(">> form not found");
+        console.log(">> form not found (welcomeForm)");
         return;
     }
     const formAnswers = await form.getFields();
@@ -201,7 +201,10 @@ function handleWelcomeFormResponse(interaction) {
                     components: []
                 });
                 const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id)
-
+                if(!form){
+                    console.log(">> form not found (checkMail)");
+                    return;
+                }
                 const fields = await form.getFields();
 
                 const name = fields.nom;
@@ -233,7 +236,12 @@ function handleWelcomeFormResponse(interaction) {
                         )
                     ]
                 });
-                const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id)
+                const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id);
+
+                if(!form){
+                    console.log(">> form not found (handleWelcomeFormResponse)");
+                    return;
+                }
                 await registerAnswer(form, "mailValidated", false);
             }
         });
@@ -249,7 +257,7 @@ function handleWelcomeFormResponse(interaction) {
         });
 
         interaction.update({
-            content: `**${step.name}**\n> *${Object.values(data).join("*\n> *")}*\nVous pouvez modifier votre réponse en cliquant sur le bouton Modifier`,
+            content: `**${step.name}**\n> *${Object.values(data).join("*\n> *")}*\nModifiez vos réponses en cliquant sur le bouton "Modifier" ci-dessous.`,
             components: [
                 new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
