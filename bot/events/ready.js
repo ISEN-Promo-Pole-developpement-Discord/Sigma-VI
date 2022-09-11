@@ -15,9 +15,9 @@ module.exports = {
         console.log(`Le bot ${client.user.tag} est lancé.`);
 
         client.guilds.fetch().then((guilds) => {
+            if (global.debug) console.log("> Chargement des serveurs...");
             guilds.forEach(async (guild, snowflake) => {
 
-                if (global.debug) console.log("> Chargement des serveurs...");
                 guild = await guild.fetch();
                 const guildDB = await GuildsManager.getGuild(guild.id);
 
@@ -26,7 +26,7 @@ module.exports = {
                 }
                 createChannel(guild,null,"bienvenue","Bienvenue").then((channel => { deleteSystemMessages(channel); }));
 
-                if (global.debug) console.log("> Chargement des utilisateurs...");
+                if (global.debug) console.log("> Chargement des utilisateurs du serveur " + guild.name + "...");
                 const membersList = client.guilds.cache.get(guild.id);
                 membersList.members.cache.forEach( async (member) => {
                     if (await UsersManager.getUser(member.id) === null  && !member.user.bot) {
@@ -40,8 +40,8 @@ module.exports = {
                             data: "{}"
                         });
                     }});
-                if (global.debug) console.log("> Chargements finis.");
+                });
             });
-        });
+        if (global.debug) console.log("> Serveurs chargés.");
     }
 }
