@@ -70,3 +70,11 @@ create table if not exists `reset`
     `user_id` varchar(30) not null,
     primary key (`user_id`)
 );
+
+create table if not exists `indexed_channel`
+(
+    `channel_id` varchar(30) not null primary key,
+    `guild_id` varchar(30) not null,
+    foreign key (`guild_id`) references `guild` (`guild_id`) on delete cascade on update cascade,
+    `indexMessage` varchar(1000) not null
+);

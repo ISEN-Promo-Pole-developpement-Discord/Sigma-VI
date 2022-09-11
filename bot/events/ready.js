@@ -1,6 +1,7 @@
 const { createChannel, deleteSystemMessages } = require("../utils/channelManager.js");
 const { GuildsManager } = require("../bdd/classes/guildsManager.js");
 const { UsersManager } = require("../bdd/classes/usersManager.js");
+const { IndexedChannelsManager } = require("../bdd/classes/indexedChannelsManager.js");
 
 module.exports = {
     name: "ready",
@@ -43,5 +44,6 @@ module.exports = {
                 });
             });
         if (global.debug) console.log("> Serveurs chargés.");
+        IndexedChannelsManager.updateAll();
     }
 }
