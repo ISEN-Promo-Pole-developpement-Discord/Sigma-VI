@@ -16,7 +16,7 @@ class IndexedChannelsManager {
         const connection = global.sqlConnection;
         const [rows] = await connection("SELECT * FROM indexed_channel WHERE channel_id = ?", [channel_id]);
         var indexedChannel = null;
-        if(rows.length > 0){
+        if(rows && rows.length > 0){
             indexedChannel = new IndexedChannel(rows[0].channel_id, rows[0].guild_id);
         }
         return indexedChannel;

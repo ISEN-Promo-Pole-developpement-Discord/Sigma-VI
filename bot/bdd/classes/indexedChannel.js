@@ -50,18 +50,19 @@ class IndexedChannel {
     }
 
     async update(){
-        const threads = await this.getThreads();
+        var threads = await this.getThreads();
         const message = await this.getMessage();
         const channel = await this.getChannel();
         var indexMessage = await this.getIndexText();
-        
+        const archivedThread = await channel.threads.fetchArchived();
+        for(var thread of archivedThread.threads.values()){
+            await thread.setArchived(false);
+            threads.push(thread);
+        }
         var targetMessage = {content: indexMessage, embeds: []};
         for(var thread of threads){
-            if(thread.archived && thread.unarchivable){
-                await thread.setArchived(false);
-            }
             var threadMessages = await thread.messages.fetch({limit: 100});
-            var threadFirstMessage = threadMessages.first();
+            var threadFirstMessage = threadMessages.last();
             var content = threadFirstMessage.content;
             var embed = new
             Discord.EmbedBuilder()
