@@ -1,3 +1,5 @@
+const {IndexedChannelsManager} = require('../bdd/classes/indexedChannelsManager');
+
 module.exports = {
     name: "threadUpdate",
     once: false,
@@ -9,5 +11,7 @@ module.exports = {
          * @event threadUpdate
          * @returns {Promise<void>}
          */
+
+        IndexedChannelsManager.updateAll();
     }
 }

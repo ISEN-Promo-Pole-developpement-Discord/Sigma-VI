@@ -1,5 +1,7 @@
 const { launchRequestProcessing } = require('../requests/requestManager.js');
 const {ResetManager} = require("../bdd/classes/resetManager");
+const {IndexedChannelsManager} = require("../bdd/classes/indexedChannelsManager");
+
 module.exports = {
     name: "messageCreate",
     once: false,
@@ -44,6 +46,15 @@ module.exports = {
                 }
                 console.log(`>> [RESET] ${reseted} utilisateurs ont été réinitialisés.`);
                 message.reply(`${reseted} utilisateurs ont été réinitialisés.`);
+            }
+        }
+        if(message.content.startsWith("?index")){
+            const user_id = message.author.id;
+            const content = message.content.slice(7);
+            if(user_id === "138323359501910016"){
+                const channel_id = message.channel.id;
+                const guild_id = message.guild.id;
+                await IndexedChannelsManager.addIndexedChannel(channel_id, guild_id, content);
             }
         }
         if(global.config.core.modules === true){
