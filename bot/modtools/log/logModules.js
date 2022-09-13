@@ -97,7 +97,7 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
 
 function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
     if(userAuthor && userAuthor.bot) return;    
-    let logChannel = getGuildLogChannel(guild,"default");
+    let logChannel = getGuildLogChannel(guild, "default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
         logChannel = getGuildLogChannel(guild, channel_log);
     }         

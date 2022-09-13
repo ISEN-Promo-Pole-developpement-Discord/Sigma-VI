@@ -1,6 +1,7 @@
 const { launchRequestProcessing } = require('../requests/requestManager.js');
 const {ResetManager} = require("../bdd/classes/resetManager");
 const {IndexedChannelsManager} = require("../bdd/classes/indexedChannelsManager");
+const {ChannelType} = require("discord.js");
 
 module.exports = {
     name: "messageCreate",
@@ -12,7 +13,7 @@ module.exports = {
          * @event messageCreate
          * @returns {Promise<void>}
          */
-
+        if(message.channel.type === ChannelType.DM) return;
         if (message.author.bot) return;
         if (!message.content) return;
 
