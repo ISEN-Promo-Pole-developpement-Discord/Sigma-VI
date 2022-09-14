@@ -18,13 +18,16 @@ async function updateRequestsFromMessage(message, client){
             if(m.type === MessageType.Reply && m.reference.messageId === message.id)
                 await m.delete();
     }
-
     launchRequestProcessing(message, client);
 }
 
 async function launchRequestProcessing(message, client){
     var requests = await getRequestsFromMessage(message, client);
     for(var request of requests){
+        let content = request.content.toLowerCase().trim();
+        while(containACall(content, client))
+            content = content.replace(containACall(content, client), "");
+        request.content = content;
         var module = getBestStringModule(request.SRWF());
         if(module !== null) submitRequestToModule(request, module);
         else request.getMessage().react("❔");
@@ -32,7 +35,7 @@ async function launchRequestProcessing(message, client){
 }
 
 async function getRequestsFromMessage(message, client, force = false){
-    var requests = new Array;
+    var requests = new Array();
     
     // Discard if author is a bot
     if(message.author.bot) return requests;
@@ -65,7 +68,11 @@ function containACall(string, client, exclusive = false){
     string = string.toLowerCase().trim();
     supportedCalls = ["sigma,", "sigma ?", "sigma !", "hey sigma", "dit sigma", "<@"+client.user.id+">", "<@!"+client.user.id+">", "<@&"+client.user.id+">"];
     if(exclusive) return supportedCalls.includes(string);
-    return supportedCalls.some(call => string.includes(call));
+    let callFound = false;
+    for(var call of supportedCalls){
+        if(string.startsWith(call)) callFound = call;
+    }
+    return callFound;
 }
 
 module.exports = {updateRequestsFromMessage, launchRequestProcessing, getRequestsFromMessage};
