@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const CORE = require("./core");
-const getDatesFromString = require('../../processors/getAbsoluteDate.js');
+const {getDatesFromString} = require('../../processors/getAbsoluteDate.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
