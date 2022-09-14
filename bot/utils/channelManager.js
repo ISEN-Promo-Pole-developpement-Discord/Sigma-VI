@@ -8,6 +8,7 @@ async function createChannel(guild, user, NewChannel, Ntryparent) {
   let channel;
 
   channels.forEach((entry, snowflake) => {
+    if(!entry) return;
     if (entry.name === NewChannel) {
       NewChannel = entry;
     }
