@@ -51,7 +51,8 @@ const { AttachmentBuilder} = require('discord.js');
 const logImg = require('./log-img.json');
 
 function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,channel_log) {
-    if(userAuthor && userAuthor.bot) return;    
+    if(objectUpdateGetChangesFields(oldObject, newObject)!=null){
+    if(userAuthor && userAuthor.bot) return;
     let logChannel = getGuildLogChannel(guild,"default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
         logChannel = getGuildLogChannel(guild, channel_log);
@@ -94,7 +95,7 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
         console.log(e);
     }
 }
-
+}
 function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
     if(userAuthor && userAuthor.bot) return;    
     let logChannel = getGuildLogChannel(guild,"default");
