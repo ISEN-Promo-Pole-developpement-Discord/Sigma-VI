@@ -4,7 +4,7 @@ const config = require('./#config.json');
 
 async function coreProcess(url = [], requestCall = new Date()){
     if(typeof requestCall === "date") requestCall = requestCall.getTime();
-    if(!url.length) url = config.services;
+    if(!url || !url.length) url = config.services;
     if(typeof url === "string") url = [url];
     var results = [];
     for(var service of url){
