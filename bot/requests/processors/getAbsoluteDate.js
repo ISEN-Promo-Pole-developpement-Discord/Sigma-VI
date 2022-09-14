@@ -80,17 +80,17 @@ const previous = ["precedent", "precedente", "dernier", "derniere", "previous"];
 
 var today;
 
-function getDateByString(string, reference = null){
+function getDatesFromString(string, reference = null){
     if(reference !== null){
         today = reference;
     }else{
         today = new Date();
-        today = new Date(today.getFullYear(), today.getMonth(), today.getDate()+1);
+        today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     }
 
     var startDate = getStartDate(string);
     var endDate = getEndDate(string, startDate);
-    if(!startDate) return [];
+    if(!startDate) return [today];
     if(!endDate) return [startDate];
     else {
         var dates = [];
@@ -159,7 +159,7 @@ function getWeekDayRelative(string, reference = null){
         var date = new Date(reference.getTime());
         do{
             date = new Date(date.getFullYear(), date.getMonth(), date.getDate()+n);
-        }while((date.getDay()-1 < 0 ? 6 : date.getDay()-1) != weekDay);
+        }while((date.getDay() < 0 ? 6 : date.getDay()) != weekDay);
         date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         return date;
     }
@@ -204,12 +204,12 @@ function getFullDate(string){
     var month = includeMonth(string);
     if(month === false){
         if(monthDay < today.getDate())
-            return new Date(today.getFullYear(), today.getMonth()+1, monthDay+1);
-        else return new Date(today.getFullYear(), today.getMonth(), monthDay+1);
-    }    
+            return new Date(today.getFullYear(), today.getMonth()+1, monthDay);
+        else return new Date(today.getFullYear(), today.getMonth(), monthDay);
+    }
     var year = includeYear(string);
     if(year === false) year = new Date().getFullYear();
-    return new Date(year, month-1, monthDay+1);
+    return new Date(year, month-1, monthDay);
 }
 
 function includeWeek(string){
@@ -330,6 +330,35 @@ function includeYear(string){
     return false;
 }
 
+function filterOutDateElements(string){
+    string = string.toLowerCase().trim();
+    var dateElements = week.concat(next, previous, weekend, month, year);
+    for(const [index, content] of Object.entries(relativeIdentifiers)){
+        const [array] = Object.entries(content);
+        dateElements = dateElements.concat(array[1]);
+    }
+    for(var i in days){
+        for(var key in days[i]){
+            dateElements.push(days[i][key]);
+        }
+    }
+    for(var i in months){
+        for(var key in months[i]){
+            dateElements.push(months[i][key]);
+        }
+    }
+    for(var i in weekDays){
+        for(var key in weekDays[i]){
+            dateElements.push(weekDays[i][key]);
+        }
+    }
+    const regexYear = /\d{2}[0-9]{2}/;
+    const regexDay = /\d{1,2}/;
+    var dateElementsRegex = new RegExp(dateElements.join("|"), "g");
+    var allRegex = new RegExp(dateElements.join("|") + "|" + regexYear.source + "|" + regexDay.source, "g");
+    var string = string.replace(dateElementsRegex, "");
+    return string;
+}
 
 //TODO: add support for following formats:
 // - "derniere semaine octobre"
@@ -338,4 +367,5 @@ function includeYear(string){
 // - "dans deux semaines"
 // - "d'il y a deux semaines"
 
-module.exports = getDateByString;
+
+module.exports = {getDatesFromString, filterOutDateElements};
