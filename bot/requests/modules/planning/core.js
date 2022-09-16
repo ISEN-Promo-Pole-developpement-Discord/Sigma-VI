@@ -1,5 +1,4 @@
 const {UsersManager} = require("../../../bdd/classes/usersManager");
-const ping = require('ping');
 const {includedSimilarity} = require("../../processors/stringIncludeSimilarity");
 const Discord = require("discord.js");
 const {getUserICS, getUserList} = require("./cacheManager.js");
@@ -28,11 +27,8 @@ async function coreProcess(author, dates = [], search = null, target = null){
     try{
         ical = await getUserICS(namedotsurname);
     }catch(err){
-        //ping ent-toulon.isen.fr
         if(global.debug) console.log(err);
-        var pingResult = await ping.promise.probe('ent-toulon.isen.fr');
-        if(pingResult.alive) return "Une erreur s'est produite lors de l'accès à l'emplois du temps. Veuillez réessayer.";
-        else return "Le serveur ent-toulon.isen.fr est actuellement hors-ligne.";
+        else return "Une erreur s'est prduite à la récupération de l'emplois-du-temps. Veuillez réessayer.";
     }
 
     //Fetch events from dates
