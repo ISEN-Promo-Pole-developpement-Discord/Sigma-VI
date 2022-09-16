@@ -1,4 +1,5 @@
 const {logDelete} = require('../modtools/log/logModules.js');
+const {ChannelType} = require("discord.js");
 
 module.exports = {
     name: "messageDelete",
@@ -10,6 +11,7 @@ module.exports = {
          * @event messageDelete
          * @returns {Promise<void>}
          */
+        if(message.channel.type === ChannelType.DM) return;
          logDelete(
             message.guild,
             "Message",

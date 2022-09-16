@@ -2,8 +2,8 @@ const {Request} = require("../../requestClass");
 
 function moduleProcess(request){
     request.notifyStart();
-    console.log("[PLANNING REQUEST] "+request.message.author.tag+" : "+request.message.content);
-    request.notifyEnd("Requête de planning traitée.\n> " + request.content + "\n> " + request.SRWF());
+    console.log("[METEO REQUEST] "+request.message.author.tag+" : "+request.message.content);
+    request.notifyEnd("Le module météo n'est pas encore actif.");
 }
 
 module.exports = moduleProcess;

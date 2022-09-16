@@ -119,7 +119,7 @@ function objectClassDataToFields(object) {
 }
 
 function objectUpdateGetChangesFields(oldObject, newObject) {
-
+    let blackList=["RawPosition"];
     let fields = [];
     let objectHerited = oldObject;
     while (objectHerited !== null) {
@@ -136,7 +136,9 @@ function objectUpdateGetChangesFields(oldObject, newObject) {
                                     fields.push({ name: `Content before`, value: oldObject[key], inline: false });
                                     fields.push({ name: `Content after`, value: newObject[key], inline: false });
                                 }
-                            } else fields.push({ name: `${keyMajor} updated`, value: `${oldObject[key]} -> ${newObject[key]}`, inline: false });
+                            }
+                            else if(blackList.includes(keyMajor)){return null}
+                            else fields.push({ name: `${keyMajor} updated`, value: `${oldObject[key]} -> ${newObject[key]}`, inline: false });
                         }
                     }
                 } catch (e) {

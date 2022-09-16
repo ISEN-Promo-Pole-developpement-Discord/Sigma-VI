@@ -1,4 +1,5 @@
-function includedSimilarity(container, contained) {
+function includedSimilarity(container, contained, threshold = 0.5, badLettersMalus = 0) {
+    if(!container || !contained) return 0;
     container = normalize(container);
     contained = normalize(contained);
     var containerWords = container.split(" ");
@@ -10,8 +11,8 @@ function includedSimilarity(container, contained) {
     var totalSimilarity = 0;
     for (var i = 0; i < containerWords.length; i++) {
         for (var j = 0; j < containedWords.length; j++) {
-            var sim = similarity(containerWords[i], containedWords[j]);
-            if(sim > 0.5){
+            var sim = similarity(containerWords[i], containedWords[j], badLettersMalus);
+            if(sim > threshold){
               totalSimilarity += sim * (containedWords[j].length / containedWordsTotalLetters);
             }
         }
@@ -19,7 +20,7 @@ function includedSimilarity(container, contained) {
     return totalSimilarity;
 }
 
-function similarity(s1, s2) {
+function similarity(s1, s2, badLettersMalus = 0) {
     var longer = s1;
     var shorter = s2;
     if (s1.length < s2.length) {
@@ -30,7 +31,9 @@ function similarity(s1, s2) {
     if (longerLength == 0) {
       return 1.0;
     }
-    return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+    var badLetters = getBadLetters(longer, shorter);
+
+    return ((longerLength - editDistance(longer, shorter)) / parseFloat(longerLength)) - badLettersMalus * badLetters;
 }
 
 function editDistance(s1, s2) {
@@ -58,6 +61,18 @@ function editDistance(s1, s2) {
         costs[s2.length] = lastValue;
     }
     return costs[s2.length];
+}
+
+function getBadLetters(s1, s2){
+    var badLetters = 0;
+    s1letters = s1.split("");
+    s2letters = s2.split("");
+    for(var l of s2letters){
+      if(!s1letters.includes(l)){
+        badLetters++;
+      }
+    }
+    return badLetters;
 }
 
 function normalize(s){

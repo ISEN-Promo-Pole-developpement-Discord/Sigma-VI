@@ -1,73 +1,85 @@
 const {UsersManager} = require("../../../bdd/classes/usersManager");
-const nodeIcal = require('node-ical');
 const ping = require('ping');
 const {includedSimilarity} = require("../../processors/stringIncludeSimilarity");
 const Discord = require("discord.js");
+const {getUserICS, getUserList} = require("./cacheManager.js");
+const { getFormatedNameFromString } = require("../../processors/getFormatedNameFromString");
+const { AttachmentBuilder} = require('discord.js');
+const path = require("path");
 
 async function coreProcess(author, dates = [], search = null, target = null){
-    
+    var namedotsurname = null;
     //Fetch target URL
     if(target == null) target = author;
-    var icalURL= null;
     if(typeof target === "string"){
-        if(target.includes("ent-toulon.isen.fr"))
-            icalURL = target;
-        else icalURL = `https://ent-toulon.isen.fr/webaurion/ICS/${target}.ics`;
+        var users = await getUserList();
+        namedotsurname = getFormatedNameFromString(target, users);
     }else{
         targetBddUser = await UsersManager.getUser(target.id);
-        if(targetBddUser == null){
+        if(targetBddUser == null) {
             if(target.id == author.id) return "Une erreur s'est produite lors de votre identification. Veuillez réessayer.";
             else return "La cible demandé n'existe pas dans la base de données.";
         }
-        icalURL = targetBddUser.getIcalURL();
+        namedotsurname = getFormatedNameFromString(await targetBddUser.getName() + " " + await targetBddUser.getSurname(), await getUserList());
     }
     
     //Fetch events from URL
-    var events = null;
+    var ical = null;
     try{
-        events = await getEventsFromURL(icalURL);
+        ical = await getUserICS(namedotsurname);
     }catch(err){
         //ping ent-toulon.isen.fr
+        if(global.debug) console.log(err);
         var pingResult = await ping.promise.probe('ent-toulon.isen.fr');
         if(pingResult.alive) return "Une erreur s'est produite lors de l'accès à l'emplois du temps. Veuillez réessayer.";
         else return "Le serveur ent-toulon.isen.fr est actuellement hors-ligne.";
     }
 
     //Fetch events from dates
-    var eventsFromDates = getICALEventsFromDate(dates, events);
+    var eventsFromDates = getICALEventsFromDate(dates, ical.ics);
     //Fetch events from searchs
-    var eventFromSearch = search ? getICALEventFromSearch(search, events) : null;
+    var eventFromSearch = search ? getICALEventFromSearch(search, ical.ics) : null;
 
     //Build reply
     var embed = new Discord.EmbedBuilder();
     embed.setColor(0xCC5500);
-    
     if(search != null){
         if(eventFromSearch != null){
-            embed.setTitle(`Événement trouvé`);
-            embed.setDescription(`${renderEvent(eventFromSearch)}`);
-            embed.setTimestamp(eventFromSearch.start);
+            embed.setTitle(`Événement trouvé le ${formatDayToString(eventFromSearch.start)}`);
+            var searchString = search != "next" ? `<Recherche : "${ search }">` : `<Prochain cours>`;
+            embed.setDescription(`${renderEvent(eventFromSearch)} \n*${ searchString }*`);
         } else {
             return "Aucun événement ne correspond à votre recherche.";
         }
     } else if(eventsFromDates.length == 1){
-        embed.setTitle(`Événements du ${eventsFromDates[0].date}`);
-        embed.setDescription(`${renderDay(eventsFromDates[0])}`);
+        embed.setTitle(`Événements du ${formatDayToString(eventsFromDates[0].date)}`);
+        let dayString = renderDay(eventsFromDates[0]);
+        //remove first line
+        dayString = dayString.slice(dayString.indexOf("\n") + 1);
+        embed.setDescription(`${dayString}`);
     } else {
-        embed.setTitle(`Événements`);
-        embed.setDescription(`${renderEvents(eventsFromDates)}`);
+        embed.addFields(getDays(eventsFromDates));
     }
+    var updatedString = `${formatDayToString(ical.updated)} à ${ical.updated.getHours().toString().padStart(2, "0")}:${ical.updated.getMinutes().toString().padStart(2, "0")}`;
+    embed.setFooter({text: `Données mise à jour le ${updatedString}, à titre indicatif uniquement.`});
 
-    return {embeds: [embed]};
+    let icon = "icon.png";
+    let iconAttachment = new AttachmentBuilder("requests/modules/planning/" + icon, icon);
+    var name = namedotsurname.split(".")[0].slice(0, 1).toUpperCase() + namedotsurname.split(".")[0].slice(1);
+    var surname = namedotsurname.split(".")[1].toUpperCase();
+    embed.setAuthor({name: `Planning\n${name} ${surname}`, iconURL: 'attachment://'+icon});
+    return {embeds: [embed], files: [iconAttachment]};
 }
 
-function renderEvents(eventsFromDates){
-    var eventsString = "";
+function getDays(eventsFromDates){
+    var fields = [];
     for(var eventsFromDate of eventsFromDates){
-        eventsString += renderDay(eventsFromDate);
-        eventsString += "\n";
+        let day = renderDay(eventsFromDate);
+        let dayDate = day.slice(0, day.indexOf("\n"));
+        let dayContent = day.slice(day.indexOf("\n") + 1);
+        fields.push({name: dayDate, value: dayContent});
     }
-    return eventsString;
+    return fields;
 }
 
 function renderDay(eventsFromDate){
@@ -79,8 +91,9 @@ function renderDay(eventsFromDate){
     }else{   
         for(var event of eventsFromDate.events){
             dayString += renderEvent(event, prefix);
-            dayString += "\n";
+            dayString += `${prefix}\n`;
         }
+        dayString = dayString.slice(0, -(prefix.length + 1));
     }
     return dayString;
 }
@@ -98,29 +111,36 @@ function formatDayToString(date){
 }
 
 function renderEvent(event, tabulation = ""){
-    eventStartHourFormat = `${event.start.getHours()}:${event.start.getMinutes()}`;
-    eventEndHourFormat = `${event.end.getHours()}:${event.end.getMinutes()}`;
+    var startHour = event.start.getHours().toString().padStart(2, "0");
+    var startMinute = event.start.getMinutes().toString().padStart(2, "0");
+    var endHour = event.end.getHours().toString().padStart(2, "0");
+    var endMinute = event.end.getMinutes().toString().padStart(2, "0");
+    eventStartHourFormat = `${startHour}:${startMinute}`;
+    eventEndHourFormat = `${endHour}:${endMinute}`;
     var eventString = "";
+    var summary = event.summary.replace(/\n/g, " ");
+    
     eventString += `${tabulation}▐ *${eventStartHourFormat} - ${eventEndHourFormat}*\n`;
-    eventString += `${tabulation}▐ **${event.summary}**\n`;
+
+    let summaryLines = [];
+    while(summary.length > 0){
+        let summaryWords = summary.split(" ");
+        let summaryLine = "";
+        while(summaryWords.length > 0 && summaryLine.length + summaryWords[0].length < 50){
+            summaryLine += summaryWords.shift() + " ";
+        }
+        summary = summaryWords.join(" ");
+        summaryLines.push(summaryLine);
+    }
+
+    for(var summaryLine of summaryLines){
+        eventString += `${tabulation}▐    **${summaryLine}**\n`;
+    }
     return eventString;
 }
 
-async function getEventsFromURL(URL){
-    eventsPromise = new Promise((resolve, reject) => {
-        try{
-            nodeIcal.fromURL(URL, {}, function(err, data) {
-                if(err) reject(err);
-                else resolve(data);
-            });
-        }catch(err){
-            reject(err);
-        }
-    });
-    return eventsPromise;
-}
-
 function getICALEventsFromDate(dates, events){
+    if(!dates) return [];
     var eventsFromDates = [];
     for(var date of dates){
         var dateEvents = [];
@@ -130,18 +150,22 @@ function getICALEventsFromDate(dates, events){
                 dateEvents.push(event);
             }
         }
+        dateEvents = dateEvents.sort((a, b) => a.start.getTime() - b.start.getTime());
         eventsFromDates.push({date:date, events:dateEvents});
     }
+
+
     return eventsFromDates;
 }
 
 function getICALEventFromSearch(search, events){
-    var searchWords = search.split(" ");
+    var searchWords = search.trim().split(" ");
+    searchWords = searchWords.concat(getSearchWordsAliases(searchWords));
+    searchWords = searchWords.filter((value) => typeof value === 'string' && value.length > 0);
     var eventsScores = {};
     var eventFromSearch = null;
     var todayTime = new Date().getTime();
     if(searchWords.length == 0) return null;
-
     if(searchWords.length == 1 && searchWords[0] == "next"){
         var minDeltaTimeFromNow = Infinity;
         for(const [id, event] of Object.entries(events)){
@@ -160,20 +184,60 @@ function getICALEventFromSearch(search, events){
         if((event.start.getTime() + event.end.getTime()) / 2 <= todayTime) continue;
         var score = 0;
         for(var searchWord of searchWords){
-            var includedWordSimilarity = includedSimilarity(eventWords.join(event.summary + " " + event.description), searchWord);
+            var includedWordSimilarity = includedSimilarity(event.summary + " " + event.description, searchWord);
             score += includedWordSimilarity < 0.5 ? 0 : includedWordSimilarity;
         }
         deltaTimeFromNow = Math.abs(event.start.getTime() - todayTime) + 0.1;
         eventsScores[id] = {event:event, score:score * Math.sqrt(1.0 / (deltaTimeFromNow))};
     }
     var maxScore = 0;
-    for(const [id, eventContent] in eventsScores){
+    for(const [id, eventContent] of Object.entries(eventsScores)){
         if(eventsScores[id].score > maxScore){
             maxScore = eventsScores[id].score;
             eventFromSearch = eventsScores[id].event;
         }
     }
     return eventFromSearch;
+}
+
+function getSearchWordsAliases(searchWords){
+    const aliases = {
+        "projet": ["projets"],
+        "shes": ["sciences humaines et sociales"],
+        "math": ["maths", "mathématiques"],
+        "maths": ["mathématiques"],
+        "elec": ["électronique"],
+        "electronique": ["elec"],
+        "omi": ["outils mathématiques pour l'ingénieur", "outils maths", "outils math"],
+        "outils mathématiques pour l'ingénieur": ["omi", "outils maths", "outils math"],
+        "outils maths": ["omi", "outils mathématiques pour l'ingénieur", "outils math"],
+        "outils math": ["omi", "outils mathématiques pour l'ingénieur", "outils maths"],
+        "info": ["informatique"],
+        "algo": ["algorithmique"],
+        "si": ["systèmes d'information", "sciences industrielles", "sciences de l'ingénieur"],
+        "meca": ["mécanique"],
+        "phys": ["physique"],
+        "chim": ["chimie"],
+        "lv1": ["anglais"],
+        "lv2": ["allemand", "espagnol", "italien", "russe", "chinois", "japonais", "arabe", "portugais"],
+        "cm": ["cours magistral", "amphi", "amphithéâtre"],
+        "td": ["travaux dirigés"],
+        "tp": ["travaux pratiques"],
+        "ds": ["devoir surveillé", "examen"],
+        "qcm": ["exam", "examen", "devoir surveillé"],
+        "amphi": ["amphithéâtre"],
+        "amphitheatre": ["amphi"],
+        "auto": ["automatique"],
+        "bdd": ["bases de données"],
+    }
+
+    var searchWordsAliases = [];
+    for(var i = 0; i < searchWords.length; i++){
+        var searchWord = searchWords[i].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        var searchWordAliases = aliases[searchWord];
+        searchWordsAliases = searchWordsAliases.concat(searchWordAliases);
+    }
+    return searchWordsAliases;
 }
 
 module.exports = coreProcess; 
