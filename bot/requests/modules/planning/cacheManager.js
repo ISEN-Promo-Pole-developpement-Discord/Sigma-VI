@@ -153,9 +153,13 @@ async function getUserICS(user){
     }
 }
 
+const blackList = [
+    "pierre.cour"
+]
+
 async function getUserList(){
     let index = await getIndex();
-    if(index) return index.indexUsers;
+    if(index) return index.indexUsers.filter((value) => {return !blackList.includes(value)});
     return [];
 }
 
