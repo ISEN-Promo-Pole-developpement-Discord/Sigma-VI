@@ -1,5 +1,4 @@
 const https = require('https');
-const ping = require('ping');
 const fs = require('fs');
 const path = require('path');
 const nodeIcal = require('node-ical');
@@ -7,33 +6,29 @@ const nodeIcal = require('node-ical');
 const indexUrl = "https://ent-toulon.isen.fr/webaurion/ICS/listeICS.json";
 
 async function getServerIndex(){
-    var pingResult = await ping.promise.probe('ent-toulon.isen.fr');
-    if(pingResult.alive){
-        return new Promise((resolve, reject) => {
-            https.get(indexUrl, (res) => {
-                let body = "";
-            
-                res.on("data", (chunk) => {
-                    body += chunk;
-                });
-            
-                res.on("end", () => {
-                    try {
-                        let json = JSON.parse(body);
-                        json.updated = new Date(parseInt(json.updated)*1000);
-                        resolve(json);
-                    } catch (error) {
-                        console.error(error.message);
-                        reject(error);
-                    };
-                });
-            
-            }).on("error", (error) => {
-                console.error(error.message);
+    return new Promise((resolve, reject) => {
+        https.get(indexUrl, (res) => {
+            let body = "";
+        
+            res.on("data", (chunk) => {
+                body += chunk;
             });
+        
+            res.on("end", () => {
+                try {
+                    let json = JSON.parse(body);
+                    json.updated = new Date(parseInt(json.updated)*1000);
+                    resolve(json);
+                } catch (error) {
+                    console.error(error.message);
+                    reject(error);
+                };
+            });
+        
+        }).on("error", (error) => {
+            console.error(error.message);
         });
-    }
-    else return undefined;
+    });
 }
 
 async function getIndex(){
@@ -72,59 +67,53 @@ async function updateCache(){
 
 async function updateUserCache(user){
     var userICALurl = "https://ent-toulon.isen.fr/webaurion/ICS/"+user+".ics";
-    var pingResult = await ping.promise.probe('ent-toulon.isen.fr');
-    if(pingResult.alive){
-        return new Promise((resolve, reject) => {
-            https.get(userICALurl, (res) => {
-                let body = "";
-            
-                res.on("data", (chunk) => {
-                    body += chunk;
-                });
-            
-                res.on("end", () => {
-                    try {
-                        fs.writeFileSync(path.join(__dirname, '/cache/'+user+'.ics'), body);
-                        resolve(nodebody);
-                    } catch (error) {
-                        console.error(error);
-                        reject(error);
-                    };
-                });
-            
-            }).on("error", (error) => {
-                console.error(error.message);
+    return new Promise((resolve, reject) => {
+        https.get(userICALurl, (res) => {
+            let body = "";
+        
+            res.on("data", (chunk) => {
+                body += chunk;
             });
+        
+            res.on("end", () => {
+                try {
+                    fs.writeFileSync(path.join(__dirname, '/cache/'+user+'.ics'), body);
+                    resolve(nodebody);
+                } catch (error) {
+                    console.error(error);
+                    reject(error);
+                };
+            });
+        
+        }).on("error", (error) => {
+            console.error(error.message);
         });
-    }
+    });
 }
 
 async function getServerICSofUser(user){
     var userICALurl = "https://ent-toulon.isen.fr/webaurion/ICS/"+user+".ics";
-    var pingResult = await ping.promise.probe('ent-toulon.isen.fr');
-    if(pingResult.alive){
-        return new Promise((resolve, reject) => {
-            https.get(userICALurl, (res) => {
-                let body = "";
-            
-                res.on("data", (chunk) => {
-                    body += chunk;
-                });
-            
-                res.on("end", () => {
-                    try {
-                        resolve(nodeIcal.parseICS(body));
-                    } catch (error) {
-                        console.error(error);
-                        reject(error);
-                    };
-                });
-            
-            }).on("error", (error) => {
-                console.error(error.message);
+    return new Promise((resolve, reject) => {
+        https.get(userICALurl, (res) => {
+            let body = "";
+        
+            res.on("data", (chunk) => {
+                body += chunk;
             });
+        
+            res.on("end", () => {
+                try {
+                    resolve(nodeIcal.parseICS(body));
+                } catch (error) {
+                    console.error(error);
+                    reject(error);
+                };
+            });
+        
+        }).on("error", (error) => {
+            console.error(error.message);
         });
-    } 
+    });
 }
 
 async function getUserICS(user){
@@ -138,13 +127,10 @@ async function getUserICS(user){
         return result;
     } else {
         updateCache();
-        var pingResult = await ping.promise.probe('ent-toulon.isen.fr');
-        if(pingResult.alive){
-            let index = await getServerIndex();
-            result.updated = index.updated;
-            result.ics = await getServerICSofUser(user);
-            return result;
-        }
+        let index = await getServerIndex();
+        result.updated = index.updated;
+        result.ics = await getServerICSofUser(user);
+        if(result.ics) return result;
     }
     if(fs.existsSync(path.join(__dirname, '/cache/'+user+'.ics'))){
         result.updated = index.updated;
