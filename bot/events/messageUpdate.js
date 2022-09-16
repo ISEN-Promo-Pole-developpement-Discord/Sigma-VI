@@ -21,6 +21,8 @@ module.exports = {
                 newMessage,
                 "user",
             );
+        if (newMessage.author.bot) return;
+        if (!newMessage.content) return;    
         updateRequestsFromMessage(newMessage, global.client);
     }
 }
