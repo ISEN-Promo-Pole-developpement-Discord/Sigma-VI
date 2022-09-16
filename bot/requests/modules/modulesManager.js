@@ -12,7 +12,6 @@ async function submitRequestToModule(request, module){
     moduleProcessPath = getModulePath(module) + '/mod.js';
     if(fs.existsSync(moduleProcessPath)){
         var moduleProcess = require(moduleProcessPath);
-        console.log("[MODULE] "+module+" : "+request.content);
         if(typeof moduleProcess === "function"){
             try{
                 moduleProcess(request);
