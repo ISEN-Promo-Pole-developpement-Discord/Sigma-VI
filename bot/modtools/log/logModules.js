@@ -52,7 +52,6 @@ const logImg = require('./log-img.json');
 
 function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,channel_log) {
     if(!guild) return;
-    if(objectUpdateGetChangesFields(oldObject, newObject)!=null){
     if(userAuthor && userAuthor.bot) return;
     let logChannel = getGuildLogChannel(guild,"default");
     if(typeof channel_log === 'string' && channel_log ==="admin" || channel_log==="user" || channel_log ==='io') {
@@ -79,6 +78,7 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
     embedShematic.timestamp = new Date();
     embedShematic.fields = objectUpdateGetChangesFields(oldObject, newObject);
     embedShematic.fields = removeDuplicates(embedShematic.fields);
+    if(embedShematic.fields.length === 0) return;
     
     let img = null;
     imgData = getIcon("delete", type, embedShematic.title);
@@ -95,7 +95,6 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
     } catch(e) {
         console.log(e);
     }
-}
 }
 function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
     if(!guild) return;
@@ -186,7 +185,8 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
     }
 
     embedShematic.fields = removeDuplicates(embedShematic.fields);
-    
+    if(embedShematic.fields.length === 0) return;
+
     embedShematic.timestamp = new Date();
     embedShematic.color = "#FF0000";
 
@@ -283,7 +283,8 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         embedShematic.color = "#00FF00";
 
         embedShematic.fields = removeDuplicates(embedShematic.fields);
-        
+        if(embedShematic.fields.length === 0) return;
+
         const embed = newEmbed(embedShematic);
         try{
             logChannel.send({ embeds: [embed], files: img ? [img] : []});
