@@ -108,7 +108,6 @@ function getStartDate(string){
         var date = new Date(today.getTime() + (msInDay * relativeIdentifier));
         return date;
     }
-
     const fullDate = getFullDate(string);
     if(fullDate){
         const weekRelative = getWeekRelative(string, fullDate);
@@ -117,13 +116,10 @@ function getStartDate(string){
     }
     const weekDayRelative = getWeekDayRelative(string);
     if(weekDayRelative !== false) return weekDayRelative;
-
     const weekRelative = getWeekRelative(string);
     if(weekRelative !== false) return weekRelative;
-
     const weekDay = includeWeekDay(string);
     if(weekDay !== false) return getWeekDayRelative("next "+weekDays[weekDay][0]);
-
     return null;
 }
 
@@ -140,7 +136,8 @@ function includeRelativeIdentifier(string){
     for(var i in relativeIdentifiers){
         for(var subKey in relativeIdentifiers[i]){
             for(var key in relativeIdentifiers[i][subKey]){
-                if(string.includes(relativeIdentifiers[i][subKey][key])){
+                var regex = new RegExp("\\b" + relativeIdentifiers[i][subKey][key] + "\\b", "gi");
+                if(regex.test(string)){
                     return parseInt(subKey);
                 }
             }
@@ -174,8 +171,7 @@ function getWeekRelative(string, reference = null){
         thisWeekMonday = reference.getDay() == 2 ? reference : getWeekDayRelative(`previous monday`, reference);
         //Week planning asked during WE -> next week 
         if(weekArgurment === false){
-            if(reference.getDay() < 2)
-                return getWeekDayRelative(`next monday`, reference);
+            if(reference.getDay() < 2) return getWeekDayRelative(`next monday`, reference);
             else return new Date(thisWeekMonday.getTime());
         }
         if(weekArgurment === "next") return new Date(thisWeekMonday.getFullYear(), thisWeekMonday.getMonth(), thisWeekMonday.getDate()+7);
@@ -188,15 +184,16 @@ function getFullDate(string){
     //get DD/MM/YYYY format
     var date = string.match(/\d{2}\/\d{2}\/\d{4}/);
     if(date){
-        var date = date[0].split("/");
+        var date = date[0].split("/").map(x => parseInt(x));
         return new Date(date[2], date[1]-1, date[0]);
     }
 
     //get DD/MM format
     var date = string.match(/\d{2}\/\d{2}/);
     if(date){
-        var date = date[0].split("/");
-        return new Date(today.getFullYear(), date[1]-1, date[0]);
+        var date = date[0].split("/").map(x => parseInt(x));
+        if(today.getMonth() - date[1] > 2) return new Date(today.getFullYear()+1, date[1]-1, date[0]);
+        else return new Date(today.getFullYear(), date[1]-1, date[0]);
     }
 
     const monthDay = includeMonthDay(string);
@@ -213,47 +210,40 @@ function getFullDate(string){
 }
 
 function includeWeek(string){
-    var words = string.split(" ");
     for(var i in week){
-        if(words.includes(week[i])){
-            return true;
-        }
+        var regex = new RegExp("\\b" + week[i] + "\\b", "gi");
+        if(regex.test(string)) return true;
     }
     return false;
 }
 
 function includeWeekArgument(string){
-    var words = string.split(" ");
     for(var i in next){
-        if(words.includes(next[i])){
-            return "next";
-        }
+        var regex = new RegExp("\\b" + next[i] + "\\b", "gi");
+        if(regex.test(string)) return "next";
     }
     for(var i in previous){
-        if(words.includes(previous[i])){
-            return "previous";
-        }
+        var regex = new RegExp("\\b" + previous[i] + "\\b", "gi");
+        if(regex.test(string)) return "previous";
     }
     return false;
 }
 
 function includeWeekDay(string){
-    var words = string.split(" ");
     for(var i in weekDays){
         for(var key in weekDays[i]){
-            if(words.includes(weekDays[i][key])){
-                return i;
-            }
+            var regex = new RegExp("\\b" + weekDays[i][key] + "\\b", "gi");
+            if(regex.test(string)) return i;
         }
     }
     return false;
 }
 
 function includeWeekDayArgument(string){
-    var words = string.split(" ");
     for(var i in weekDays){
         for(var key in weekDays[i]){
-            if(words.includes(weekDays[i][key])){
+            var regex = new RegExp("\\b" + weekDays[i][key] + "\\b", "gi");
+            if(regex.test(string)){
                 var index = string.indexOf(weekDays[i][key]);
                 var afterWeekday = string.substring(index+weekDays[i][key].length);
                 var afterWeekdayWords = afterWeekday.trim().split(" ");
@@ -273,20 +263,20 @@ function includeWeekDayArgument(string){
 }
 
 function includeMonthDay(string){
-    var words = string.split(" ");
     for(var i in days){
         for(var key in days[i]){
-            if(words.includes(days[i][key])){
-                return i;
-            }
+            var regex = new RegExp("\\b" + days[i][key] + "\\b", "gi");
+            if(regex.test(string)) return i;
         }
     }
     //Get day number before or after month
     var month = null;
     for(var i in months){
         for(var key in months[i]){
-            if(words.includes(months[i][key])){
+            var regex = new RegExp("\\b" + months[i][key] + "\\b", "gi");
+            if(regex.test(string)){
                 month = months[i][key];
+                break;
             }
         }
     }
@@ -310,12 +300,10 @@ function includeMonthDay(string){
 
 
 function includeMonth(string){
-    var words = string.split(" ");
     for(var i in months){
         for(var key in months[i]){
-            if(words.includes(months[i][key])){
-                return i;
-            }
+            var regex = new RegExp("\\b" + months[i][key] + "\\b", "gi");
+            if(regex.test(string)) return i;
         }
     }
     return false;
@@ -330,34 +318,49 @@ function includeYear(string){
     return false;
 }
 
+function recurciveObjectDestruction(object){
+    var items = [];
+    if(Array.isArray(object)){
+        for(var i of object){
+            if(Array.isArray(i)){
+                items = items.concat(recurciveObjectDestruction(i));
+            }else items.push(recurciveObjectDestruction(i));
+        }
+    }else if(typeof object === "object"){
+        for(const [key, value] of Object.entries(object)){
+            items.push(recurciveObjectDestruction(value));
+        }
+    } if(typeof object === "string"){
+        return object;
+    }
+    if(items.length > 0){
+        var containOnlyStrings = true;
+        for(var i of items){
+            if(typeof i !== "string"){
+                containOnlyStrings = false;
+                break;
+            }
+        }
+        if(!containOnlyStrings){
+            return recurciveObjectDestruction(items);
+        }
+    }
+    return items;
+}
+
 function filterOutDateElements(string){
-    string = string.toLowerCase().trim();
-    var dateElements = week.concat(next, previous, weekend, month, year);
-    for(const [index, content] of Object.entries(relativeIdentifiers)){
-        const [array] = Object.entries(content);
-        dateElements = dateElements.concat(array[1]);
-    }
-    for(var i in days){
-        for(var key in days[i]){
-            dateElements.push(days[i][key]);
-        }
-    }
-    for(var i in months){
-        for(var key in months[i]){
-            dateElements.push(months[i][key]);
-        }
-    }
-    for(var i in weekDays){
-        for(var key in weekDays[i]){
-            dateElements.push(weekDays[i][key]);
-        }
-    }
-    const regexYear = /\d{2}[0-9]{2}/;
-    const regexDay = /\d{1,2}/;
-    var dateElementsRegex = new RegExp(dateElements.join("|"), "g");
-    var allRegex = new RegExp(dateElements.join("|") + "|" + regexYear.source + "|" + regexDay.source, "g");
+    string = string.trim();
+    var dateElements = recurciveObjectDestruction([previous, next, weekend, month, year, weekDays, days, months, week, relativeIdentifiers]);
+    const regexYear = /\b\d{2}[0-9]{2}\b/;
+    const regexDay = /\b\d{1,2}\b/;
+    const b = "\\b";
+    var dateElementsRegex = new RegExp(b + dateElements.join(b + "|" + b) + b, "gi");
     var string = string.replace(dateElementsRegex, "");
-    return string;
+    string = string.replace(regexYear, "");
+    string = string.replace(regexDay, "");
+    var regexExtraSpaces = /\s{2,}/g;
+    string = string.replace(regexExtraSpaces, " ");
+    return string.trim();
 }
 
 //TODO: add support for following formats:

@@ -6,6 +6,6 @@
     "welcomeChannelName": "bienvenue",
     "debug": true,
     "verifiedRoleName": "✔",
-    "modules":false,
+    "modules":true,
     "mainGuildId": "874262950964256779"
 }

@@ -26,7 +26,16 @@ async function moduleProcess(request){
         request.content = request.content.replace(mention, "");
     }
     var dates = getDatesFromString(request.content);
-    request.content = filterOutDateElements(request.content, dates);
+
+    const nextStrings = ["next", "prochain cours", "cours avec", "cours de", "evenement", "evenements", "prochains cours"];
+    var nextStringRegex = new RegExp("\\b("+nextStrings.join("|")+")\\b", "gi");
+    var search = null;
+    if(nextStringRegex.test(request.content)){
+        search = "next";
+        request.content = request.content.replace(nextStringRegex, "");
+    }
+
+    request.content = filterOutDateElements(request.content);
     request.content = filterBlackListedWords(request.content);
 
     
@@ -38,15 +47,24 @@ async function moduleProcess(request){
     });
     
     for(var word of words){
-        if(!(keys[word] > 50)){
-            if(mention){
-                if(includedSimilarity(word, mention) > 0.9){
-                    continue;
+        if(mention){
+            if(includedSimilarity(word, mention) > 0.9 || includedSimilarity(mention, word) > 0.9){
+                continue;
+            }
+        }
+        filteredWords.push(word);
+    }
+
+    filteredWords = filteredWords.filter(function(word){
+        for(var [key, value] of Object.entries(keys)){
+            if(value > 50){
+                if(includedSimilarity(word, key, 0.4, 1) > 0.75 || includedSimilarity(key, word, 0.4, 1) > 0.75){
+                    return false;
                 }
             }
-            filteredWords.push(word);
         }
-    }
+        return true;
+    });
     
     var formatedName = getFormatedNameFromString(filteredWords.join(" "), names);
     words = filteredWords;
@@ -67,17 +85,9 @@ async function moduleProcess(request){
         target = formatedName;
     }
     
-    let search = filtered.replaceAll(" ", "").length > 0 ? filtered : null;
-    console.log(request.message.author, dates, search, target); 
+    search = filtered.replaceAll(" ", "").length > 0 ? filtered : search;
+    if(search) search = search.trim();
     request.notifyEnd(await CORE(request.message.author, dates, search, target));
 }
-
-async function test(){
-    var names = await getUserList();
-    var formatedName = getFormatedNameFromString(" gadenne", names);
-    console.log(formatedName);
-}
-
-test();
 
 module.exports = moduleProcess;

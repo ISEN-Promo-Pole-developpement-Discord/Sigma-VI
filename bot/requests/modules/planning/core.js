@@ -8,7 +8,6 @@ const { AttachmentBuilder} = require('discord.js');
 const path = require("path");
 
 async function coreProcess(author, dates = [], search = null, target = null){
-    
     var namedotsurname = null;
     //Fetch target URL
     if(target == null) target = author;
@@ -46,8 +45,9 @@ async function coreProcess(author, dates = [], search = null, target = null){
     embed.setColor(0xCC5500);
     if(search != null){
         if(eventFromSearch != null){
-            embed.setTitle(`Événement du ${formatDayToString(eventFromSearch.start)}`);
-            embed.setDescription(`${renderEvent(eventFromSearch)} \n*<Recherche : "${ search }">*`);
+            embed.setTitle(`Événement trouvé le ${formatDayToString(eventFromSearch.start)}`);
+            var searchString = search != "next" ? `<Recherche : "${ search }">` : `<Prochain cours>`;
+            embed.setDescription(`${renderEvent(eventFromSearch)} \n*${ searchString }*`);
         } else {
             return "Aucun événement ne correspond à votre recherche.";
         }
@@ -66,7 +66,7 @@ async function coreProcess(author, dates = [], search = null, target = null){
     let icon = "icon.png";
     let iconAttachment = new AttachmentBuilder("requests/modules/planning/" + icon, icon);
     var name = namedotsurname.split(".")[0].slice(0, 1).toUpperCase() + namedotsurname.split(".")[0].slice(1);
-    var surname = namedotsurname.split(".")[1].slice(0, 1).toUpperCase();
+    var surname = namedotsurname.split(".")[1].toUpperCase();
     embed.setAuthor({name: `Planning\n${name} ${surname}`, iconURL: 'attachment://'+icon});
     return {embeds: [embed], files: [iconAttachment]};
 }
@@ -139,20 +139,6 @@ function renderEvent(event, tabulation = ""){
     return eventString;
 }
 
-async function getEventsFromURL(URL){
-    eventsPromise = new Promise((resolve, reject) => {
-        try{
-            nodeIcal.fromURL(URL, {}, function(err, data) {
-                if(err) reject(err);
-                else resolve(data);
-            });
-        }catch(err){
-            reject(err);
-        }
-    });
-    return eventsPromise;
-}
-
 function getICALEventsFromDate(dates, events){
     if(!dates) return [];
     var eventsFromDates = [];
@@ -173,14 +159,13 @@ function getICALEventsFromDate(dates, events){
 }
 
 function getICALEventFromSearch(search, events){
-    var searchWords = search.split(" ");
+    var searchWords = search.trim().split(" ");
     searchWords = searchWords.concat(getSearchWordsAliases(searchWords));
-
+    searchWords = searchWords.filter((value) => typeof value === 'string' && value.length > 0);
     var eventsScores = {};
     var eventFromSearch = null;
     var todayTime = new Date().getTime();
     if(searchWords.length == 0) return null;
-
     if(searchWords.length == 1 && searchWords[0] == "next"){
         var minDeltaTimeFromNow = Infinity;
         for(const [id, event] of Object.entries(events)){
@@ -241,7 +226,9 @@ function getSearchWordsAliases(searchWords){
         "ds": ["devoir surveillé", "examen"],
         "qcm": ["exam", "examen", "devoir surveillé"],
         "amphi": ["amphithéâtre"],
-        "amphitheatre": ["amphi"]
+        "amphitheatre": ["amphi"],
+        "auto": ["automatique"],
+        "bdd": ["bases de données"],
     }
 
     var searchWordsAliases = [];
