@@ -30,6 +30,15 @@ class Form
         return row.verification_code;
     }
 
+    async getUser(){
+        const connection = global.sqlConnection;
+        const [row] = await connection(
+            "SELECT user_id FROM form WHERE form_id = ?", [this.form_id]
+        );
+        return await global.client.users.fetch(row.user_id);
+    }
+
+
     async getFields()
     {
         const connection = global.sqlConnection;

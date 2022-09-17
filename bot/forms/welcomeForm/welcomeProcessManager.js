@@ -63,10 +63,17 @@ async function submitForm(interaction) {
     const fields = await form.getFields();
     const name = fields.nom;
     const surname = fields.prenom;
-
-
-
-    await assignVerifiedRole(interaction.user, interaction.guild);
+    const user = await form.getUser();
+    if(!user){
+        console.log("E/ User not found at submitForm");
+        return;
+    }
+    const member = await interaction.guild.members.fetch(user.id);
+    if(!member){
+        console.log("E/ Member not found at submitForm");
+        return;
+    }
+    await assignVerifiedRole(user, interaction.guild);
 
     let rolesFilter = []
     for (const task of welcomeProcess.tasks) {
@@ -79,7 +86,7 @@ async function submitForm(interaction) {
 
     const rolesToAssign = Object.keys(fields).filter(x => !rolesFilter.includes(x));
 
-    await manageRoles(interaction.member, interaction.guild, rolesToAssign.map((x) => { return fields[x]; }));
+    await manageRoles(member, interaction.guild, rolesToAssign.map((x) => { return fields[x]; }));
     let userStatus;
     switch (fields.profilGeneral) {
         case "EtudiantISEN":
@@ -107,12 +114,12 @@ async function submitForm(interaction) {
         } else {
             displayedName = `${name.charAt(0).toUpperCase()}`;
         }
-        await interaction.member.setNickname(`${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()} ${displayedName}.`);
+        await member.setNickname(`${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()} ${displayedName}.`);
     }else{
-        await interaction.member.setNickname(`${name.toUpperCase()} ${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()}`);
+        await member.setNickname(`${name.toUpperCase()} ${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()}`);
     }
     
-    const userDB = await UsersManager.getUser(interaction.user.id);
+    const userDB = await UsersManager.getUser(user.id);
     await userDB.setName(name);
     await userDB.setSurname(surname);
     await userDB.setEmail(fields.mail);
@@ -128,7 +135,7 @@ async function submitForm(interaction) {
     logCreate(
         interaction.guild,
         "Form",
-        interaction.user,
+        user,
         fields,
         "io"
     );
@@ -331,7 +338,11 @@ function responseFromWelcomeProcess(currentStep, interaction) {
 
                     const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id)
                     const verificationCode = await form.generateVerificationCode();
-
+                    const user = await form.getUser();
+                    if(!user){
+                        console.log("/E : User not found at checkMail step");
+                        return;
+                    }
                     const fields = await form.getFields();
 
                     const name = fields.nom;
@@ -348,7 +359,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     }
                     
                     
-                    await sendCodeMail({name: name, surname: surname, mail: mail, tag: interaction.user.tag}, verificationCode);
+                    await sendCodeMail({name: name, surname: surname, mail: mail, tag: user.tag}, verificationCode);
 
                     await channel.send({
                         content: `**${stepData.name}**\n> Mail de vérification à l'adresse __${mail}__\n${stepData.description}`,
@@ -372,6 +383,7 @@ function responseFromWelcomeProcess(currentStep, interaction) {
         return submitForm(interaction);
     }
 }
+
 module.exports = {
     responseFromWelcomeProcess    
 }
