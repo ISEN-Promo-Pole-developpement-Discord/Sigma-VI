@@ -14,6 +14,7 @@ class DelegatesManager
 
     static async addDelegate(delegate)
     {
+        if (await this.getDelegate(delegate.user_id) !== null) return;
         const connection = global.sqlConnection;
         const query = "INSERT INTO delegates (user_id, class) VALUES (?, ?)";
         const values = [delegate.user_id, delegate.class];
@@ -23,6 +24,7 @@ class DelegatesManager
 
     static async deleteDelegate(id)
     {
+        if (await this.getDelegate(id) === null) return;
         const connection = global.sqlConnection;
         await connection(`DELETE FROM delegates WHERE user_id = ?`, id);
     }
