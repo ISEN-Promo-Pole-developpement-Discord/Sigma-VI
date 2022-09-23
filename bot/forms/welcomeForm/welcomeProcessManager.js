@@ -86,7 +86,7 @@ async function submitForm(interaction) {
 
     const rolesToAssign = Object.keys(fields).filter(x => !rolesFilter.includes(x));
 
-    await manageRoles(member, interaction.guild, rolesToAssign.map((x) => { return fields[x]; }));
+    await manageRoles(member, rolesToAssign.map((x) => { return fields[x]; }));
     let userStatus;
     switch (fields.profilGeneral) {
         case "EtudiantISEN":
