@@ -29,6 +29,9 @@ module.exports = {
                 if (interaction.customId.toLowerCase().includes("form")) {
                     handleButtonClickForm(interaction);
                     return;
+                } else if(interaction.customId.toLowerCase().includes("asso")) {
+                    handleButtonClickForm(interaction);
+                    return;
                 }
             } else if (interaction.componentType === ComponentType.SelectMenu) {
                 if (interaction.customId.toLowerCase().includes("form")) {
