@@ -1,7 +1,8 @@
 const config = require("../config-core.json");
 
-  async function manageRoles(member, guild, roles, typeOfAction = false)
+  async function manageRoles(member, roles, typeOfAction = false)
 {
+    let guild = member.guild;
     await guild.roles.fetch();
     var rolesPending = [];
 
