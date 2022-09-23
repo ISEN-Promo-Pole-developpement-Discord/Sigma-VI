@@ -15,7 +15,7 @@ async function handleVerificationRequest(interaction) {
                 var values = Object.keys(data).map(function(key){
                     return data[key];
                 });
-                await manageRoles(interaction.member, interaction.guild, values);
+                await manageRoles(interaction.member, values);
 
                 const name = await user.getName();
                 const surname = await user.getSurname();
