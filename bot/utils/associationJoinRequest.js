@@ -8,6 +8,10 @@ async function sendJoinRequest(member, associationID)
     if (association === null) return false;
     let respoChannels = await association.getRespoChannels();
     let respoChannel = respoChannels[0];
+    if (respoChannel === undefined){
+        console.log("#ERR : No respo channel found for association " + association.name);
+        return false;
+    }
     let user = await UsersManager.getUser(member.id);
     let lastRespoMessage = await respoChannel.messages.fetch({limit: 1});
     if(lastRespoMessage.size > 0){
