@@ -4,7 +4,7 @@ const { sendJoinRequest } = require("../../../utils/associationJoinRequest");
 const { UsersManager } = require("../../../bdd/classes/usersManager");
 
 async function getExistingAssociationsChoices(){
-    let associations = await AssociationsManager.getAllAssociations();
+    let associations = await AssociationsManager.getAssociations();
     let choices = [];
     for (let association of associations){
         choices.push({name: await association.getName(), value: association.id.toString()});
@@ -102,7 +102,7 @@ module.exports = {
 
         switch(subcommand){
             case 'list':
-                let associations = await AssociationsManager.getAllAssociations();
+                let associations = await AssociationsManager.getAssociations();
                 reply = "**Associations actuellement supportées :**\n";
                 if (associations !== null)
                 {
@@ -150,9 +150,9 @@ module.exports = {
                     reply = "Vous n'êtes pas dans l'association " + await association.getName() + ".";
                     break;
                 }
-                await association.removeMember(member);
+                await association.removeMember(author);
 
-                reply = "**Vous avez bien quitté l'association " + await association.getName() + "**";
+                reply = "*Vous avez bien quitté l'association " + await association.getName() + ".*";
                 break;
 
             case 'kick':
@@ -165,12 +165,11 @@ module.exports = {
                     break;
                 }
                 if (targetMember === null) {
-                    console.log(targetMember);
-                    reply = "Le membre " + memberMention.user.username + " n'a pas été trouvé en base de données.";
+                    reply = "Le membre " + memberMention.user.nickname + " n'a pas été trouvé en base de données.";
                     break;
                 }
                 if((await authorUserObject.getAssociationRole(association.id)) === null){
-                    reply = "Le membre " + targetMember.user.username + " n'est pas dans l'association " + await association.getName() + ".";
+                    reply = "Le membre " + await targetMember.getName() + " " + await targetMember.getSurname() + " n'est pas dans l'association " + await association.getName() + ".";
                     break;
                 }
                 // Need to add a check to see if the author is a moderator or not
@@ -180,7 +179,7 @@ module.exports = {
                     break;
                 }
                 await association.removeMember(targetMember);
-                reply = "**Vous avez bien expulsé " + memberMention.user.username + " de l'association " + await association.getName() + "**";
+                reply = "*Vous avez expulsé " + memberMention.user.nickname + " de l'association " + await association.getName() + ".*";
                 break;
 
             case 'setrole':
@@ -194,11 +193,11 @@ module.exports = {
                     break;
                 }
                 if (targetMember === null) {
-                    reply = "Le membre" + targetMember.name + " n'a pas été trouvé en base de données.";
+                    reply = "Le membre" + await targetMember.getName() + " " + await targetMember.getSurname() + " n'a pas été trouvé en base de données.";
                     break;
                 }
                 if ((await targetMember.getAssociationRole(association.id)) === null) {
-                    reply = "Le membre " + targetMember.name + " n'est pas membre de l'association " + await association.getName() + ".";
+                    reply = "Le membre " + await targetMember.getName() + " " + await targetMember.getSurname() + " n'est pas membre de l'association " + await association.getName() + ".";
                     break;
                 }
 
@@ -225,24 +224,24 @@ module.exports = {
                         break;
                 }
 
-                await targetMember.setAssociationRole(association.asso_id, roleStatus);
+                await targetMember.setAssociationRole(association.id, roleStatus);
                 await targetMember.updateAssociationsServerPermissions();
-                reply = "**Vous avez bien mis à jour le rôle de " + targetMember.user.username + " au sein de l'association " + await association.getName() + ", étant maintenant " + targetRole + "**";
+                reply = "**Rôle de " + await targetMember.getName() + " " + await targetMember.getSurname() + " mis à jour.**\n" + "*Nouveau rôle : " + targetRole + "*";
                 break;
             case 'update':
                 var memberMention = interaction.options.getMentionable('membre');
                 var targetMember = await UsersManager.getUser(memberMention.id);
                 if (targetMember === null) {
-                    reply = "Le membre" + targetMember.name + " n'a pas été trouvé en base de données.";
+                    reply = "Le membre" + await targetMember.getName() + " " + await targetMember.getSurname() + " n'a pas été trouvé dans la base de données.";
                     break;
                 }
                 if (!authorUserObject.permissions.has("MANAGE_ROLES"))
                 {
-                    reply = "Vous n'avez pas la permission de faire cela car vous ne pouvez pas gérer les rôles.";
+                    reply = "Vous n'avez pas la permission d\'effectuer cette action.";
                     break;
                 }
                 await targetMember.updateAssociationsServerPermissions();
-                reply = "**Vous avez bien mis à jour les rôles de " + targetMember.user.username + "**";
+                reply = "**Vous avez bien mis à jour les rôles de " + await targetMember.getName() + " " + await targetMember.getSurname() + "**";
                 break;
             default:
                 reply = "*Commande invalide.*";
