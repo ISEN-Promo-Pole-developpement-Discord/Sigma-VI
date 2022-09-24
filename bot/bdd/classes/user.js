@@ -1,6 +1,8 @@
 const associationsConfig = require("../../config-asso.json");
 const { manageRoles } = require("../../utils/rolesManager");
 const { AssociationsManager } = require("./associationsManager");
+const { includedSimilarity } = require("../../requests/processors/stringIncludeSimilarity");
+
 class User
 {
     constructor(id) {
@@ -93,8 +95,40 @@ class User
     {
         const connection = global.sqlConnection;
         const rows = await connection("SELECT * FROM associations_user_role WHERE user_id = ?", [this.id]);
-        if (rows.length === 0) return null;
+        if (rows.length === 0) return [];
         else return rows;
+    }
+
+    async addRelatedAssociationGuildsRoles(asso_id){
+        const guilds = global.client.guilds.cache;
+        let asso = await AssociationsManager.getAssociationByID(asso_id);
+        if(asso == null) return false;
+        for (let guild of guilds.values())
+        {
+            let member = guild.members.cache.get(this.id);
+            if(member == null) continue;
+            let assoName = await asso.getName();
+            let roles = guild.roles.cache.filter(role => includedSimilarity(role.name, assoName)==1);
+            let promises = [];
+            for(let role of roles.values()) promises.push(member.roles.add(role));
+            await Promise.all(promises);
+        }
+    }
+
+    async removeRelatedAssociationGuildsRoles(asso_id){
+        const guilds = global.client.guilds.cache;
+        let asso = await AssociationsManager.getAssociationByID(asso_id);
+        if(asso == null) return false;
+        for (let guild of guilds.values())
+        {
+            let member = guild.members.cache.get(this.id);
+            if(member == null) continue;
+            let assoName = await asso.getName();
+            let roles = member.roles.cache.filter(role => includedSimilarity(role.name, assoName)==1);
+            let promises = [];
+            for(let role of roles.values()) promises.push(member.roles.remove(role));
+            await Promise.all(promises);
+        }
     }
 
     async updateAssociationsServerPermissions(){
@@ -104,43 +138,27 @@ class User
 
         // Fetch all associations_user_role of the user
         let userAssociationsRoles = await this.getAssociationsRoles();
-        let addRolesArray = [];
-        let removeRolesArray = [];
-        let roleArray = [];
+        console.log(userAssociationsRoles);
 
         // LOAD ASSO CONFIG VARS
         const { memberRoleName, managerRoleName, treasurerRoleName, vicePresidentRoleName, presidentRoleName } = associationsConfig.RolesName;
         var roleRoleNameList = [memberRoleName, managerRoleName, treasurerRoleName, vicePresidentRoleName, presidentRoleName];
 
-        let guildRoleNames = [];
-        for (let guildRole of mainGuild.roles.cache.values())
-            guildRoleNames.push(guildRole.name);
-
-        let forbiddenRoleNames = guildRoleNames.filter(role => role.startsWith("Asso - ") && !roleRoleNameList.includes(role));
-
-        if (userAssociationsRoles !== null)
-        {
-            for (let assoNb in userAssociationsRoles) {
-                let asso_id = userAssociationsRoles[assoNb].asso_id;
-                // Get Asso row in DB to get its name
-                let currentAsso = await AssociationsManager.getAssociationByID(asso_id);
-                if(currentAsso == null){
-                    console.log("> Association No." + asso_id + " not found in DB");
-                    continue;
+        let associations = await AssociationsManager.getAssociations();
+        for(let association of associations){
+            let userIsInAssociation = false;
+            for(let assoRole of Object.values(userAssociationsRoles)){
+                if(assoRole.asso_id == association.id){
+                    userIsInAssociation = true;
+                    break;
                 }
-                let assoName = "Asso - " + await currentAsso.getName();
-                addRolesArray.push(assoName);
-                roleArray.push(userAssociationsRoles[assoNb].role);
-
-                forbiddenRoleNames = forbiddenRoleNames.filter(role => role !== assoName);
             }
+            if(userIsInAssociation) this.addRelatedAssociationGuildsRoles(association.id);
+            else this.removeRelatedAssociationGuildsRoles(association.id);
         }
-        removeRolesArray.concat(forbiddenRoleNames);
 
-        let count = [0, 0, 0, 0, 0];
-        for (let i=0; i<roleArray.length; i++) {
-            count[roleArray[i]]++;
-        }
+        let roleCount = [0, 0, 0, 0, 0];
+        for(let assoRole of Object.values(userAssociationsRoles)) roleCount[assoRole.role]++;
 
         const values = {
             0: memberRoleName,
@@ -150,13 +168,11 @@ class User
             4: presidentRoleName
         }
 
-        console.log(count);
+        let addRolesArray = [];
+        for(let i=0; i<5; i++) if(roleCount[i] > 0) addRolesArray.push(values[i]);
 
-        for(let i=0; i<5; i++) {
-            if(count[i] > 0) {
-                addRolesArray.push(values[i]);
-            }
-        }
+        let removeRolesArray = [];
+        for(let i=0; i<5; i++) if(roleCount[i] == 0) removeRolesArray.push(values[i]);
 
         await manageRoles(member, removeRolesArray, 1);
         await manageRoles(member, addRolesArray, 0);
@@ -228,6 +244,7 @@ class User
     async removeAssociationRole(asso_id){
         const connection = global.sqlConnection;
         try{
+            await this.setAssociationRole(asso_id, 0);
             await connection("DELETE FROM associations_user_role WHERE user_id = ? AND asso_id = ?", [this.id, asso_id]);
             await this.updateAssociationsServerPermissions();
             return true;
