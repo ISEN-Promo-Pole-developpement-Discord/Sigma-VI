@@ -211,12 +211,12 @@ async function handleWelcomeFormResponse(interaction) {
                 }
                 const fields = await form.getFields();
 
-                const name = fields.nom;
-                const surname = fields.prenom;
+                const surname = fields.nom;
+                const name = fields.prenom;
                 let mail = fields.mail;
                 
                 if (!mail) {
-                    mail = `${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}.${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}`;
+                    mail = `${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}.${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}`;
                     if (fields.profilGeneral !== "EtudiantISEN") {
                         mail = `${mail}@yncrea.fr`;
                     } else {
