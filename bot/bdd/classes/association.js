@@ -1,4 +1,3 @@
-const { UsersManager } = require('./usersManager');
 const { ChannelType } = require('discord.js');
 class Association
 {
@@ -36,6 +35,7 @@ class Association
     async getMembers()
     {
         const connection = global.sqlConnection;
+        const UsersManager = global.usersManager;
         const [rows] = await connection(
             "SELECT user_id FROM associations_roles WHERE asso_id = ?", [this.id]
         );
@@ -66,6 +66,7 @@ class Association
 
     async addMember(userId, role = 0)
     {
+        const UsersManager = global.usersManager;
         let user = await UsersManager.getUser(userId);
         if(user == null) return false;
         try{
@@ -78,6 +79,7 @@ class Association
 
     async removeMember(member)
     {
+        const UsersManager = global.usersManager;
         let user = await UsersManager.getUser(member.id);
         if(user == null) return false;
         try{
@@ -93,20 +95,20 @@ class Association
         let respoChannelsObj = [];
 
         let guildChannels = await guild.channels.fetch();
-        let channelsToGet = ["responsables", "bureau"];
+        let channelsKeysToGet = ["respo", "bureau"];
         let assoCat = null;
-        for (let category of guildChannels) {
+        for (let category of guildChannels.values()) {
             if(category.type !== ChannelType.GuildCategory) continue;
-            if(category[1].name.toLowerCase() === (await this.getName()).toLowerCase())
+            if(category.name.toLowerCase() === (await this.getName()).toLowerCase())
                 assoCat = category.id;
         }
-
-        for (let i=0; i<channelsToGet.length; i++)
-        {
-            for (let channel of guildChannels) {
-                if ((channel.name.toLowerCase() === channelsToGet[i]) && (channel.parentId === assoCat)) {
+        for (let channel of guildChannels.values()) {
+            if(channel.type !== ChannelType.GuildText) continue;
+            if(channel.parentId != assoCat) continue;
+            if(!channel.name) continue;
+            for (let key of channelsKeysToGet) {
+                if(channel.name.toLowerCase().includes(key))
                     respoChannelsObj.push(channel);
-                }
             }
         }
         return respoChannelsObj;
@@ -114,6 +116,7 @@ class Association
 
     async updateCategoryPermissionsForGuildMember(member)
     {
+        const UsersManager = global.usersManager;
         let channelsToModify = await this.getRespoChannels(member);
         let user = await UsersManager.getUser(member.id);
         if(user == null) return false;
@@ -122,14 +125,15 @@ class Association
 
         if (role === 0) {
             for (let channel of channelsToModify)
-                channel.permissionOverwrites.delete(member.id);
-            return;
+                await channel.permissionOverwrites.delete(member.id);
+            return true;
         }
 
         for (let channel of channelsToModify) {
             await channel.permissionOverwrites.create(member, {
                 ViewChannel: true,
             });
+            return true;
         }
     }
 

@@ -24,12 +24,12 @@ class AssociationsManager
             return new Association(asso_id);
     }
 
-    static async getAllAssociations()
+    static async getAssociations()
     {
         const connection = global.sqlConnection;
         const query = "SELECT * FROM association";
         const data = await connection(query);
-        if (data.length === 0) return null;
+        if (data.length === 0) return [];
         else
         {
             let associations = [];
