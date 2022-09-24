@@ -78,3 +78,5 @@ create table if not exists `indexed_channel`
     foreign key (`guild_id`) references `guild` (`guild_id`) on delete cascade on update cascade,
     `indexMessage` varchar(1000) not null
 );
+
+drop table if exists `asso_roles`;
