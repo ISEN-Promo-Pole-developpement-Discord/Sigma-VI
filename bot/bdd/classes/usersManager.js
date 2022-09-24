@@ -61,4 +61,5 @@ class UsersManager
     }
 }
 
+global.usersManager = UsersManager;
 module.exports = {UsersManager};

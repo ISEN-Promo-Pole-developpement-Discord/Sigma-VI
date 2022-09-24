@@ -4,6 +4,7 @@ const { initBdd } = require("./bdd/utilsDB");
 const fs = require("node:fs");
 const path = require("node:path");
 const {loadModulesCommands} = require("./requests/modules/modulesManager.js");
+const {UsersManager} = require("./bdd/classes/usersManager.js");
 global.config = require('./config.json');
 global.config.core = require('./config-core.json');
 
