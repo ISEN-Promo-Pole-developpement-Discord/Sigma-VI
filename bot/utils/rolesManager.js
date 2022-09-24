@@ -42,7 +42,7 @@ const config = require("../config-core.json");
             }
         }
     }
-    await Promise.all(rolesPending);
+    return Promise.all(rolesPending);
 }
 
 async function assignVerifiedRole(user, guild)
