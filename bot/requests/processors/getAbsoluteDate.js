@@ -353,9 +353,13 @@ function filterOutDateElements(string){
     var dateElements = recurciveObjectDestruction([previous, next, weekend, month, year, weekDays, days, months, week, relativeIdentifiers]);
     const regexYear = /\b\d{2}[0-9]{2}\b/;
     const regexDay = /\b\d{1,2}\b/;
+    const regexDate1 = /\b\d{1,2}\/\d{1,2}\b/;
+    const regexDate2 = /\b\d{1,2}\/\d{1,2}\/\d{0,2}[0-9]{0,2}\b/;
     const b = "\\b";
     var dateElementsRegex = new RegExp(b + dateElements.join(b + "|" + b) + b, "gi");
     var string = string.replace(dateElementsRegex, "");
+    string = string.replace(regexDate2, "");
+    string = string.replace(regexDate1, "");
     string = string.replace(regexYear, "");
     string = string.replace(regexDay, "");
     var regexExtraSpaces = /\s{2,}/g;

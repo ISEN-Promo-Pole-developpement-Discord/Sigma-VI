@@ -51,14 +51,33 @@ function getModuleTests(moduleName){
     if(fs.existsSync(testsPath)) return require(testsPath);
     return null;
 }
-function loadModulesCommands(guildId = null){
+
+
+function getModuleConfig(moduleName){
+    configPath = getModulePath(moduleName) + '/#config.json';
+    if(fs.existsSync(configPath)) return require(configPath);
+    return null;
+}
+
+async function loadModulesCommands(guildId = null){
     const { REST } = require('@discordjs/rest');
     const { Routes } = require('discord.js');
     var modules = getListOfModules();
     var commands = [];
+
     for(var module of modules){
-        var moduleCommand = loadModuleCommand(module);
-        if(moduleCommand !== undefined) commands.push(moduleCommand.data.toJSON());
+        var moduleCommand = await loadModuleCommand(module);
+        if(moduleCommand !== undefined){
+            const moduleConfig = getModuleConfig(module);
+            if(moduleConfig){
+                if(moduleConfig.isMainGuildOnly){
+                    if(guildId && guildId !== global.config.core.mainGuildId){
+                        continue;
+                    }
+                }
+            }
+            commands.push(moduleCommand.data.toJSON());
+        }
     }
     const rest = new REST({version: '10'}).setToken(global.config.token);
     if(guildId){
@@ -72,10 +91,11 @@ function loadModulesCommands(guildId = null){
     }
 }
 
-function loadModuleCommand(moduleName){
+async function loadModuleCommand(moduleName){
     commandPath = getModulePath(moduleName) + '/command.js';
     if(fs.existsSync(commandPath)){
-        const command = require(commandPath);
+        var command = require(commandPath);
+        command.data = await command.data;
         global.client.commands.set(command.data.name, command);
         return command;
     }

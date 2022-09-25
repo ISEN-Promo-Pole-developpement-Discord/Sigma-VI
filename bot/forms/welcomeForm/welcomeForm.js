@@ -185,7 +185,7 @@ async function handleWelcomeFormMenuResponse(interaction) {
     }
 }
 
-function handleWelcomeFormResponse(interaction) {
+async function handleWelcomeFormResponse(interaction) {
     let data = {}
     for (field of interaction.fields.components) {
         data[field.components[0].customId] = field.components[0].value.trim();
@@ -196,10 +196,14 @@ function handleWelcomeFormResponse(interaction) {
     if (interaction.customId.includes("checkMail")) {
         checkCodeMail(interaction, Object.values(data)[0]).then(async (result) => {
             if (result) {
-                interaction.update({
-                    content: `**${step.name}**\n✅ Votre adresse e-mail a bien été vérifiée. Merci.`,
-                    components: []
-                });
+                try{
+                    await interaction.update({
+                        content: `**${step.name}**\n✅ Votre adresse e-mail a bien été vérifiée. Merci.`,
+                        components: []
+                    });
+                }catch(e){
+                    console.log(e);
+                }
                 const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id)
                 if(!form){
                     console.log(">> form not found (checkMail)");
@@ -207,12 +211,12 @@ function handleWelcomeFormResponse(interaction) {
                 }
                 const fields = await form.getFields();
 
-                const name = fields.nom;
-                const surname = fields.prenom;
+                const surname = fields.nom;
+                const name = fields.prenom;
                 let mail = fields.mail;
                 
                 if (!mail) {
-                    mail = `${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}.${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}`;
+                    mail = `${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}.${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}`;
                     if (fields.profilGeneral !== "EtudiantISEN") {
                         mail = `${mail}@yncrea.fr`;
                     } else {
@@ -224,7 +228,7 @@ function handleWelcomeFormResponse(interaction) {
                 await registerAnswer(form, "mailValidated", true);
                 responseFromWelcomeProcess(step.step, interaction);
             } else {
-                interaction.update({
+                await interaction.update({
                     content: `**${step.name}**\n❌ Vous venez de rentrer le mauvais code. Veuillez réessayer.`,
                     components: [
                         new ActionRowBuilder().addComponents(
@@ -255,8 +259,8 @@ function handleWelcomeFormResponse(interaction) {
                 await registerAnswer(form, key.split("_").at(-1), data[key]);
             }
         });
-
-        interaction.update({
+        
+        await interaction.update({
             content: `**${step.name}**\n> *${Object.values(data).join("*\n> *")}*\nModifiez vos réponses en cliquant sur le bouton "Modifier" ci-dessous.`,
             components: [
                 new ActionRowBuilder().addComponents(

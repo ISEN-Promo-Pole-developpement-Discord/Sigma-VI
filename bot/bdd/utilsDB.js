@@ -16,7 +16,7 @@ function updateTables(connection) {
     });
 }
 
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
     host: config.mysql.host,
     user: config.mysql.user,
     password: config.mysql.password,
@@ -25,39 +25,44 @@ const connection = mysql.createConnection({
 });
 
 async function promiseQuery(query, values = null) {
-    if(connection.state === "disconnected"){
-        connection.connect(function(err) {
-            if (err) throw err;
-            console.log("Connexion à la base de données MySQL rétablie.");
-        });
-    }
     return new Promise((resolve, reject) => {
-        if(values === null) {
-            connection.query(query, (err, results) => {
-                if (err){
-                    console.log(err);
-                    reject(err);
-                } else resolve(results);
-            });
-        } else {
-            connection.query(query, values, (err, results) => {
-                if (err){
-                    console.log(err);
-                    reject(err);
-                } else resolve(results);
-            });
-        }
+        pool.getConnection(function(err, connection) {
+            if(err) {
+                console.log(err);
+                reject(err);
+                return;
+            }
+            if(values === null) {
+                connection.query(query, (err, results) => {
+                    connection.release();
+                    if (err){
+                        console.log(err);
+                        reject(err);
+                    } else resolve(results);
+                });
+            } else {
+                connection.query(query, values, (err, results) => {
+                    connection.release();
+                    if (err){
+                        console.log(err);
+                        reject(err);
+                    } else resolve(results);
+                });
+            }
+        });
     });
 }
 
 module.exports = {
-    connection,
+    pool,
     initBdd() {
         console.log("Connexion...");
         global.sqlConnection = promiseQuery;
-
-        connection.connect(function(err) {
-            if (err) throw err;
+        pool.getConnection(function(err, connection) {
+            if(err) {
+                console.log("Erreur de connexion à la base de données MySQL :\n");
+                throw err;
+            }
             console.log("Connecté à la base de données MySQL.");
             updateTables(connection);
         });

@@ -16,6 +16,7 @@ class GuildsManager
 
     static async addGuild(guild)
     {
+        if (await this.getGuild(guild.id) !== null) return;
         const connection = global.sqlConnection;
         const query = "INSERT INTO guild (guild_id, config) VALUES(?, ?)";
         const values = [guild.id, guild.config];
@@ -26,6 +27,7 @@ class GuildsManager
 
     static async deleteGuild(guild_id)
     {
+        if (await this.getGuild(guild_id) === null) return;
         const connection = global.sqlConnection;
         const query = "DELETE FROM guild WHERE guild_id = ?";
         await connection(query, guild_id);

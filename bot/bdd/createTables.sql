@@ -23,14 +23,14 @@ create table if not exists `user`
     `user_data` json not null
 );
 
-create table if not exists `asso_roles`
+create table if not exists `associations_user_role`
 (
     `user_id` varchar(30) not null,
     foreign key (`user_id`) references `user`(`user_id`) on delete cascade on update cascade,
     `asso_id` SMALLINT not null,
     foreign key (`asso_id`) references `association`(`asso_id`) on delete cascade on update cascade,
     primary key (`user_id`, `asso_id`),
-    `status` TINYINT not null
+    `role` TINYINT not null
 );
 
 create table if not exists `delegates`
@@ -78,3 +78,5 @@ create table if not exists `indexed_channel`
     foreign key (`guild_id`) references `guild` (`guild_id`) on delete cascade on update cascade,
     `indexMessage` varchar(1000) not null
 );
+
+drop table if exists `asso_roles`;

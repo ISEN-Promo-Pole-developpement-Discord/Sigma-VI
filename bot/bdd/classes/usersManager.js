@@ -44,12 +44,22 @@ class UsersManager
 
     static async addUser(user)
     {
+        if (await this.getUser(user.id) !== null) return;
         const connection = global.sqlConnection;
         const query = "INSERT INTO user (user_id, name, surname, email, password, status, user_data) VALUES (?, ?, ?, ?, ?, ?, ?)";
         const values = [user.id, user.name, user.surname, user.email, user.password, user.status, user.data];
         await connection(query, values);
         return new User(user.id);
     }
+
+    static async deleteUser(user_id)
+    {
+        if (await this.getUser(user_id) === null) return;
+        const connection = global.sqlConnection;
+        const query = "DELETE FROM user WHERE user_id = ?";
+        await connection(query, user_id);
+    }
 }
 
+global.usersManager = UsersManager;
 module.exports = {UsersManager};

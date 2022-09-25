@@ -77,6 +77,7 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
 
     embedShematic.timestamp = new Date();
     embedShematic.fields = objectUpdateGetChangesFields(oldObject, newObject);
+    if(!embedShematic.fields) return;
     embedShematic.fields = removeDuplicates(embedShematic.fields);
     if(embedShematic.fields.length === 0) return;
     
@@ -183,7 +184,6 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
         embedShematic.author = imgData.author;
         embedShematic.title = "";
     }
-
     embedShematic.fields = removeDuplicates(embedShematic.fields);
     if(embedShematic.fields.length === 0) return;
 

@@ -13,16 +13,16 @@ function testRequestScore() {
         assert.isTrue(fs.existsSync(path+'/#keys.json'), "[MODULE TEST] the module \""+module+"\" doesn't have a #keys.json file");
         assert.isTrue(fs.existsSync(path+'/#tests.json'), "[MODULE TEST] the module \""+module+"\" doesn't have a #tests.json file");
         var keys = getModuleKeys(module);
-        assert.isObject(keys, "[MODULE TEST] the module \""+module+"\" has no keys");
-        assert.isNotEmpty(keys, "[MODULE TEST] the module \""+module+"\" has no keys");
+        assert.isObject(keys, "[MODULE TEST] the module \""+module+"\" has invalid keys in #keys.json");
+        // assert.isNotEmpty(keys, "[MODULE TEST] the module \""+module+"\" has no keys");
         if(keys !== null){
             for(var key in keys){
                 assert.isAtLeast(getPerModuleScores(key)[module], keys[key], "[MODULE TEST] the module \""+module+"\" has invalid score for the key "+key+" : "+getPerModuleScores(key)[module]);
             }
         }
         var tests = getModuleTests(module);
-        assert.isArray(tests, "[MODULE TEST] the module \""+module+"\" has no tests");
-        assert.isNotEmpty(tests, "[MODULE TEST] the module \""+module+"\" has no tests");
+        // assert.isArray(tests, "[MODULE TEST] the module \""+module+"\" has no tests");
+        // assert.isNotEmpty(tests, "[MODULE TEST] the module \""+module+"\" has no tests");
         if(tests !== null){
             for(var test of tests){
                 testString = new Request(null, test).SRWF();

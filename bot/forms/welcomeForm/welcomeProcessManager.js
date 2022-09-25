@@ -61,8 +61,8 @@ async function submitForm(interaction) {
     await form.setStatus(3);
 
     const fields = await form.getFields();
-    const name = fields.nom;
-    const surname = fields.prenom;
+    const surname = fields.nom;
+    const name = fields.prenom;
     const user = await form.getUser();
     if(!user){
         console.log("E/ User not found at submitForm");
@@ -86,7 +86,7 @@ async function submitForm(interaction) {
 
     const rolesToAssign = Object.keys(fields).filter(x => !rolesFilter.includes(x));
 
-    await manageRoles(member, interaction.guild, rolesToAssign.map((x) => { return fields[x]; }));
+    await manageRoles(member, rolesToAssign.map((x) => { return fields[x]; }));
     let userStatus;
     switch (fields.profilGeneral) {
         case "EtudiantISEN":
@@ -105,19 +105,21 @@ async function submitForm(interaction) {
             userStatus = -1;
     }
 
-    let displayedName;
-    if(userStatus == 0 || userStatus == 3) {
-        if (name.includes(" ")) {
-            displayedName = `${name.split(" ").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
-        } else if (name.includes("-")) {
-            displayedName = `${name.split("-").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
-        } else {
-            displayedName = `${name.charAt(0).toUpperCase()}`;
+    if(member.manageable){
+        let displayedName;
+        if(userStatus == 0 || userStatus == 3) {
+            if (name.includes(" ")) {
+                displayedName = `${surname.split(" ").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
+            } else if (name.includes("-")) {
+                displayedName = `${surname.split("-").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
+            } else {
+                displayedName = `${surname.charAt(0).toUpperCase()}`;
+            }
+            await member.setNickname(`${name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()} ${displayedName}.`);
+        }else{
+            await member.setNickname(`${surname.toUpperCase()} ${name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()}`);
         }
-        await member.setNickname(`${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()} ${displayedName}.`);
-    }else{
-        await member.setNickname(`${name.toUpperCase()} ${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()}`);
-    }
+    }  
     
     const userDB = await UsersManager.getUser(user.id);
     await userDB.setName(name);
@@ -345,12 +347,12 @@ function responseFromWelcomeProcess(currentStep, interaction) {
                     }
                     const fields = await form.getFields();
 
-                    const name = fields.nom;
-                    const surname = fields.prenom;
+                    const surname = fields.nom;
+                    const name = fields.prenom;
                     let mail = fields.mail;
 
                     if (!mail) {
-                        mail = `${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}.${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}`;
+                        mail = `${name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}.${surname.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replaceAll(" ","-")}`;
                         if (fields.profilGeneral !== "EtudiantISEN") {
                             mail = `${mail}@yncrea.fr`;
                         } else {
