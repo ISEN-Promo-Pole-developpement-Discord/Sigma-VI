@@ -105,19 +105,21 @@ async function submitForm(interaction) {
             userStatus = -1;
     }
 
-    let displayedName;
-    if(userStatus == 0 || userStatus == 3) {
-        if (name.includes(" ")) {
-            displayedName = `${surname.split(" ").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
-        } else if (name.includes("-")) {
-            displayedName = `${surname.split("-").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
-        } else {
-            displayedName = `${surname.charAt(0).toUpperCase()}`;
+    if(member.manageable){
+        let displayedName;
+        if(userStatus == 0 || userStatus == 3) {
+            if (name.includes(" ")) {
+                displayedName = `${surname.split(" ").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
+            } else if (name.includes("-")) {
+                displayedName = `${surname.split("-").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
+            } else {
+                displayedName = `${surname.charAt(0).toUpperCase()}`;
+            }
+            await member.setNickname(`${name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()} ${displayedName}.`);
+        }else{
+            await member.setNickname(`${surname.toUpperCase()} ${name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()}`);
         }
-        await member.setNickname(`${name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()} ${displayedName}.`);
-    }else{
-        await member.setNickname(`${surname.toUpperCase()} ${name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()}`);
-    }
+    }  
     
     const userDB = await UsersManager.getUser(user.id);
     await userDB.setName(name);
