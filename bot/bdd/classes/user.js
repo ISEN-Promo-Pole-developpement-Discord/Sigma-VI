@@ -107,6 +107,8 @@ class User
         {
             let member = guild.members.cache.get(this.id);
             if(member == null) continue;
+            let verifiedRole = member.roles.cache.filter(role => role.name == global.config.core.verifiedRoleName).first();
+            if(verifiedRole == null) continue;
             let assoName = await asso.getName();
             let roles = guild.roles.cache.filter(role => includedSimilarity(role.name, assoName)==1);
             let promises = [];

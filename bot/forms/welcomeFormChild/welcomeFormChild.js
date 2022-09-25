@@ -17,6 +17,7 @@ async function handleVerificationRequest(interaction) {
                 });
                 
                 await manageRoles(interaction.member, values);
+                await user.updateAssociationsServerPermissions();
                 
                 if(interaction.member.manageable){
 
