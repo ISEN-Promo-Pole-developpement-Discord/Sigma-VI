@@ -73,23 +73,9 @@ var SlashCommand = new Promise(async (resolve, reject) => {
             {name : "Vice-Président", value : "vicepresident"},
             {name : "Président", value : "president"}
         ).setRequired(true))
-    )
-    .addSubcommand(subcommand =>
-        subcommand
-        .setName('update')
-        .setDescription('Mise à jour des rôles associatifs d\'un membre')
-        .addMentionableOption(option =>
-            option.setName('membre')
-            .setDescription('Membre dont les rôles doivent être mis à jour')
-            .setRequired(true)
-        )
     );
     resolve(SlashCommand);
 });
-
-// async function getSlashCommand(){
-//
-// }
 
 module.exports = {
     data: SlashCommand,
@@ -227,21 +213,6 @@ module.exports = {
                 await targetMember.setAssociationRole(association.id, roleStatus);
                 await targetMember.updateAssociationsServerPermissions();
                 reply = "**Rôle de " + await targetMember.getName() + " " + await targetMember.getSurname() + " mis à jour.**\n" + "*Nouveau rôle : " + targetRole + "*";
-                break;
-            case 'update':
-                var memberMention = interaction.options.getMentionable('membre');
-                var targetMember = await UsersManager.getUser(memberMention.id);
-                if (targetMember === null) {
-                    reply = "Le membre" + await targetMember.getName() + " " + await targetMember.getSurname() + " n'a pas été trouvé dans la base de données.";
-                    break;
-                }
-                if (!authorUserObject.permissions.has("MANAGE_ROLES"))
-                {
-                    reply = "Vous n'avez pas la permission d\'effectuer cette action.";
-                    break;
-                }
-                await targetMember.updateAssociationsServerPermissions();
-                reply = "**Vous avez bien mis à jour les rôles de " + await targetMember.getName() + " " + await targetMember.getSurname() + "**";
                 break;
             default:
                 reply = "*Commande invalide.*";
