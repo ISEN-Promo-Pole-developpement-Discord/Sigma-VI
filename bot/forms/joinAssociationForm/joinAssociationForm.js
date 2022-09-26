@@ -55,7 +55,6 @@ async function joinAssociationForm(interaction){
                 promises.push(interaction.editReply({content: "Une erreur est survenue, veuillez réessayer", ephemeral: true}));
             }
         }else{
-            promises.push(association.removeMember(member.id));
             promises.push(member.send({embeds: [new EmbedBuilder().setTitle("Demande d'adhésion refusée").setDescription("Votre demande d'adhésion à l'association " + await association.getName() + " a été refusée.").setColor(0xf44336)]}));
             promises.push(interaction.editReply({content: "La demande d'adhésion a été refusée.", ephemeral: true}));
             updatedEmbed.setColor(0xf44336);
@@ -63,7 +62,7 @@ async function joinAssociationForm(interaction){
                 text: "Demande refusée par " + interaction.user.username,
                 icon_url: interaction.user.avatarURL()
             });
-            promises.push(message.edit({embeds: [embed], components: disabledComponents}));
+            promises.push(message.edit({embeds: [updatedEmbed], components: disabledComponents}));
         }
         await Promise.all(promises);
     }

@@ -140,7 +140,6 @@ class User
 
         // Fetch all associations_user_role of the user
         let userAssociationsRoles = await this.getAssociationsRoles();
-        console.log(userAssociationsRoles);
 
         // LOAD ASSO CONFIG VARS
         const { memberRoleName, managerRoleName, treasurerRoleName, vicePresidentRoleName, presidentRoleName } = associationsConfig.RolesName;

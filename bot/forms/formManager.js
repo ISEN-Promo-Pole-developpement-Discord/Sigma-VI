@@ -4,7 +4,6 @@ const { joinAssociationForm } = require("./joinAssociationForm/joinAssociationFo
 
 module.exports = {
     handleButtonClickForm(interaction) {
-        console.log(interaction.customId, interaction.customId.includes("JoinRequest"));
         if(interaction.customId.includes("JoinRequest")) {
             joinAssociationForm(interaction);
         } else if(interaction.customId === "form_externalVerificationWelcome") {
