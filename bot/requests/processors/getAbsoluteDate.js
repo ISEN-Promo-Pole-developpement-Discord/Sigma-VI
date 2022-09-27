@@ -3,8 +3,8 @@ const relativeIdentifiers = {
     1:{"2": ["apres-demain", "apres demain", "surlendemain", "after tomorrow"]},
     2:{"1": ["demain", "tomorrow"]},
     3:{"-2": ['avant-hier', "avant hier", "the day before yesterday"]},
-    4:{"-1": ['hier', 'd\'hier', 'veille', 'yesterday']},
-    5:{"0": ["aujourd'hui", "ajd", "now", "current", "today"]}
+    4:{"-1": ['hier', 'veille', 'yesterday']},
+    5:{"0": ["aujourd'hui", "aujourd`hui", "aujourd’hui", "ajd", "now", "current", "today"]}
 };
 
 const weekDays = {
