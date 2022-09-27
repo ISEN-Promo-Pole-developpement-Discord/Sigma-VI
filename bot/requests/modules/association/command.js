@@ -83,6 +83,10 @@ module.exports = {
         var defering = interaction.deferReply({ephemeral : true});
         var subcommand = interaction.options.getSubcommand();
         var author = interaction.member;
+        if(!author){
+            interaction.editReply("Une erreur est survenue lors de la récupération de votre profil");
+            return;
+        }
         var authorUserObject = await UsersManager.getUser(author.id);
         var reply = null;
 
