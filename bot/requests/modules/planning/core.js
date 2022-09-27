@@ -28,9 +28,10 @@ async function coreProcess(author, dates = [], search = null, target = null){
         ical = await getUserICS(namedotsurname);
     }catch(err){
         if(global.debug) console.log(err);
-        else return "Une erreur s'est prduite à la récupération de l'emplois-du-temps. Veuillez réessayer.";
+        return "Une erreur s'est prduite à la récupération de l'emplois-du-temps. Veuillez réessayer.\n (*" + err + "*)";
     }
 
+    if(ical == null) return "L'emplois-du-temps de la cible n'est pas disponible.";
     //Fetch events from dates
     var eventsFromDates = getICALEventsFromDate(dates, ical.ics);
     //Fetch events from searchs
