@@ -10,7 +10,10 @@ function getFormatedNameFromString(name, namesList){
     if(!Array.isArray(namesList)) return null;
     if(namesList.length == 0) return null;
     var nameNorm = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\-\.]/g, " ");
-    if(wordsBlackList.includes(nameNorm)) return null;
+    var words = nameNorm.split(" ");
+    var wordsFiltered = words.filter(word => !wordsBlackList.includes(word));
+    var nameForm = wordsFiltered.join(" ");
+    if(nameForm.length < 3) return null;
     var scoreNameMap = {};
     for(var nameInList of namesList){
         //normalize name
