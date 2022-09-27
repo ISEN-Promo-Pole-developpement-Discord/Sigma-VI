@@ -7,27 +7,33 @@ const indexUrl = "https://ent-toulon.isen.fr/webaurion/ICS/listeICS.json";
 
 async function getServerIndex(){
     return new Promise((resolve, reject) => {
-        https.get(indexUrl, (res) => {
-            let body = "";
-        
-            res.on("data", (chunk) => {
-                body += chunk;
+        try{
+            https.get(indexUrl, (res) => {
+                let body = "";
+            
+                res.on("data", (chunk) => {
+                    body += chunk;
+                });
+            
+                res.on("end", () => {
+                    try {
+                        let json = JSON.parse(body);
+                        json.updated = new Date(parseInt(json.updated)*1000);
+                        resolve(json);
+                    } catch (error) {
+                        console.error(error.message);
+                        resolve(null);
+                    };
+                });
+            
+            }).on("error", (error) => {
+                console.error(error.message);
+                resolve(null);
             });
-        
-            res.on("end", () => {
-                try {
-                    let json = JSON.parse(body);
-                    json.updated = new Date(parseInt(json.updated)*1000);
-                    resolve(json);
-                } catch (error) {
-                    console.error(error.message);
-                    reject(error);
-                };
-            });
-        
-        }).on("error", (error) => {
-            console.error(error.message);
-        });
+        }catch(error){
+            console.error(error);
+            resolve(null);
+        }
     });
 }
 
@@ -51,8 +57,9 @@ async function isCacheUpToDate(){
 }
 
 async function updateCache(){
-    if(isCacheUpToDate()) return;
+    if(await isCacheUpToDate()) return;
     var index = await getServerIndex();
+    console.log("Updating planning cache...");
     if(index){
         if(!fs.existsSync(path.join(__dirname, '/cache'))) fs.mkdirSync(path.join(__dirname, '/cache'));
         fs.writeFileSync(path.join(__dirname, '/cache/index.json'), JSON.stringify(index));
@@ -62,57 +69,71 @@ async function updateCache(){
         }
         return Promise.all(promises);
     }
+    console.log("Failed to get index from server");
     return null;
 }
 
 async function updateUserCache(user){
     var userICALurl = "https://ent-toulon.isen.fr/webaurion/ICS/"+user+".ics";
     return new Promise((resolve, reject) => {
-        https.get(userICALurl, (res) => {
-            let body = "";
-        
-            res.on("data", (chunk) => {
-                body += chunk;
+        try{
+            https.get(userICALurl, (res) => {
+                let body = "";
+            
+                res.on("data", (chunk) => {
+                    body += chunk;
+                });
+            
+                res.on("end", () => {
+                    try {
+                        fs.writeFileSync(path.join(__dirname, '/cache/'+user+'.ics'), body);
+                        resolve(true);
+                    } catch (error) {
+                        console.error(error);
+                        resolve(null);
+                    };
+                });
+            
+            }).on("error", (error) => {
+                console.error(error.message);
+                resolve(null);
             });
-        
-            res.on("end", () => {
-                try {
-                    fs.writeFileSync(path.join(__dirname, '/cache/'+user+'.ics'), body);
-                    resolve(nodebody);
-                } catch (error) {
-                    console.error(error);
-                    reject(error);
-                };
-            });
-        
-        }).on("error", (error) => {
-            console.error(error.message);
-        });
+        }
+        catch(error){
+            console.error(error);
+            resolve(null);
+        }
     });
 }
 
 async function getServerICSofUser(user){
     var userICALurl = "https://ent-toulon.isen.fr/webaurion/ICS/"+user+".ics";
     return new Promise((resolve, reject) => {
-        https.get(userICALurl, (res) => {
-            let body = "";
-        
-            res.on("data", (chunk) => {
-                body += chunk;
+        try{
+            https.get(userICALurl, (res) => {
+                let body = "";
+            
+                res.on("data", (chunk) => {
+                    body += chunk;
+                });
+            
+                res.on("end", () => {
+                    try {
+                        resolve(nodeIcal.parseICS(body));
+                    } catch (error) {
+                        console.error(error);
+                        resolve(null);
+                    };
+                });
+            
+            }).on("error", (error) => {
+                console.error(error.message);
             });
-        
-            res.on("end", () => {
-                try {
-                    resolve(nodeIcal.parseICS(body));
-                } catch (error) {
-                    console.error(error);
-                    reject(error);
-                };
-            });
-        
-        }).on("error", (error) => {
-            console.error(error.message);
-        });
+        }
+        catch(error){
+            console.error(error);
+            resolve(null);
+        }
     });
 }
 
@@ -149,7 +170,11 @@ async function getUserList(){
     return [];
 }
 
-updateCache();
+async () => {
+    if(await updateCache()) console.log("Cache updated.");
+    else console.log("Cache update failed.");
+}
+    
 
 module.exports = {
     getUserICS, getUserList
