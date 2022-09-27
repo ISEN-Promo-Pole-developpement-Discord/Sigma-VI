@@ -58,7 +58,7 @@ async function coreProcess(author, dates = [], search = null, target = null){
         embed.addFields(getDays(eventsFromDates));
     }
     var updatedString = `${formatDayToString(ical.updated)} à ${ical.updated.getHours().toString().padStart(2, "0")}:${ical.updated.getMinutes().toString().padStart(2, "0")}`;
-    embed.setFooter({text: `Données mise à jour le ${updatedString}, à titre indicatif uniquement.`});
+    embed.setFooter({text: `Données mises à jour le ${updatedString}, à titre indicatif uniquement.`});
 
     let icon = "icon.png";
     let iconAttachment = new AttachmentBuilder("requests/modules/planning/" + icon, icon);
