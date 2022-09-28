@@ -25,13 +25,13 @@ async function handleVerificationRequest(interaction) {
                     const surname = await user.getSurname();
                     
                     let displayedName;
-                    if (name.includes(" "))
-                        displayedName = `${name.split(" ").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
-                    else if (name.includes("-"))
-                        displayedName = `${name.split("-").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
+                    if (surname.includes(" "))
+                        displayedName = `${surname.split(" ").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
+                    else if (surname.includes("-"))
+                        displayedName = `${surname.split("-").map((x) => {return x.charAt(0).toUpperCase()}).join("")}`;
                     else
-                        displayedName = `${name.charAt(0).toUpperCase()}`;
-                    await interaction.member.setNickname(`${surname.charAt(0).toUpperCase() + surname.slice(1).toLowerCase()} ${displayedName}.`);
+                        displayedName = `${surname.charAt(0).toUpperCase()}`;
+                    await interaction.member.setNickname(`${name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()} ${displayedName}.`);
                 }
 
                 console.log(`# ${interaction.user.tag} a été vérifié sur le serveur ${interaction.guild.name}.`);
