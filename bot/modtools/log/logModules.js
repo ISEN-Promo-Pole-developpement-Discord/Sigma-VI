@@ -195,6 +195,10 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
     embedShematic.timestamp = new Date();
     embedShematic.color = "#FF0000";
 
+    if(!embedShematic.fields.length)
+    {
+        return null;
+    }
     const embed = newEmbed(embedShematic);
     try{
         logChannel.send({ embeds: [embed], files: img ? [img] : []});
@@ -289,6 +293,11 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
 
         embedShematic.fields = removeDuplicates(embedShematic.fields);
         if(embedShematic.fields.length === 0) return;
+
+        if(!embedShematic.fields.length)
+        {
+        return null;
+        }
 
         const embed = newEmbed(embedShematic);
         try{
