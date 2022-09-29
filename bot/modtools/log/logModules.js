@@ -89,6 +89,10 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
         embedShematic.title = "";
     }
 
+    if(!embedShematic.fields.length)
+    {
+    return null;
+    }
     embedShematic.color = "#642eda";
     const embed = newEmbed(embedShematic);
     try{
@@ -96,6 +100,7 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
     } catch(e) {
         console.log(e);
     }
+    
 }
 function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
     if(!guild) return;
