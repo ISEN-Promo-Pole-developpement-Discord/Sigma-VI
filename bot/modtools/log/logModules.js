@@ -79,7 +79,7 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
     embedShematic.fields = objectUpdateGetChangesFields(oldObject, newObject);
     if(!embedShematic.fields) return;
     embedShematic.fields = removeDuplicates(embedShematic.fields);
-    if(embedShematic.fields.length === 0) return;
+    if(!embedShematic.fields.length) return;
     
     let img = null;
     imgData = getIcon("delete", type, embedShematic.title);
@@ -89,10 +89,6 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
         embedShematic.title = "";
     }
 
-    if(!embedShematic.fields.length)
-    {
-    return null;
-    }
     embedShematic.color = "#642eda";
     const embed = newEmbed(embedShematic);
     try{
@@ -190,7 +186,7 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
         embedShematic.title = "";
     }
     embedShematic.fields = removeDuplicates(embedShematic.fields);
-    if(embedShematic.fields.length === 0) return;
+    if(!embedShematic.fields.length) return;
 
     embedShematic.timestamp = new Date();
     embedShematic.color = "#FF0000";
@@ -288,7 +284,7 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
         embedShematic.color = "#00FF00";
 
         embedShematic.fields = removeDuplicates(embedShematic.fields);
-        if(embedShematic.fields.length === 0) return;
+        if(!embedShematic.fields.length) return;
 
         const embed = newEmbed(embedShematic);
         try{
