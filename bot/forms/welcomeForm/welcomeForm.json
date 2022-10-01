@@ -367,9 +367,9 @@
                 "emoji": "👨‍🎓"
             },
             {
-                "label": "Diplômés de l'ISEN",
+                "label": "Diplômé de l'ISEN",
                 "description": "Vous êtes un ancien étudiant diplômé de l'ISEN",
-                "value": "welcomeForm_profil_DiplomésISEN",
+                "value": "welcomeForm_profil_DiploméISEN",
                 "emoji": "🎓"
             },
             {
