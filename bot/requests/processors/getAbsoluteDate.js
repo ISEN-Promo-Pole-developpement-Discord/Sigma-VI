@@ -376,5 +376,3 @@ function filterOutDateElements(string){
 
 
 module.exports = {getDatesFromString, filterOutDateElements};
-
-console.log(getDatesFromString("semaine"));
