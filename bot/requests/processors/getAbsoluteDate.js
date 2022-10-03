@@ -168,10 +168,10 @@ function getWeekRelative(string, reference = null){
     
     if(includeWeek(string)){
         var weekArgurment = includeWeekArgument(string);
-        thisWeekMonday = reference.getDay() == 2 ? reference : getWeekDayRelative(`previous monday`, reference);
+        thisWeekMonday = reference.getDay() == 1 ? reference : getWeekDayRelative(`previous monday`, reference);
         //Week planning asked during WE -> next week 
         if(weekArgurment === false){
-            if(reference.getDay() < 2) return getWeekDayRelative(`next monday`, reference);
+            if(reference.getDay() < 1) return getWeekDayRelative(`next monday`, reference);
             else return new Date(thisWeekMonday.getTime());
         }
         if(weekArgurment === "next") return new Date(thisWeekMonday.getFullYear(), thisWeekMonday.getMonth(), thisWeekMonday.getDate()+7);
