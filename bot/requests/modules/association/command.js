@@ -80,6 +80,9 @@ var SlashCommand = new Promise(async (resolve, reject) => {
 module.exports = {
     data: SlashCommand,
     async execute(interaction){
+        if(!interaction.guild){
+            return;
+        }
         var defering = interaction.deferReply({ephemeral : true});
         var subcommand = interaction.options.getSubcommand();
         var author = interaction.member;
@@ -89,10 +92,6 @@ module.exports = {
         }
         var authorUserObject = await UsersManager.getUser(author.id);
         var reply = null;
-        if(!interaction.guild){
-            interaction.editReply("Vous ne pouvez pas utiliser cette commande en message privé");
-            return;
-        }
         switch(subcommand){
             case 'list':
                 let associations = await AssociationsManager.getAssociations();
