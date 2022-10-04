@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, UserManager} = require('discord.js');
+const { SlashCommandBuilder, ChannelType} = require('discord.js');
 const { AssociationsManager } = require('../../../bdd/classes/associationsManager.js');
 const { sendJoinRequest } = require("../../../utils/associationJoinRequest");
 const { UsersManager } = require("../../../bdd/classes/usersManager");
@@ -89,7 +89,10 @@ module.exports = {
         }
         var authorUserObject = await UsersManager.getUser(author.id);
         var reply = null;
-
+        if(!interaction.guild){
+            interaction.editReply("Vous ne pouvez pas utiliser cette commande en message privé");
+            return;
+        }
         switch(subcommand){
             case 'list':
                 let associations = await AssociationsManager.getAssociations();
