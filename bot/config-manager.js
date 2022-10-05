@@ -4,6 +4,7 @@ const fs = require('fs');
 const configTemplate = [
     {
         "token": "Your bot token here",
+        "planningToken": "",
         "mysql": {
             "host": "localhost",
             "user": "root",
