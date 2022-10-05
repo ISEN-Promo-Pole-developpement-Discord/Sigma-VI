@@ -1,3 +1,9 @@
+const {getConfig, getConfigCore} = require("./config-manager.js");
+global.config = getConfig();
+if(!global.config) throw new Error("No config found");
+global.config.core = getConfigCore();
+if(!global.config.core) throw new Error("No config core found");
+
 const { Client, GatewayIntentBits, Partials, Collection} = require('discord.js');
 const { debug } = require('./config-core.json');
 const { initBdd } = require("./bdd/utilsDB");
@@ -5,8 +11,6 @@ const fs = require("node:fs");
 const path = require("node:path");
 const {loadModulesCommands} = require("./requests/modules/modulesManager.js");
 const {UsersManager} = require("./bdd/classes/usersManager.js");
-global.config = require('./config.json');
-global.config.core = require('./config-core.json');
 
 // Create a new Discord client
 const clientIntents = [

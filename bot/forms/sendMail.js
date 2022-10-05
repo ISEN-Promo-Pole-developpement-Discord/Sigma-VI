@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const config = require("../config.json");
+const config = global.config;
 const fs = require("fs");
 const htmlContent = fs.readFileSync('./forms/templateMailCode.html', 'utf8');
 
