@@ -7,7 +7,11 @@ class IndexedChannelsManager {
         var indexedChannels = [];
         for(var row of rows){
             var indexedChannel = new IndexedChannel(row.channel_id, row.guild_id);
-            indexedChannels.push(indexedChannel);
+            if(indexedChannel){
+                let channel = await indexedChannel.getChannel();
+                if(channel) indexedChannels.push(indexedChannel);
+                else await this.removeIndexedChannel(row.channel_id);
+            }
         }
         return indexedChannels;
     }
