@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const nodeIcal = require('node-ical');
 
-const indexUrl = "https://ent-toulon.isen.fr/webaurion/ICS/listeICS.json";
+const indexUrl = "https://ent-toulon.isen.fr/webaurion/ICS/" + global.config.planningToken;
 
 async function getServerIndex(){
     return new Promise((resolve, reject) => {

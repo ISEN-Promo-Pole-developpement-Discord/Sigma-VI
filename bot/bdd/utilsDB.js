@@ -1,7 +1,11 @@
 const mysql = require("mysql2");
-const config = require("../config.json");
+const config = global.config;
 const fs = require("node:fs");
 
+/**
+ * 
+ * @param {mysql.PoolConnection} connection a mysql connection
+ */
 function updateTables(connection) {
     const sqlScript = fs.readFileSync("./bdd/createTables.sql").toString();
 

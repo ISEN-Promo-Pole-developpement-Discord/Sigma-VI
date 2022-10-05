@@ -7,7 +7,11 @@ class IndexedChannelsManager {
         var indexedChannels = [];
         for(var row of rows){
             var indexedChannel = new IndexedChannel(row.channel_id, row.guild_id);
-            indexedChannels.push(indexedChannel);
+            if(indexedChannel){
+                let channel = await indexedChannel.getChannel();
+                if(channel) indexedChannels.push(indexedChannel);
+                else await this.removeIndexedChannel(row.channel_id);
+            }
         }
         return indexedChannels;
     }
@@ -18,6 +22,11 @@ class IndexedChannelsManager {
         var indexedChannel = null;
         if(rows && rows.length > 0){
             indexedChannel = new IndexedChannel(rows[0].channel_id, rows[0].guild_id);
+            let channel = await indexedChannel.getChannel();
+            if(!channel){
+                await this.removeIndexedChannel(channel_id);
+                indexedChannel = null;
+            }
         }
         return indexedChannel;
     }
