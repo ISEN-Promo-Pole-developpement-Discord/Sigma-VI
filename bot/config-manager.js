@@ -1,27 +1,26 @@
 const path = require('path');
 const fs = require('fs');
 
-const configTemplate = [
-    {
-        "token": "Your bot token here",
-        "planningToken": "",
-        "mysql": {
-            "host": "localhost",
-            "user": "root",
-            "database": "sigma",
-            "password": ""
-        },
-        "mail": {
-            "host": "smtp.gmail.com",
-            "port": "465",
-            "secure": true,
-            "auth": {
-                "user": "",
-                "pass": ""
-            }
+const configTemplate = 
+{
+    "token": "Your bot token here",
+    "planningToken": "",
+    "mysql": {
+        "host": "localhost",
+        "user": "root",
+        "database": "sigma",
+        "password": ""
+    },
+    "mail": {
+        "host": "smtp.gmail.com",
+        "port": "465",
+        "secure": true,
+        "auth": {
+            "user": "",
+            "pass": ""
         }
     }
-]
+}
 
 
 function getConfig() {
