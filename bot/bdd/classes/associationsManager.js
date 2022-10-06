@@ -5,17 +5,20 @@ const { Association } = require('./association.js');
  * @class
  * @classdesc Manage the associations
  * @alias AssociationsManager
+ * @static
  */
 class AssociationsManager
 {
     /**
      * Get an association by its name
      * @param {string} name - The association's name (will be reconstructed by removing spaces and "ISEN" from the name) 
-     * @returns {Promise<Association>} The association
+     * @returns {Promise<Association|null>} The association
      * @async
      */
     static async getAssociation(name)
     {
+        if(typeof name !== "string")
+            throw new Error("The name must be a string");
         name = name.toLowerCase();
         name = name.replace(/ISEN/g, "").replace(/ /g, "");
         const connection = global.sqlConnection;
@@ -28,12 +31,14 @@ class AssociationsManager
 
     /**
      * Get an association by its ID
-     * @param {number} id - The association's ID
-     * @returns {Promise<Association>} The association
+     * @param {number|string} id - The association's ID
+     * @returns {Promise<Association|null>} The association
      * @async
      */
     static async getAssociationByID(asso_id)
     {
+        if(typeof asso_id !== "number" && typeof asso_id !== "string")
+            throw new Error("The ID must be a number or a string");
         const connection = global.sqlConnection;
         const query = "SELECT * FROM association WHERE asso_id = ?";
         const data = await connection(query, [asso_id]);
@@ -68,12 +73,16 @@ class AssociationsManager
      * @param {string} association.name - The association's name
      * @param {string} association.description - The association's description
      * @param {string} association.icon - The association's icon
-     * @returns {Promise<Association>} The association
+     * @returns {Promise<Association|null>} The association
      * @async
      */
     static async addAssociation(association)
     {
-        if (await this.getAssociation(association.name) !== null) return;
+        if (typeof association !== "object")
+            throw new Error("The association must be an object");
+        if (typeof association.name !== "string")
+            throw new Error("The association's name must be a string");
+        if (await this.getAssociation(association.name) !== null) return null;
         const connection = global.sqlConnection;
         const query = "INSERT INTO association (name, description, icon) VALUES (?, ?, ?)";
         const values = [association.name, association.description, association.icon];
@@ -89,6 +98,8 @@ class AssociationsManager
     */
     static async deleteAssociation(asso_id)
     {
+        if (typeof asso_id !== "number" && typeof asso_id !== "string")
+            throw new Error("The association's ID must be a number or a string");
         if (await this.getAssociationByID(asso_id) === null) return;
         const connection = global.sqlConnection;
         const query = "DELETE FROM association WHERE asso_id = ?";

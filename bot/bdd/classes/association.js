@@ -1,13 +1,15 @@
-const { ChannelType } = require('discord.js');
+const { ChannelType, GuildMember} = require('discord.js');
 
 
 /**
  * Association class
- * @param {number} asso_id - The association's ID
+ * @param {number|string} asso_id - The association's ID
  */
 class Association
 {
     constructor(asso_id) {
+        if(typeof asso_id !== "number" && typeof asso_id !== "string")
+            throw new TypeError("asso_id must be a number or a string");
         this.id = asso_id;
     }
 
@@ -104,8 +106,8 @@ class Association
     {
         if(typeof name !== "string")
             throw new TypeError("name must be a string");
-        if(name.length < 1 || name.length > 255)
-            throw new RangeError("name must be between 1 and 255 characters");
+        if(name.length < 1 || name.length > 64)
+            throw new RangeError("name must be between 1 and 64 characters");
         if(await AssociationsManager.getAssociationByName(name) != null)
             throw new Error("The name is already used by another association");
         const connection = global.sqlConnection;
@@ -129,8 +131,8 @@ class Association
     {
         if(typeof description !== "string")
             throw new TypeError("description must be a string");
-        if(description.length < 1 || description.length > 255)
-            throw new RangeError("description must be between 1 and 255 characters");
+        if(description.length < 1 || description.length > 512)
+            throw new RangeError("description must be between 1 and 512 characters");
         const connection = global.sqlConnection;
         return await connection(`UPDATE association SET description = ? WHERE asso_id = ?`, [description, this.id]);
     }
@@ -144,6 +146,10 @@ class Association
      */
     async setIcon(icon)
     {
+        if(typeof icon !== "string")
+            throw new TypeError("icon must be a string");
+        if(icon.length < 1 || icon.length > 10)
+            throw new RangeError("icon must be between 1 and 10 characters");
         const connection = global.sqlConnection;
         await connection(`UPDATE association SET icon = ? WHERE asso_id = ?`, [icon, this.id]);
     }
@@ -157,6 +163,10 @@ class Association
      */
     async addMember(userId, role = 0)
     {
+        if(typeof userId !== "string")
+            throw new TypeError("userId must be a string");
+        if(typeof role !== "number")
+            throw new TypeError("role must be a number");
         const UsersManager = global.usersManager;
         let user = await UsersManager.getUser(userId);
         if(user == null) return false;
@@ -177,6 +187,8 @@ class Association
     */
     async removeMember(userId)
     {
+        if(typeof userId !== "string")
+            throw new TypeError("userId must be a string");
         const UsersManager = global.usersManager;
         let user = await UsersManager.getUser(userId);
         if(user == null) return false;
@@ -227,6 +239,8 @@ class Association
      */
     async updateCategoryPermissionsForGuildMember(member)
     {
+        if(!(member instanceof GuildMember))
+            throw new TypeError("member must be a GuildMember");
         const UsersManager = global.usersManager;
         let channelsToModify = await this.getRespoChannels();
         let user = await UsersManager.getUser(member.id);
