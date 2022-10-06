@@ -1,3 +1,8 @@
+/**
+ * ResetManager class
+ * @deprecated
+ */
+
 class ResetManager
 {
     static async addUserToResetTable(user_id)
