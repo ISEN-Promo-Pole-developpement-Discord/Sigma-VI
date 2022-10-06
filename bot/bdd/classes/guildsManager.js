@@ -1,5 +1,11 @@
 const { Guild } = require("./guild.js");
 
+/**
+ * GuildsManager class
+ * @class
+ * @deprecated
+ * @static
+ */
 class GuildsManager
 {
     static async getGuild(guild_id)
