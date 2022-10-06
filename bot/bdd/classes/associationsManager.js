@@ -1,7 +1,19 @@
 const { Association } = require('./association.js');
 
+/**
+ * AssociationsManager class
+ * @class
+ * @classdesc Manage the associations
+ * @alias AssociationsManager
+ */
 class AssociationsManager
 {
+    /**
+     * Get an association by its name
+     * @param {string} name - The association's name (will be reconstructed by removing spaces and "ISEN" from the name) 
+     * @returns {Promise<Association>} The association
+     * @async
+     */
     static async getAssociation(name)
     {
         name = name.toLowerCase();
@@ -14,6 +26,12 @@ class AssociationsManager
             return new Association(data.asso_id);
     }
 
+    /**
+     * Get an association by its ID
+     * @param {number} id - The association's ID
+     * @returns {Promise<Association>} The association
+     * @async
+     */
     static async getAssociationByID(asso_id)
     {
         const connection = global.sqlConnection;
@@ -24,6 +42,11 @@ class AssociationsManager
             return new Association(asso_id);
     }
 
+    /**
+     * Get all the associations
+     * @returns {Promise<Array<Association>>} The associations
+     * @async
+     */
     static async getAssociations()
     {
         const connection = global.sqlConnection;
@@ -39,6 +62,15 @@ class AssociationsManager
         }
     }
 
+    /**
+     * add an association
+     * @param {object} association - The association's data
+     * @param {string} association.name - The association's name
+     * @param {string} association.description - The association's description
+     * @param {string} association.icon - The association's icon
+     * @returns {Promise<Association>} The association
+     * @async
+     */
     static async addAssociation(association)
     {
         if (await this.getAssociation(association.name) !== null) return;
@@ -49,6 +81,12 @@ class AssociationsManager
         return await this.getAssociation(association.name);
     }
 
+    /**
+     * Delete an association
+     * @param {string|number} association - The association's Id!
+     * @returns {Promise<void>}
+     * @async
+    */
     static async deleteAssociation(asso_id)
     {
         if (await this.getAssociationByID(asso_id) === null) return;
