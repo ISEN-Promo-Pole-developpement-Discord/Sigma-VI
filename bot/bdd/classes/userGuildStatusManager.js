@@ -1,5 +1,12 @@
 const {UserGuildStatus} = require("./userGuildStatus");
 
+/**
+ * UserGuildStatusManager class
+ * @class
+ * @static
+ * @todo Should be integrated in User class
+*/
+
 class UserGuildStatusManager
 {
     static async getUserGuildStatus(user)
