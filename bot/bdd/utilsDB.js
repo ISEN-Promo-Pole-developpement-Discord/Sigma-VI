@@ -1,6 +1,7 @@
 const mysql = require("mysql2");
 const config = global.config;
 const fs = require("node:fs");
+const { logStart, logEnd } = require("../utils/stdoutLogger.js");
 
 /**
  * Try to initialize the database (create tables if they don't exist)
@@ -10,14 +11,14 @@ const fs = require("node:fs");
 async function updateTables(connection) {
     return new Promise((resolve, reject) => {
         const sqlScript = fs.readFileSync("./bdd/createTables.sql").toString();
-        process.stdout.write("> Mise à jour de la base de données : ");
+        logStart("> Mise à jour de la base de données : ");
         connection.query(sqlScript, function(err, results) {
             if (err){
-                process.stdout.write("ERROR\n");
+                logEnd(false);
                 console.log(err);
                 throw err;
             }
-            process.stdout.write("OK\n");
+            logEnd(true);
             resolve();
         });
     });
@@ -66,15 +67,15 @@ async function promiseQuery(query, values = null) {
  */
 async function initializeDatabase() {
     return new Promise((resolve, reject) => {
-        process.stdout.write("> Connexion à la base de donnée : ");
+        logStart("> Connexion à la base de donnée : ");
         global.sqlConnection = promiseQuery;
         pool.getConnection(async function(err, connection) {
             if(err) {
-                process.stdout.write("ERROR\n");
+                logEnd(false);
                 console.log(err);
                 throw err;
             }
-            process.stdout.write("OK\n");
+            logEnd(true);
             await updateTables(connection);
             resolve();
         });
