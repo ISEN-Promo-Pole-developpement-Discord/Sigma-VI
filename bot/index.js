@@ -1,12 +1,15 @@
+
+// Load config files
 const {getConfig, getConfigCore} = require("./config-manager.js");
 global.config = getConfig();
 if(!global.config) throw new Error("No config found");
 global.config.core = getConfigCore();
 if(!global.config.core) throw new Error("No config core found");
 
+// Load libraries
 const { Client, GatewayIntentBits, Partials, Collection} = require('discord.js');
 const { debug } = require('./config-core.json');
-const { initBdd } = require("./bdd/utilsDB");
+const { initializeDatabase } = require("./bdd/utilsDB");
 const fs = require("node:fs");
 const path = require("node:path");
 const {loadModulesCommands} = require("./requests/modules/modulesManager.js");
@@ -40,9 +43,10 @@ const clientPartials = [
 const client = new Client({ intents: clientIntents, partials: clientPartials });
 global.debug = debug;
 
-// Load all events
+// Events
 const eventsPath = path.join(__dirname, "events");
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".js"));
+
 (async () => {
     console.log("> Chargement des évènements...");
     for (const file of eventFiles) {
@@ -55,8 +59,8 @@ const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".js"
         }
     }
 
-    console.log("> Connection à la base de données...");
-    await initBdd();
+    // Connect and update database
+    await initializeDatabase();
 
     console.log("> Connection à Discord...");
     await client.login(global.config.token);

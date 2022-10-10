@@ -1,3 +1,7 @@
+/**
+* Databases tables initialization
+*/
+
 create table if not exists `association`
 (
     `asso_id` SMALLINT not null auto_increment primary key,
