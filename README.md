@@ -177,7 +177,7 @@ See the [open issues](https://github.com/ISEN-Promo-Pole-developpement-Discord/S
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+Don't forget to give the project a star!
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -231,7 +231,7 @@ Project Link: [https://github.com/ISEN-Promo-Pole-developpement-Discord/Sigma-VI
 [license-shield]: https://img.shields.io/github/license/ISEN-Promo-Pole-developpement-Discord/Sigma-VI.svg?style=for-the-badge
 [license-url]: https://github.com/ISEN-Promo-Pole-developpement-Discord/Sigma-VI/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white
-[product-screenshot]: images/embbed.png
+[product-screenshot]: images/discord.png
 [discord.js]: https://img.shields.io/badge/Discord.js-5865F2?style=for-the-badge&logo=discord&logoColor=white
 [discordJS-url]: https://discord.js.org/
 [js]: https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black
