@@ -17,6 +17,16 @@ class UsersManager
             return new User(id);
     }
 
+    static async getUsers()
+    {
+        const connection = global.sqlConnection;
+        const query = "SELECT * FROM user";
+        const data = await connection(query);
+        if (data.length === 0) return [];
+        else
+            return data.map(user => new User(user.user_id));
+    }
+
     static async searchUsers(args)
     {
         let flag = 0;
