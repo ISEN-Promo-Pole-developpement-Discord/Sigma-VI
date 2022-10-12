@@ -9,6 +9,7 @@ async function initializeGuilds()
 {
     return new Promise(async (resolve, reject) => {
         guilds = global.client.guilds.cache;
+        const users = await UsersManager.getUsers();
         for(let guild of guilds.values()){
             logStart("\t<" + guild.name + "> Initialisation : ", 1);
                 try{
@@ -29,7 +30,7 @@ async function initializeGuilds()
                 try{
                     const membersList = client.guilds.cache.get(guild.id);
                     for(const member of membersList.members.cache.values()){
-                        if (await UsersManager.getUser(member.id) === null  && !member.user.bot) {
+                        if (!users.find(user => user.id === member.id)) {
                             await UsersManager.addUser({
                                 id: member.id,
                                 name: null,
