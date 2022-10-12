@@ -23,7 +23,7 @@ async function getActionAuthor(guild, object) {
     await guild.fetchAuditLogs()
         .then(audit => {
             audit.entries.forEach((entry, snowflake) => {
-                if (entry.target.id) {
+                if (entry && entry.target && entry.target.id) {
                     if (entry.target.id === object.id && author === null) {
                         author = entry.executor;
                     }
