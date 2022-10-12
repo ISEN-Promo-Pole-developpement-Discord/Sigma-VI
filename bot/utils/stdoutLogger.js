@@ -25,8 +25,8 @@ const BgCyan = "\x1b[46m";
 const BgWhite = "\x1b[47m";
 
 const steps = [
-    FgMagenta + Bright,
-    FgCyan + Bright,
+    FgYellow + Bright,
+    FgBlue + Bright,
 ]
 
 /**
