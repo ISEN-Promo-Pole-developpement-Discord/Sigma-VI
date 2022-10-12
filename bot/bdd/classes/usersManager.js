@@ -1,5 +1,10 @@
 const {User} = require('./user.js');
 
+/**
+ * UsersManager class
+ * @class
+ * @static
+ */
 class UsersManager
 {
     static async getUser(id)

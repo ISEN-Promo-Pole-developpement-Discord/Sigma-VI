@@ -80,15 +80,17 @@ async function loadModulesCommands(guildId = null){
         }
     }
     const rest = new REST({version: '10'}).setToken(global.config.token);
-    if(guildId){
-        rest.put(Routes.applicationGuildCommands(global.client.user.id, guildId), { body: commands })
-        .then(() => console.log('Successfully registered modules application commands for server ' + guildId))
-        .catch(console.error);
-    }else{
-        rest.put(Routes.applicationCommands(global.client.user.id), { body: commands })
-        .then(() => console.log('Successfully registered modules global application commands'))
-        .catch(console.error);
-    }
+    return new Promise((resolve, reject) => {
+        if(guildId){
+            rest.put(Routes.applicationGuildCommands(global.client.user.id, guildId), { body: commands })
+            .then(() => resolve())
+            .catch(console.error);
+        }else{
+            rest.put(Routes.applicationCommands(global.client.user.id), { body: commands })
+            .then(() => resolve())
+            .catch(console.error);
+        }
+    });
 }
 
 async function loadModuleCommand(moduleName){

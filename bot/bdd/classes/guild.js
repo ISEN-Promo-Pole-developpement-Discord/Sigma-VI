@@ -1,10 +1,15 @@
+/**
+ * Guild class
+ * @class
+ * @param {string} guild_id - The guild's ID
+ * @deprecated
+ */
 class Guild
 {
     constructor(guild_id) {
         this.guild_id = guild_id;
     }
 
-    // GETTERS
     async getConfig() {
         const connection = global.sqlConnection;
         const [rows] = await connection(
@@ -13,7 +18,6 @@ class Guild
         return rows.config;
     }
 
-    // SETTERS
     async setConfig(config)
     {
         const connection = global.sqlConnection;

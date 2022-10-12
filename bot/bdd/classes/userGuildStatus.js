@@ -1,3 +1,8 @@
+/**
+ * UserGuildStatus class
+ * @todo Should be integrated in User class
+ * @class
+ */
 class UserGuildStatus
 {
     constructor(user_id, guild_id)
@@ -6,7 +11,6 @@ class UserGuildStatus
         this.guild_id = guild_id;
     }
 
-    // GETTERS
     async getStatus()
     {
         const connection = global.sqlConnection;
@@ -23,7 +27,6 @@ class UserGuildStatus
         return rows.form_id;
     }
 
-    // SETTERS
     async setStatus(status)
     {
         const connection = global.sqlConnection;

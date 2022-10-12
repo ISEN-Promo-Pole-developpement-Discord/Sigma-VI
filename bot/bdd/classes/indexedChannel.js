@@ -1,6 +1,12 @@
 const Discord = require('discord.js');
 
-
+/**
+ * IndexedChannel class
+ * @class
+ * @param {string} channel_id - The channel's id
+ * @param {string} guild_id - The guild's id
+ * @deprecated Channel indexation is now obsolete due to forums addition 
+ */
 class IndexedChannel {
     constructor(channel_id, guild_id){
         this.channel_id = channel_id;

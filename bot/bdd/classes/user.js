@@ -3,13 +3,23 @@ const { manageRoles } = require("../../utils/rolesManager");
 const { AssociationsManager } = require("./associationsManager");
 const { includedSimilarity } = require("../../requests/processors/stringIncludeSimilarity");
 
+/**
+ * User class
+ * @class
+ * @param {string} id The discord user's ID
+ */
 class User
 {
     constructor(id) {
         this.id = id;
     }
 
-    // GETTERS
+    /**
+     * Get the user's name
+     * @alias User.getName
+     * @returns {Promise<string>} The user's name
+     * @async
+     */
     async getName()
     {
         const connection = global.sqlConnection;
@@ -19,6 +29,12 @@ class User
         return rows.name;
     }
 
+    /**
+     * get the user's surname
+     * @alias User.getSurname
+     * @returns {Promise<string>} The user's surname
+     * @async
+     */
     async getSurname()
     {
         const connection = global.sqlConnection;
@@ -28,6 +44,12 @@ class User
         return rows.surname;
     }
 
+    /**
+     * Get the user's email
+     * @alias User.getEmail
+     * @returns {Promise<string>} The user's email
+     * @async
+     */
     async getEmail()
     {
         const connection = global.sqlConnection;
@@ -37,6 +59,12 @@ class User
         return rows.email;
     }
     
+    /**
+     * Get user's Ical URL
+     * @alias User.getIcalURL
+     * @returns {Promise<string|null>} The user's Ical URL
+     * @async
+     */
     async getIcalURL(){
         const name = await this.getName();
         const surname = await this.getSurname();
@@ -48,7 +76,14 @@ class User
         }
         return null;
     }
-
+    
+    /**
+     * Get the user's password
+     * @alias User.getPassword
+     * @returns {Promise<string>} The user's password
+     * @async
+     * @deprecated
+     */
     async getPassword()
     {
         const connection = global.sqlConnection;
@@ -58,6 +93,12 @@ class User
         return rows.password;
     }
 
+    /**
+     * Get the user's status
+     * @alias User.getStatus
+     * @returns {Promise<string>} The user's status
+     * @async
+     */
     async getStatus()
     {
         const connection = global.sqlConnection;
@@ -67,6 +108,12 @@ class User
         return rows.status;
     }
 
+    /**
+     * Get the user's data
+     * @alias User.getData
+     * @returns {Promise<Object>} The user's data
+     * @async
+     */
     async getData()
     {
         const connection = global.sqlConnection;
@@ -83,14 +130,29 @@ class User
         }
     }
 
+    /**
+     * Get the user's association role
+     * @alias User.getAssociationRole
+     * @param {string|number} asso_id The association's ID
+     * @returns {Promise<string>} The user's association role
+     * @async
+     */
     async getAssociationRole(asso_id)
     {
+        if(typeof asso_id !== "string" && typeof asso_id !== "number")
+            throw new Error("The association's ID must be a string or a number");
         const connection = global.sqlConnection;
         const rows = await connection("SELECT role FROM associations_user_role WHERE user_id = ? AND asso_id = ?", [this.id, asso_id]);
         if (rows.length === 0) return null;
         else return rows[0].role;
     }
 
+    /**
+     * Get the user's association roles
+     * @alias User.getAssociationRoles
+     * @returns {Promise<Array<string|number>>} The user's association roles
+     * @async
+     */
     async getAssociationsRoles()
     {
         const connection = global.sqlConnection;
@@ -99,7 +161,16 @@ class User
         else return rows;
     }
 
+    /**
+     * Add all roles related to the user's association
+     * @alias User.addRelatedAssociationGuildsRoles
+     * @param {string|number} asso_id The association's ID
+     * @returns {Promise<void>} Confirmation
+     * @async
+     */
     async addRelatedAssociationGuildsRoles(asso_id){
+        if(typeof asso_id !== "string" && typeof asso_id !== "number")
+            throw new Error("The association's ID must be a string or a number");
         const guilds = global.client.guilds.cache;
         let asso = await AssociationsManager.getAssociationByID(asso_id);
         if(asso == null) return false;
@@ -117,7 +188,16 @@ class User
         }
     }
 
+    /**
+     * Remove all roles related to the user's association
+     * @alias User.removeRelatedAssociationGuildsRoles
+     * @param {string|number} asso_id The association's ID
+     * @returns {Promise<void>} Confirmation
+     * @async
+     */
     async removeRelatedAssociationGuildsRoles(asso_id){
+        if(typeof asso_id !== "string" && typeof asso_id !== "number")
+            throw new Error("The association's ID must be a string or a number");
         const guilds = global.client.guilds.cache;
         let asso = await AssociationsManager.getAssociationByID(asso_id);
         if(asso == null) return false;
@@ -133,6 +213,13 @@ class User
         }
     }
 
+    /**
+     * Update the user's permissions based on his association roles
+     * @alias User.updateAssociationsServerPermissions
+     * @returns {Promise<void>} Confirmation
+     * @async
+     * @todo ***Rename the function to updateAssociationsGuildsPermissions***
+     */
     async updateAssociationsServerPermissions(){
 
         let mainGuild = global.client.guilds.cache.get(global.config.core.mainGuildId);
@@ -186,47 +273,113 @@ class User
         return true;
     }
 
-    // SETTERS
+    /**
+     * Set the user's name
+     * @alias User.setName
+     * @param {string} name The user's name
+     * @returns {Promise<void>} Confirmation
+     * @async
+     */
     async setName(name)
     {
+        if(typeof name !== "string")
+            throw new Error("The user's name must be a string");
         const connection = global.sqlConnection;
         await connection(`UPDATE user SET name = ? WHERE user_id = ?`, [name, this.id]);
     }
 
+    /**
+     * Set the user's surname
+     * @alias User.setSurname
+     * @param {string} surname The user's surname
+     * @returns {Promise<void>} Confirmation
+     * @async
+     */
     async setSurname(surname)
     {
+        if(typeof surname !== "string")
+            throw new Error("The user's surname must be a string");
         const connection = global.sqlConnection;
         await connection(`UPDATE user SET surname = ? WHERE user_id = ?`, [surname, this.id]);
     }
 
+    /**
+     * Set the user's email
+     * @alias User.setEmail
+     * @param {string} email The user's email
+     * @returns {Promise<void>} Confirmation
+     * @async
+     */
     async setEmail(email)
     {
+        if(typeof email !== "string")
+            throw new Error("The user's email must be a string");
         const connection = global.sqlConnection;
         await connection(`UPDATE user SET email = ? WHERE user_id = ?`, [email, this.id]);
     }
 
+    /**
+     * Set the user's password
+     * @alias User.setPassword
+     * @param {string} password The user's password
+     * @returns {Promise<void>} Confirmation
+     * @async
+     * @deprecated
+     */
     async setPassword(password)
     {
         const connection = global.sqlConnection;
         await connection(`UPDATE user SET password = ? WHERE user_id = ?`, [password, this.id]);
     }
 
+    /**
+     * Set the user's status
+     * @alias User.setStatus
+     * @param {string|number} status The user's status
+     * @returns {Promise<void>} Confirmation
+     * @async
+     */
     async setStatus(status)
     {
+        if(typeof status !== "string" && typeof status !== "number")
+            throw new Error("The user's status must be a string or a number");
         const connection = global.sqlConnection;
         await connection(`UPDATE user SET status = ? WHERE user_id = ?`, [status, this.id]);
     }
 
+    /**
+     * Set the user's dataFields
+     * @alias User.setData
+     * @param {string} data The user's dataFields
+     * @returns {Promise<void>} Confirmation
+     * @async
+     */
     async setData(data)
     {
+        if(typeof data !== "string")
+            throw new Error("data must be a string");
         const connection = global.sqlConnection;
         const dataJSON = JSON.stringify(data);
         await connection(`UPDATE user SET user_data = ? WHERE user_id = ?`, [dataJSON, this.id]);
         
     }
 
+    /**
+     * Set the user's association role
+     * @alias User.setAssociationRole
+     * @param {number|string} asso_id The association's id
+     * @param {number|string} role The user's role
+     * @returns {Promise<void>} Confirmation
+     * @async
+     */
+
     async setAssociationRole(asso_id, role)
     {
+        if(typeof asso_id !== "number" && typeof asso_id !== "string")
+            throw new Error("The association's id must be a number or a string");
+        if(typeof role !== "number" && typeof role !== "string")
+            throw new Error("The user's role must be a number or a string");
+
         const connection = global.sqlConnection;
         try{
             if(await this.getAssociationRole(asso_id) === null){
@@ -242,7 +395,17 @@ class User
         }
     }
 
+    /**
+     * Remove the user's association role
+     * @alias User.removeAssociationRole
+     * @param {number|string} asso_id The association's id
+     * @returns {Promise<void>} Confirmation
+     * @async
+     */
     async removeAssociationRole(asso_id){
+        if(typeof asso_id !== "number" && typeof asso_id !== "string")
+            throw new Error("The association's id must be a number or a string");
+
         const connection = global.sqlConnection;
         try{
             await this.setAssociationRole(asso_id, 0);

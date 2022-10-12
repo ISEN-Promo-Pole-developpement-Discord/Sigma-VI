@@ -142,7 +142,7 @@ module.exports = {
                     reply = "Vous n'êtes pas dans l'association " + await association.getName() + ".";
                     break;
                 }
-                await association.removeMember(author);
+                await association.removeMember(author.id);
 
                 reply = "*Vous avez bien quitté l'association " + await association.getName() + ".*";
                 break;
@@ -170,7 +170,7 @@ module.exports = {
                     reply = "Vous n'avez pas la permission de faire cela car vous n'êtes pas un responsable de l'association en question.";
                     break;
                 }
-                await association.removeMember(targetMember);
+                await association.removeMember(targetMember.id);
                 reply = "*Vous avez expulsé " + memberMention.user.nickname + " de l'association " + await association.getName() + ".*";
                 break;
 

@@ -1,5 +1,11 @@
 const { IndexedChannel} = require('./indexedChannel');
 
+/**
+ * IndexedChannelsManager class
+ * @class
+ * @static
+ * @deprecated Channel indexation is now obsolete due to forums addition
+ */
 class IndexedChannelsManager {
     static async getIndexedChannels(){
         const connection = global.sqlConnection;
