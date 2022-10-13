@@ -7,8 +7,17 @@ const {User} = require('./user.js');
  */
 class UsersManager
 {
+    /**
+     * Get a user from its ID
+     * @param {string|number} id The user's ID 
+     * @returns  {Promise<User>} The user
+     * @static
+     * @async
+     */
     static async getUser(id)
     {
+        if (typeof id !== "string" && typeof id !== "number")
+            throw new TypeError("id must be a string or a number");
         const connection = global.sqlConnection;
         const query = "SELECT * FROM user WHERE user_id = ?";
         const data = await connection(query, id);
@@ -17,6 +26,30 @@ class UsersManager
             return new User(id);
     }
 
+    /**
+     * Get all users
+     * @returns {Promise<Array<User>>} The users
+     * @static
+     * @async
+     */
+    static async getUsers()
+    {
+        const connection = global.sqlConnection;
+        const query = "SELECT * FROM user";
+        const data = await connection(query);
+        if (data.length === 0) return [];
+        else
+            return data.map(user => new User(user.user_id));
+    }
+
+    /**
+     * Search for a user
+     * @param {Array<string>} args The arguments to search for
+     * @returns {Promise<Array<User>>} The users found
+     * @static
+     * @async
+     * @deprecated
+     */
     static async searchUsers(args)
     {
         let flag = 0;
@@ -47,8 +80,18 @@ class UsersManager
         }
     }
 
+    /**
+     * Add a user to the database
+     * @param {User} user The user to add
+     * @returns {Promise<User>} The user
+     * @static
+     * @async
+     * @todo switch to user_id
+     */
     static async addUser(user)
     {
+        if (!(user instanceof User) && !user.id)
+            throw new TypeError("user must be an instance of User");
         if (await this.getUser(user.id) !== null) return;
         const connection = global.sqlConnection;
         const query = "INSERT INTO user (user_id, name, surname, email, password, status, user_data) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -57,12 +100,19 @@ class UsersManager
         return new User(user.id);
     }
 
-    static async deleteUser(user_id)
+    /**
+     * Remove a user from the database
+     * @param {string|number} id The user's ID
+     * @static
+     * @async
+     * @returns {Promise<void>}
+     */
+    static async deleteUser(id)
     {
-        if (await this.getUser(user_id) === null) return;
+        if (await this.getUser(id) === null) return;
         const connection = global.sqlConnection;
         const query = "DELETE FROM user WHERE user_id = ?";
-        await connection(query, user_id);
+        await connection(query, id);
     }
 }
 

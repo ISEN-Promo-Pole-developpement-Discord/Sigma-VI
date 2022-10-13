@@ -35,6 +35,7 @@ const pool = mysql.createPool({
     database: config.mysql.database,
     multipleStatements: true
 });
+
 /**
  * Promisified version of pool.query
  * @param {String} querry the querry to execute
@@ -64,6 +65,8 @@ async function promiseQuery(query, values = null) {
 
 /**
  * Initialize the database and pool connection
+ * @returns {Promise} a promise that resolves when the database is initialized
+ * @async
  */
 async function initializeDatabase() {
     return new Promise((resolve, reject) => {

@@ -1,54 +1,10 @@
-/**
- * events types:
- * - "new" event
- * > guild - guild object
- * > userAuthor - user who made the action
- * > userTarget - user who was affected
- * - "edit" event
- * - "delete" event
- * - "ban" event
- * - "unban" event
- * - "kick" event
- */
-
-/**
- * - channelCreate
- * - emojiCreate
- * - guildScheduledEventCreate
- * - inviteCreate
- * - roleCreate
- * - stageInstanceCreate
- * - stickerCreate
- * 
- * - emojiDelete
- * - channelDelete
- * - guildScheduledEventDelete
- * - inviteDelete
- * - messageReactionRemoveAll
- * - roleDelete
- * - stageInstanceDelete
- * - stickerDelete
- * 
- * - channelUpdate
- * - emojiUpdate
- * - guildMemberUpdate
- * - guildScheduledEventUpdate
- * - guildUpdate
- * - webhookUpdate
- * - roleUpdate
- * - stageInstanceUpdate
- * - stickerUpdate
- *  
- * - GuildBanAdd
- * - GuildBanRemove
- * 
- */
-
 const { getGuildLogChannel, objectClassDataToFields, objectUpdateGetChangesFields} = require("./logger.js");
 const { newEmbed } = require("../../utils/createEmbed.js");
 const { ChannelType } = require("discord.js");
 const { AttachmentBuilder} = require('discord.js');
 const logImg = require('./log-img.json');
+
+// TODO: Log Module Manager need a complete revamp for better performance and readability.
 
 function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,channel_log) {
     if(!guild) return;
@@ -63,6 +19,11 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
         embedShematic.title = `${type} "${oldObject.name}" updated`:
         embedShematic.title = `${type} updated`;
     if(newObject.url) embedShematic.url = newObject.url;
+
+    if (type === "Channel" || type === "TextChannel" || type === "VoiceChannel" || type === "CategoryChannel") {
+        embedShematic.title = getStringFromChannelType(oldObject.type) + embedShematic.title.replace(type, "");
+        if(embedShematic.title.length > 256) embedShematic.title = embedShematic.title.slice(0, 250) + "...";
+    }
 
     if(userAuthor){
         if(userTarget){
@@ -98,6 +59,7 @@ function logUpdate(guild, type, userAuthor, userTarget, oldObject, newObject,cha
     }
     
 }
+
 function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
     if(!guild) return;
     if(userAuthor && userAuthor.bot) return;    
@@ -108,8 +70,8 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
     if (!logChannel) return;
     let embedShematic = new Object();
     oldObject.name ? 
-        embedShematic.title = `${type} "${oldObject.name}" Delete`:
-        embedShematic.title = `${type} Delete`;
+        embedShematic.title = `${type} "${oldObject.name}" Deleted`:
+        embedShematic.title = `${type} Deleted`;
     if(userAuthor) embedShematic.footer = {text: userAuthor.tag, icon_url: userAuthor.displayAvatarURL()};
     if(oldObject.image) embedShematic.image = {url: oldObject.image};
     if(userTarget) embedShematic.author = {name: userTarget.tag, icon_url: userTarget.displayAvatarURL()};
@@ -129,48 +91,9 @@ function logDelete(guild, type, userAuthor,userTarget,oldObject,channel_log) {
         }
     }
 
-    if (type === "Channel") {
-        switch (oldObject.type) {
-            case ChannelType.DM:
-                embedShematic.title = "DM" + embedShematic.title;
-                break;
-            case ChannelType.GroupDM:
-                embedShematic.title = "Group DM" + embedShematic.title;
-                break;
-            case ChannelType.GuildCategory:
-                embedShematic.title = "Category" + embedShematic.title.substring(7);
-                break;
-            case ChannelType.GuildDirectory:
-                embedShematic.title = "Directory" + embedShematic.title.substring(7);
-                break;
-            case ChannelType.GuildForum:
-                embedShematic.title = "Forum" + embedShematic.title.substring(7);
-                break;
-            case ChannelType.GuildNews:
-                embedShematic.title = "News" + embedShematic.title;
-                break;
-            case ChannelType.GuildNewsThread:
-                embedShematic.title = "News Thread" + embedShematic.title.substring(7);
-                break;
-            case ChannelType.GuildPrivateThread:
-                embedShematic.title = "Private Thread" + embedShematic.title.substring(7);
-                break;
-            case ChannelType.GuildPublicThread:
-                embedShematic.title = "Thread" + embedShematic.title.substring(7);
-                break;
-            case ChannelType.GuildStageVoice:
-                embedShematic.title = "Stage" + embedShematic.title.substring(7);
-                break;
-            case ChannelType.GuildText:
-                embedShematic.title = "Text" + embedShematic.title;
-                break;
-            case ChannelType.GuildVoice:
-                embedShematic.title = "Voice" + embedShematic.title;
-                break;
-            default:
-                embedShematic.title = "Unknown channel type" + embedShematic.title.substring(7);
-                break;
-        }
+    if (type === "Channel" || type === "TextChannel" || type === "VoiceChannel" || type === "CategoryChannel") {
+        embedShematic.title = getStringFromChannelType(oldObject.type) + embedShematic.title.replace(type, "");
+        if(embedShematic.title.length > 256) embedShematic.title = embedShematic.title.slice(0, 250) + "...";
     }
 
     const deleteBlackList = ["RawPosition", "LastMessageId", "Position", "Preview", "Name"];
@@ -230,48 +153,9 @@ function logCreate(guild, type, userAuthor,newObject,channel_log) {
             });
         }
 
-        if (type === "Channel") {
-            switch (newObject.type) {
-                case ChannelType.DM:
-                    embedShematic.title = "DM" + embedShematic.title;
-                    break;
-                case ChannelType.GroupDM:
-                    embedShematic.title = "Group DM" + embedShematic.title;
-                    break;
-                case ChannelType.GuildCategory:
-                    embedShematic.title = "Category" + embedShematic.title.substring(7);
-                    break;
-                case ChannelType.GuildDirectory:
-                    embedShematic.title = "Directory" + embedShematic.title.substring(7);
-                    break;
-                case ChannelType.GuildForum:
-                    embedShematic.title = "Forum" + embedShematic.title.substring(7);
-                    break;
-                case ChannelType.GuildNews:
-                    embedShematic.title = "News" + embedShematic.title;
-                    break;
-                case ChannelType.GuildNewsThread:
-                    embedShematic.title = "News Thread" + embedShematic.title.substring(7);
-                    break;
-                case ChannelType.GuildPrivateThread:
-                    embedShematic.title = "Private Thread" + embedShematic.title.substring(7);
-                    break;
-                case ChannelType.GuildPublicThread:
-                    embedShematic.title = "Thread" + embedShematic.title.substring(7);
-                    break;
-                case ChannelType.GuildStageVoice:
-                    embedShematic.title = "Stage" + embedShematic.title.substring(7);
-                    break;
-                case ChannelType.GuildText:
-                    embedShematic.title = "Text" + embedShematic.title;
-                    break;
-                case ChannelType.GuildVoice:
-                    embedShematic.title = "Voice" + embedShematic.title;
-                    break;
-                default:
-                    embedShematic.title = "Unknown channel type" + embedShematic.title.substring(7);
-                    break;
-            }
+        if (type === "Channel" || type === "TextChannel" || type === "VoiceChannel" || type === "CategoryChannel") {
+            embedShematic.title = getStringFromChannelType(newObject.type) + embedShematic.title.replace(type, "");
+            if(embedShematic.title.length > 256) embedShematic.title = embedShematic.title.slice(0, 250) + "...";
         }
 
         imgData = getIcon("create", type, embedShematic.title);
@@ -320,6 +204,45 @@ function getIcon(type, event, eventString){
         }
     }
     return null;
+}
+
+/**
+ * @param {ChannelType} type 
+ * @returns {String}
+ */
+function getStringFromChannelType(type) {
+    switch (type) {
+        case ChannelType.GuildText:
+            return "Text Channel";
+            case ChannelType.GuildVoice:
+            return "Voice Channel";
+        case ChannelType.GuildCategory:
+            return "Category";
+        case ChannelType.GuildAnnouncement:
+            return "Announcement Channel";
+        case ChannelType.AnnouncementThread:
+            return "Announcement Thread";
+        case ChannelType.PublicThread:
+            return "Public Thread";
+        case ChannelType.PrivateThread:
+            return "Private Thread";
+        case ChannelType.GuildStageVoice:
+            return "Stage";
+        case ChannelType.GuildDirectory:
+            return "Directory";
+        case ChannelType.GuildForum:
+            return "Forum";
+        case ChannelType.GuildNews:
+            return "News Channel";
+        case ChannelType.GuildNewsThread:
+            return "News Thread";
+        case ChannelType.GuildPublicThread:
+            return "Thread";
+        case ChannelType.GuildPrivateThread:
+            return "Private Thread";
+        default:
+            return "Unknown Type";
+    }
 }
 
 module.exports = {

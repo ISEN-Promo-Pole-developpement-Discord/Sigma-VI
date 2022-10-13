@@ -20,8 +20,6 @@
     <a href="https://github.com/ISEN-Promo-Pole-developpement-Discord/Sigma-VI/wiki"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/ISEN-Promo-Pole-developpement-Discord/Sigma-VI">View Demo</a>
-    ·
     <a href="https://github.com/ISEN-Promo-Pole-developpement-Discord/Sigma-VI/issues">Report Bug</a>
     ·
     <a href="https://github.com/ISEN-Promo-Pole-developpement-Discord/Sigma-VI/issues">Request Feature</a>
