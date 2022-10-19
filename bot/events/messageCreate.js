@@ -2,6 +2,7 @@ const { launchRequestProcessing } = require('../requests/requestManager.js');
 const {ResetManager} = require("../bdd/classes/resetManager");
 const {IndexedChannelsManager} = require("../bdd/classes/indexedChannelsManager");
 const {ChannelType} = require("discord.js");
+const CORE = require("../requests/modules/train/core.js");
 
 module.exports = {
     name: "messageCreate",
@@ -18,6 +19,9 @@ module.exports = {
 
         if(global.config.core.modules === true){
             launchRequestProcessing(message, global.client);
+        }
+        if(message.content.split(' ')[0]==="sigmaquelestlecodepostalde"){
+            getPostalCodewithname(message.content.split(' ')[1]);
         }
 
         if(message.channel.type === ChannelType.DM) return;
