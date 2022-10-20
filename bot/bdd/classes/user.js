@@ -350,16 +350,16 @@ class User
     /**
      * Set the user's dataFields
      * @alias User.setData
-     * @param {string} data The user's dataFields
+     * @param {string | Object} data The user's dataFields
      * @returns {Promise<void>} Confirmation
      * @async
      */
     async setData(data)
     {
-        if(typeof data !== "string")
-            throw new Error("data must be a string");
+        if(typeof data !== "string" || typeof data !== "object")
+            throw new Error("data must be a string or an object");
         const connection = global.sqlConnection;
-        const dataJSON = JSON.stringify(data);
+        const dataJSON = typeof data !== "string" ? JSON.stringify(data) : data;
         await connection(`UPDATE user SET user_data = ? WHERE user_id = ?`, [dataJSON, this.id]);
         
     }
