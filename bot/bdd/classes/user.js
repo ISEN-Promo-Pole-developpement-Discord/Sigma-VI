@@ -356,12 +356,11 @@ class User
      */
     async setData(data)
     {
-        if(typeof data !== "string" || typeof data !== "object")
+        if(typeof data !== "string" && typeof data !== "object")
             throw new Error("data must be a string or an object");
         const connection = global.sqlConnection;
         const dataJSON = typeof data !== "string" ? JSON.stringify(data) : data;
         await connection(`UPDATE user SET user_data = ? WHERE user_id = ?`, [dataJSON, this.id]);
-        
     }
 
     /**
