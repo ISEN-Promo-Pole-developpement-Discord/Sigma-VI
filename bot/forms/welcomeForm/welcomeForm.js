@@ -1,11 +1,46 @@
 const { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ButtonBuilder, ButtonStyle } = require("discord.js");
-const welcomeProcess = require("./welcomeProcess.json");
-const welcomeFormData = require("./welcomeForm.json");
 const { FormsManager } = require("../../bdd/classes/formsManager.js");
 const { responseFromWelcomeProcess } = require("./welcomeProcessManager.js");
 const { getSelectMenusFromJSON } = require("../../utils/formHelper.js");
 
+/**
+ * Welcome process tasks list
+ * @type {Object}
+ * @property {Array<Object>} tasks The tasks list
+ * @property {String} tasks.name The task name
+ * @property {Number} tasks.step The task step
+ * @property {String} tasks.description The task description
+ * @property {Object} tasks.toAsk The task data to ask
+ * @property {String} tasks.toAsk.id The task interaction id
+ * For a modal interaction, the task data to ask must be an object with the following properties:
+ * @property {String} tasks.toAsk.title The task interaction title
+ * @property {Array<Object>} tasks.toAsk.fields The task interaction fields
+ * @property {String} tasks.toAsk.fields.id The task interaction field id
+ * @property {String} tasks.toAsk.fields.label The task interaction field label
+ * @property {String} tasks.toAsk.fields.type The task interaction field type
+ * For a select menu interaction, the task data to ask must be an object with the following properties:
+ * @property {String} tasks.toAsk.label The task interaction label
+ * @property {Array<Object>} tasks.toAsk.options The task interaction options
+ * @property {String} tasks.toAsk.options.value The task interaction option value
+ * @property {String} tasks.toAsk.options.label The task interaction option label
+ * @property {String} tasks.toAsk.options.description The task interaction option description
+ * @property {String} tasks.toAsk.options.emoji The task interaction option emoji
+ */
+const welcomeProcess = require("./welcomeProcess.json");
+
+/**
+ * Select menus data to collect
+ * @type {Object}
+ */
+const welcomeFormData = require("./welcomeForm.json");
+
+/**
+ * Fetch a task step from its name
+ * @param {*} name  The task name
+ * @returns {Object|null} The task step or null if not found
+ */
 function searchStepFromName(name) {
+    if(typeof name !== "string") return null;
     for (const step of welcomeProcess.tasks) {
         if (step.name === name) {
             return step;
@@ -13,27 +48,6 @@ function searchStepFromName(name) {
     }
 
     return null;
-}
-
-async function checkCodeMail(interaction, code) {
-
-    const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id);
-    if(!form) return false;
-    const verificationCode = await form.getVerificationCode();
-
-    if (code === verificationCode) {
-        return true;
-    }
-
-    return false;
-}
-
-async function registerAnswer(form, id, value) {
-    let fields = await form.getFields();
-
-    fields[id] = value;
-
-    await form.setFields(fields);
 }
 
 function handleWelcomeButtonClick(interaction) {
@@ -100,7 +114,7 @@ async function handleWelcomeFormMenuResponse(interaction) {
     const formAnswers = await form.getFields();
     var formCompletedFields = Object.keys(formAnswers);
 
-    await registerAnswer(form, id, value);
+    await form.registerField(id, value);
 
     var menuSelectorIds = new Array();
     for(const actionRow of interaction.message.components) {
@@ -194,8 +208,13 @@ async function handleWelcomeFormResponse(interaction) {
     const step = searchStepFromName(interaction.message.content.split("\n")[0].slice(2, -2));
 
     if (interaction.customId.includes("checkMail")) {
-        checkCodeMail(interaction, Object.values(data)[0]).then(async (result) => {
-            if (result) {
+        const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id)
+        if(!form){
+            console.log(">> form not found (checkMail)");
+            return;
+        }
+        form.checkVerificationCode(Object.values(data)[0]).then(async (codeIsValid) => {
+            if (codeIsValid) {
                 try{
                     await interaction.update({
                         content: `**${step.name}**\n✅ Votre adresse e-mail a bien été vérifiée. Merci.`,
@@ -204,11 +223,7 @@ async function handleWelcomeFormResponse(interaction) {
                 }catch(e){
                     console.log(e);
                 }
-                const form = await FormsManager.getForm(interaction.guild.id, interaction.channel.id)
-                if(!form){
-                    console.log(">> form not found (checkMail)");
-                    return;
-                }
+
                 const fields = await form.getFields();
 
                 const surname = fields.nom;
@@ -224,8 +239,8 @@ async function handleWelcomeFormResponse(interaction) {
                     }
                 }
                 
-                await registerAnswer(form, "mail", mail);
-                await registerAnswer(form, "mailValidated", true);
+                await form.registerField("mail", mail);
+                await form.registerField("mailValidated", true);
                 responseFromWelcomeProcess(step.step, interaction);
             } else {
                 await interaction.update({
@@ -246,7 +261,7 @@ async function handleWelcomeFormResponse(interaction) {
                     console.log(">> form not found (handleWelcomeFormResponse)");
                     return;
                 }
-                await registerAnswer(form, "mailValidated", false);
+                await form.registerField("mailValidated", false);
             }
         });
     } else {
@@ -256,7 +271,7 @@ async function handleWelcomeFormResponse(interaction) {
 
         FormsManager.getForm(interaction.guild.id, interaction.channel.id).then(async (form) => {
             for (key of Object.keys(data)) {
-                await registerAnswer(form, key.split("_").at(-1), data[key]);
+                await form.registerField(key.split("_").at(-1), data[key]);
             }
         });
         

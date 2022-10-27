@@ -92,7 +92,7 @@ async function submitForm(interaction) {
         case "EtudiantISEN":
             userStatus = 0;
             break;
-        case "ProfISEN":
+        case "ProfesseurISEN":
             userStatus = 1;
             break;
         case "AdministrationISEN":

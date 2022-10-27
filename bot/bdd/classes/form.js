@@ -3,7 +3,7 @@ const { User } = require("discord.js");
 /**
  * Form class
  * @class
- * @param {number|string} form_id - The form id
+ * @param {number|string} form_id The form id
  */
 class Form
 {
@@ -97,8 +97,8 @@ class Form
     /**
      * Set the form's channel id
      * @alias Form.setChannelID
-     * @param {string} channel_id - The channel id
-     * @returns {Promise<void>} - Completion promise
+     * @param {string} channel_id The channel id
+     * @returns {Promise<void>} Completion promise
      * @async
      */
     async setChannelID(channel_id)
@@ -112,8 +112,8 @@ class Form
     /**
      * Set the form's completion status
      * @alias Form.setStatus
-     * @param {string|number} status - The form's completion status
-     * @returns {Promise<void>} - Completion promise
+     * @param {string|number} status The form's completion status
+     * @returns {Promise<void>} Completion promise
      * @async
      */
     async setStatus(status)
@@ -138,23 +138,37 @@ class Form
     /**
      * Set the form's mail verification code
      * @alias Form.setVerificationCode
-     * @param {string|number} verification_code - The form's mail verification code
-     * @returns {Promise<void>} - Completion promise
+     * @param {string|number} code The form's mail verification code
+     * @returns {Promise<void>} Completion promise
      * @async
      */
-    async setVerificationCode(verification_code)
+    async setVerificationCode(code)
     {
-        if(typeof verification_code !== "string" && typeof verification_code !== "number")
+        if(typeof code !== "string" && typeof code !== "number")
             throw new Error("verification_code must be a string or a number");
         const connection = global.sqlConnection;
-        await connection(`UPDATE form SET verification_code = ? WHERE form_id = ?`, [verification_code, this.form_id]);
+        await connection(`UPDATE form SET code = ? WHERE form_id = ?`, [code, this.form_id]);
     }
+    
+    /**
+     * Check the form's mail verification code
+     * @alias Form.checkVerificationCode
+     * @param {string|number} code The verification code to check
+     * @returns {Promise<boolean>} The verification result
+     */
+    async checkVerificationCode(code){
+        if(typeof code !== "string" && typeof code !== "number")
+            throw new Error("code must be a string or a number");
+        const verification_code = await this.getVerificationCode();
+        return verification_code == code;
+    }
+
 
     /**
      * Set the form's fields
      * @alias Form.setFields
-     * @param {Object} fields - The form's fields
-     * @returns {Promise<void>} - Completion promise
+     * @param {Object} fields The form's fields
+     * @returns {Promise<void>} Completion promise
      * @async
      */
     async setFields(fields)
@@ -167,9 +181,23 @@ class Form
     }
 
     /**
+     * register a form field
+     * @alias Form.registerField
+     * @param {string} id The field id
+     * @param {*} value The field value
+     * @returns {Promise<void>} Completion promise
+     * @async
+     */
+    async registerField(id, value) {
+        let fields = await this.getFields();
+        fields[id] = value;
+        return this.setFields(fields);
+    }
+
+    /**
      * Delete the form
      * @alias Form.delete
-     * @returns {Promise<void>} - Completion promise
+     * @returns {Promise<void>} Completion promise
      * @async
      */
     async delete(){
@@ -177,9 +205,9 @@ class Form
         const channel_id = await this.getChannelID();
         let channel = global.client.channels.cache.get(channel_id);
         if(channel){
-            await channel.delete();
+            return await channel.delete();
         }
-        await connection(`DELETE FROM form WHERE form_id = ?`, [this.form_id]);
+        return await connection(`DELETE FROM form WHERE form_id = ?`, [this.form_id]);
     }
 }
 
