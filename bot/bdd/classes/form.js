@@ -205,7 +205,7 @@ class Form
         const channel_id = await this.getChannelID();
         let channel = global.client.channels.cache.get(channel_id);
         if(channel){
-            return await channel.delete();
+            await channel.delete();
         }
         return await connection(`DELETE FROM form WHERE form_id = ?`, [this.form_id]);
     }
