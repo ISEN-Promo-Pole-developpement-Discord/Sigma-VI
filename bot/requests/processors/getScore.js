@@ -23,7 +23,7 @@ function getPerModuleScores(string) {
         if(keys !== null){
             for(var key in keys){
                 var similarity = includedSimilarity(string, key);
-                if(similarity > 0.5){
+                if(similarity > 0.67){
                     if(!scores[module]) scores[module] = 0;
                     scores[module]+=(keys[key] * similarity);
                 }
