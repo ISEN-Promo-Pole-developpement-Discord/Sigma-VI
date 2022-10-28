@@ -118,6 +118,11 @@ class Contact{
 class Contacts{
     constructor(){
         var path = require("path");
+        if(!require("fs").existsSync(path.join(__dirname, "./contacts.csv"))){
+            console.error("Error : contacts.json file not found");
+            this.contacts = {};
+            return;
+        }
         var data = require("fs").readFileSync(path.join(__dirname, "./contacts.csv"), "utf8").replace(/"/g, "");
         this.contacts = {}; 
 

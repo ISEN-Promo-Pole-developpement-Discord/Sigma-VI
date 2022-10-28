@@ -11,6 +11,9 @@ async function coreProcess(string){
         let contactsList = contacts.getContactsList();
         embed.setTitle("Liste des contacts");
 
+        if(contactsList.length === 0)
+            return "Aucun contact trouvé (annuaire vide).";
+        
         // Split in two columns and add to embed
         let half = Math.ceil(contactsList.length / 2);
 
