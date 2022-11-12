@@ -1,27 +1,35 @@
 const Discord = require("discord.js");
-const laposte = require("./laposte_hexasmal.json");
 const { AttachmentBuilder} = require('discord.js');
-const https = require('https');
+const urlPostalCode='https://vicopo.selfbuild.fr/cherche'
+const https = require('https'); 
+const Private=require('./key.json');
 
 
 /* Function getPostalCodewithname 
  * description plus tard
  * @param name , name of the city
- * return the postal code who correspond with the name of the city or 00000 if the name dosn't exist in the json
+ * return the postal code who correspond with the name of the city or false if the name dosn't exist in the json
  */
-function getPostalCodewithname(name){
-    let postalCode=00000;
-    if(name){   
-        laposte.forEach(entry => {
-            if(entry.libelle_d_acheminement === name.toUpperCase()){
-                postalCode=entry.code_commune_insee;
-            }
+async function getPostalCodeWithName(name){
+    if(typeof name === "string"){
+        https.get(`${urlPostalCode}/${name}`,function(result){
+            result.on('data',function(data){
+                datajson=JSON.parse(data.toString());
+                datajson.cities.forEach(entry => {
+                    if(entry.city.toLowerCase() == name.toLowerCase()){
+                        console.log(entry.code);
+                        return entry.code;
+                    }
+                })
+            return false;
+            }).on('error',function(e){
+                console.log(`Eroor ${e.message}`);
+                return 'error'
+            })
         });
     }
-    return postalCode;
 }
 
+//getPostalCodeWithName('Toulon');
 
-//exemple de requete api : curl 'https://api.sncf.com/v1/coverage/sncf/journeys?from=admin:fr:83137&to=admin:fr:13001&da83000e=20221011T133315' -H 'Authorization: a6b6d0c8-1fcc-4948-aa69-24bc5468da8d'
-
-
+//curl `https://api.sncf.com/v1/coverage/sncf/journeys?from=admin:fr:${PosCodeVilleDepart}&to=admin:fr:${PosCodeVilleArrive}&datetime=${date}T133315' -H `${Private}`
