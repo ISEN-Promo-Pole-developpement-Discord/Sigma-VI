@@ -14,14 +14,11 @@ module.exports = {
          * @event messageCreate
          * @returns {Promise<void>}
          */
-        if (message.author.bot) return;
+         if (message.author.bot) return;
         if (!message.content) return;
 
         if(global.config.core.modules === true){
             launchRequestProcessing(message, global.client);
-        }
-        if(message.content.split(' ')[0]==="sigmaquelestlecodepostalde"){
-            getPostalCodewithname(message.content.split(' ')[1]);
         }
 
         if(message.channel.type === ChannelType.DM) return;
