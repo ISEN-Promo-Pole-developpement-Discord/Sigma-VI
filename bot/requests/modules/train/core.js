@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const { AttachmentBuilder} = require('discord.js');
 const urlPostalCode='https://vicopo.selfbuild.fr/cherche'
 const https = require('https'); 
-const Private=require('./key.json');
+const Private=require('./#config.json');
 
 
 /* Function getPostalCodewithname 
@@ -30,6 +30,6 @@ async function getPostalCodeWithName(name){
     }
 }
 
-//getPostalCodeWithName('Toulon');
+//getPostalCodeWithName('Toulon') =>test ;
 
 //curl `https://api.sncf.com/v1/coverage/sncf/journeys?from=admin:fr:${PosCodeVilleDepart}&to=admin:fr:${PosCodeVilleArrive}&datetime=${date}T133315' -H `${Private}`
