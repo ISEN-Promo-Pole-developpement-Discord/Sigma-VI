@@ -41,7 +41,7 @@ class GuildsManager
      */
     static async addGuild(guild)
     {
-        if (!(guild instanceof Guild))
+        if (!(guild instanceof Guild) && !guild.id)
             throw new TypeError("guild must be a Guild");
         if (await this.getGuild(guild.id) !== null) return;
         const connection = global.sqlConnection;
