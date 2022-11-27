@@ -381,7 +381,7 @@
         ]
     },
 
-    "ProfISEN":{
+    "ProfesseurISEN":{
         "menu":{
             "label": "Professseur de l'ISEN Méditerranée",
             "description": "Grade pour les Professeurs de l'ISEN Méditerranée",

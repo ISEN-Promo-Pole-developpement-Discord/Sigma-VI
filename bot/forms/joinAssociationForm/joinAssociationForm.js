@@ -1,6 +1,11 @@
 const { AssociationsManager } = require('../../bdd/classes/associationsManager');
-const {EmbedBuilder, ActionRowBuilder, ButtonBuilder} = require("discord.js");
+const {EmbedBuilder, ActionRowBuilder, ButtonBuilder, Interaction} = require("discord.js");
 
+/**
+ * Process the awnser to the join association form sent in the response channel
+ * @param {Interaction} interaction the interaction to process
+ * @returns {Promise<void>}
+ */
 async function joinAssociationForm(interaction){
     await interaction.deferReply({ephemeral: true});
     const customId = interaction.customId;
