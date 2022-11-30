@@ -147,7 +147,7 @@ class Form
         if(typeof code !== "string" && typeof code !== "number")
             throw new Error("verification_code must be a string or a number");
         const connection = global.sqlConnection;
-        await connection(`UPDATE form SET code = ? WHERE form_id = ?`, [code, this.form_id]);
+        await connection(`UPDATE form SET verification_code = ? WHERE form_id = ?`, [code, this.form_id]);
     }
     
     /**
