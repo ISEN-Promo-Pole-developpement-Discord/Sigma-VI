@@ -342,6 +342,34 @@
                 }
             ],
             "LV2":false
+        },
+        "CyberSecurite": {
+            "menu": {
+                "label": "Cyber Sécurité",
+                "description": "Bachelor Cybersécurité",
+                "value": "welcomeForm_filiere_Cyber",
+                "emoji": "🛡️"
+            },
+            "promotions": [
+                {
+                    "label": "1ère année",
+                    "description": "Première année du bachelor Cybersécurité",
+                    "value": "welcomeForm_promotion_Cyber1",
+                    "emoji": "1️⃣"
+                },
+                {
+                    "label": "2ème année",
+                    "description": "Deuxième année du bachelor Cybersécurité",
+                    "value": "welcomeForm_promotion_Cyber2",
+                    "emoji": "2️⃣"
+                },
+                {
+                    "label": "3ème année",
+                    "description": "Troisième année du bachelor Cybersécurité",
+                    "value": "welcomeForm_promotion_Cyber3",
+                    "emoji": "3️⃣"
+                }
+            ]
         }
     },
 
