@@ -1,6 +1,12 @@
 {
     "LV2":[
         {
+            "label": "Aucune",
+            "emoji": "⭕",
+            "value": "welcomeForm_LV2_null",
+            "description": "Aucune LV2"
+        },
+        {
             "label": "Espagnol",
             "emoji": "🇪🇸",
             "value": "welcomeForm_LV2_Espagnol",
@@ -35,12 +41,6 @@
             "emoji": "🇨🇳",
             "value": "welcomeForm_LV2_Chinois",
             "description": "如果你选择了中式"
-        },
-        {
-            "label": "Aucune",
-            "emoji": "⭕",
-            "value": "welcomeForm_LV2_null",
-            "description": "Aucune LV2"
         }
     ]
 }
