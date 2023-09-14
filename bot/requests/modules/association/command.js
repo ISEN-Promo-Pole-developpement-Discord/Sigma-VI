@@ -70,7 +70,8 @@ var SlashCommand = new Promise(async (resolve, reject) => {
             {name : "Membre", value : "member"},
             {name : "Responsable", value : "responsable"},
             {name : "Trésorier", value : "tresorier"},
-            {name : "Vice-Président", value : "vicepresident"},
+            {name : "Secrétaire", value : "secretaire"},
+            {name : "Vice-Président", value : "vice-president"},
             {name : "Président", value : "president"}
         ).setRequired(true))
     );
@@ -205,7 +206,10 @@ module.exports = {
                     case 'tresorier':
                         roleStatus = 2;
                         break;
-                    case 'vicepresident':
+                    case 'secretaire':
+                        roleStatus = 5;
+                        break;
+                    case 'vice-president':
                         roleStatus = 3;
                         break;
                     case 'president':

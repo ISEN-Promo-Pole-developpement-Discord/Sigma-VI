@@ -28,10 +28,10 @@ async function coreProcess(author, dates = [], search = null, target = null){
         ical = await getUserICS(namedotsurname);
     }catch(err){
         if(global.debug) console.log(err);
-        return "Une erreur s'est prduite à la récupération de l'emplois-du-temps. Veuillez réessayer.\n (*" + err + "*)";
+        return "Une erreur s'est produite à la récupération de l'emploi du temps. Veuillez réessayer.\n (*" + err + "*)";
     }
 
-    if(ical == null) return "L'emplois-du-temps de la cible n'est pas disponible.";
+    if(ical == null) return "L'emploi du temps de la cible n'est pas disponible.";
     //Fetch events from dates
     var eventsFromDates = getICALEventsFromDate(dates, ical.ics);
     //Fetch events from searchs
@@ -237,4 +237,4 @@ function getSearchWordsAliases(searchWords){
     return searchWordsAliases;
 }
 
-module.exports = coreProcess; 
+module.exports = coreProcess;

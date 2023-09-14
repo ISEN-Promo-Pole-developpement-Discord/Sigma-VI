@@ -229,14 +229,13 @@ class User
         let userAssociationsRoles = await this.getAssociationsRoles();
 
         // LOAD ASSO CONFIG VARS
-        const { memberRoleName, managerRoleName, treasurerRoleName, vicePresidentRoleName, presidentRoleName } = associationsConfig.RolesName;
-        var roleRoleNameList = [memberRoleName, managerRoleName, treasurerRoleName, vicePresidentRoleName, presidentRoleName];
+        const { memberRoleName, managerRoleName, treasurerRoleName, vicePresidentRoleName, presidentRoleName, secretaryRoleName } = associationsConfig.RolesName;
 
         let associations = await AssociationsManager.getAssociations();
         for(let association of associations){
             let userIsInAssociation = false;
             for(let assoRole of Object.values(userAssociationsRoles)){
-                if(assoRole.asso_id == association.id){
+                if(assoRole.asso_id === association.id){
                     userIsInAssociation = true;
                     break;
                 }
@@ -245,7 +244,7 @@ class User
             else this.removeRelatedAssociationGuildsRoles(association.id);
         }
 
-        let roleCount = [0, 0, 0, 0, 0];
+        let roleCount = [0, 0, 0, 0, 0, 0];
         for(let assoRole of Object.values(userAssociationsRoles)) roleCount[assoRole.role]++;
 
         const values = {
@@ -253,14 +252,16 @@ class User
             1: managerRoleName,
             2: treasurerRoleName,
             3: vicePresidentRoleName,
-            4: presidentRoleName
+            4: presidentRoleName,
+            5: secretaryRoleName
+            // TODO: Need to exchange president and secretary ids
         }
 
         let addRolesArray = [];
-        for(let i=0; i<5; i++) if(roleCount[i] > 0) addRolesArray.push(values[i]);
+        for(let i=0; i<6; i++) if(roleCount[i] > 0) addRolesArray.push(values[i]);
 
         let removeRolesArray = [];
-        for(let i=0; i<5; i++) if(roleCount[i] == 0) removeRolesArray.push(values[i]);
+        for(let i=0; i<6; i++) if(roleCount[i] == 0) removeRolesArray.push(values[i]);
 
         await manageRoles(member, removeRolesArray, 1);
         await manageRoles(member, addRolesArray, 0);
