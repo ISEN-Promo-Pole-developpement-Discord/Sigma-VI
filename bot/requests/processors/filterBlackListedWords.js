@@ -2,12 +2,14 @@ const context = require('./wordLists/context.json');
 const greetings = require('./wordLists/greetings.json');
 
 function filterBlackListedWords(string){
-    string = string.replace(/[.,;:?!]/g," ");
+    string = string.replace(/[.,;:?!_<>]/g," ");
     apostropheRegex = new RegExp("([a-z])'", "gi");
     string = string.replace(apostropheRegex, "");
     var b = "\\b";
     var allRegex = new RegExp(b + context.join(b + "|" + b) + b + "|" + b + greetings.join(b + "|" + b) + b, "gi");
-    return string.replace(allRegex, "");
+    string = string.replace(allRegex, "");
+    string = string.replace(/\b\d{5,}\b/g, "");
+    return string.replace(/ +/g, " ").trim();
 }
 
 module.exports = filterBlackListedWords;
