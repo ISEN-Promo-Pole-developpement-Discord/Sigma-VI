@@ -69,7 +69,7 @@ class UsersManager
         const data = await connection(query);
 
         // forEach loop which will generate user Object via ID by getUser() and stock it into an array
-        if (data.length === 0) return null;
+        if (data.length === 0) return [];
         else
         {
             let userArray = [];
